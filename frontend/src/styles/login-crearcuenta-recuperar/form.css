@@ -1,0 +1,102 @@
+
+.contenedor_todo {
+    display: flex;
+    justify-content: center;
+}
+
+.contenedor-form {
+  background: rgba(255, 255, 255, 0.9); 
+  border-radius: 15px; 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  padding: 2rem; 
+  max-width: 400px; 
+  width: 100%; 
+}
+
+.contenedor-form a{
+  text-decoration: none;
+}
+
+.contenedor-form h2,
+.contenedor-form label{
+  color: #0B1C26; 
+}
+
+.contenedor-form .btn-1{
+  background-color: #0B1C26; 
+  color: #dde1e9; 
+  transition: all 0.3s ease; 
+}
+
+.contenedor-form .btn-2{
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #0B1C26; 
+  border: 1px solid #0B1C26; 
+}
+
+.contenedor-form .btn-1:hover,
+.contenedor-form .btn-2:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.btn-tipouno{
+  background-color: #0B1C26; 
+  color: #dde1e9; 
+  transition: all 0.3s ease; 
+}
+
+.btn-tipodos{
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #0B1C26; 
+  border: 1px solid #0B1C26; 
+}
+
+.btn-tipodos:hover,
+.btn-tipouno:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-font-select {
+  font-family: 'Arial', sans-serif; 
+  font-size: 1rem; 
+}
+
+.custom-font-select option {
+  font-family: 'Arial', sans-serif; 
+  font-size: 1rem; 
+}
+
+.titulo-form{
+  color: #0B1C26;
+}
+
+.form-crearcuenta label{
+  color: #0B1C26; 
+}
+
+.info-text {
+  font-size: 0.9rem;
+  color: #6c757d; 
+  margin-bottom: 1rem;
+  line-height: 1.6; 
+}
+
+.contenedor-crear-cuenta{
+  max-width: 800px ;
+}
+
+
+@media (max-width: 768px) { 
+  .contenedor_todo {
+    padding: 1rem; 
+  }
+
+  .contenedor-form {
+    max-width: 100%; 
+    padding: 1.5rem; 
+  }
+
+  .contenedor-crear-cuenta {
+    max-width: 100%; /* Ajustar a pantallas más pequeñas */
+  }
+}
