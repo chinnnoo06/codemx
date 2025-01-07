@@ -8,9 +8,10 @@ import { PageCrearCuenta } from './pages/login-crearcuenta-recuperar/PageCrearCu
 
 function App() {
    return (
-    <BrowserRouter basename="/frontend/build">
+    <BrowserRouter basename="/codemx/frontend/build">
         <Routes>
             <Route path="/" element={<RutasBienvenida />} />
+            <Route path="/bienvenida" element={<RutasBienvenida />} />
             <Route path="/crear-cuenta" element={<PageCrearCuenta />} />
             <Route path="/iniciar-sesion" element={<PageLogin />} />
             <Route path="/recuperar-password" element={<PageRecuperar />} />
