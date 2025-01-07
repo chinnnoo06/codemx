@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/codemx/frontend/build",
   "dependencies": {
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
@@ -13,6 +12,7 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.4"
   },
+  "homepage": "https://www.codemx.net/codemx/frontend/build/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
