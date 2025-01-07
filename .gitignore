@@ -7,9 +7,6 @@ frontend/node_modules/
 # Testing
 /coverage
 
-# React production build
-frontend/build/
-
 # Environment variables
 .env.local
 .env.development.local
