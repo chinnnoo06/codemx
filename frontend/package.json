@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8000",
+  "homepage": "/codemx/frontend/build",
   "dependencies": {
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
