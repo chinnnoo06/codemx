@@ -39,7 +39,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
       const fetchData = async () => {
         try {
           // Fetch para obtener estados
-          const estadosResponse = await fetch('/config/obtener_estados.php');
+          const estadosResponse = await fetch('https://www.codemx.net/backend/config/obtener_estados.php');
           if (!estadosResponse.ok) {
             throw new Error('Error al obtener los estados');
           }
@@ -53,26 +53,26 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
           const sexosData = await sexosResponse.json();
 
           // Fetch para obtener tecnologias
-          const tecnologiasResponse = await fetch('/config/obtener_tecnologias.php');
+          const tecnologiasResponse = await fetch('https://www.codemx.net/backend/config/obtener_tecnologias.php');
           if (!tecnologiasResponse.ok) {
             throw new Error('Error al obtener las tecnologias');
           }
           const tecnologiasData = await tecnologiasResponse.json();
 
           // Fetch para obtener modalidades de trabajo
-          const modalidadesResponse = await fetch('/config/obtener_modalidades.php');
+          const modalidadesResponse = await fetch('https://www.codemx.net/backend/config/obtener_modalidades.php');
           if (!modalidadesResponse.ok) {
             throw new Error('Error al obtener las modalidades de trabajo');
           }
           const modalidadesData = await modalidadesResponse.json();
 
           // Fetch para obtener universidades
-          const universidadesResponse = await fetch('/config/obtener_universidades.php');
+          const universidadesResponse = await fetch('https://www.codemx.net/backend/config/obtener_universidades.php');
           if (!universidadesResponse.ok) {
             throw new Error('Error al obtener las universidades');
           }
           const universidadesData = await universidadesResponse.json();
-
+ 
           // Actualizar estados
           setEstados(estadosData);
           setSexos(sexosData);
