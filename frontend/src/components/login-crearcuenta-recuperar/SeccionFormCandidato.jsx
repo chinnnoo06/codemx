@@ -126,7 +126,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
           }
         });
   
-        const response = await fetch('/login-crearcuenta/CrearCuentaCandidato.php', {
+        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaCandidato.php', {
           method: 'POST',
           body: formDataToSend,
         });
@@ -157,7 +157,6 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
 
   const verificarEmail = async (email) => {
     try {
-        console.log("Correo enviado:", email); // Verificar el valor de email
         const response = await fetch('https://www.codemx.net/codemx/backend/config/verificar_email.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
