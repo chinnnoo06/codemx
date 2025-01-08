@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Guardar los datos del candidato
-    $consultaCandidato = "INSERT INTO Candidato (Nombre, Apellido, Password, Fecha_Nacimiento, Email, Telefono, Estado, Direccion, Sexo, Universidad, Tiempo_Restante, Modalidad_Trabajo, Fotografia, CV)
+    $consultaCandidato = "INSERT INTO candidato (Nombre, Apellido, Password, Fecha_Nacimiento, Email, Telefono, Estado, Direccion, Sexo, Universidad, Tiempo_Restante, Modalidad_Trabajo, Fotografia, CV)
         VALUES ('$nombre', '$apellido', '$passwordHash', '$fechaNacimiento', '$email', '$telefono', '$estado', '$direccion', '$sexo', '$universidad', '$tiempoRestante', '$modalidadTrabajo', '$fotoRutaRelativa', '$cvRutaRelativa')";
 
     if (mysqli_query($conexion, $consultaCandidato)) {
