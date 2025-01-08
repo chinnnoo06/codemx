@@ -46,7 +46,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
           const estadosData = await estadosResponse.json();
     
           // Fetch para obtener sexos
-          const sexosResponse = await fetch('/config/obtener_sexos.php');
+          const sexosResponse = await fetch('https://www.codemx.net/codemx/backend/config//obtener_sexos.php');
           if (!sexosResponse.ok) {
             throw new Error('Error al obtener los sexos');
           }
