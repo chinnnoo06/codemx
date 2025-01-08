@@ -93,7 +93,7 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
           formDataToSend.append(key, formData[key]);
         });
   
-        const response = await fetch('/login-crearcuenta/CrearCuentaEmpresa.php', {
+        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaEmpresa.php', {
           method: 'POST',
           body: formDataToSend,
         });
@@ -123,22 +123,22 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
 
   const verificarEmail = async (email) => {
     try {
-      const response = await fetch('https://www.codemx.net/codemx/backend/config/verificar_email.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ email }),
-      });
-  
-      const result = await response.json();
-      if (!result.success) {
-        return result.error; // Retorna el error si el correo está registrado
-      }
-      return null; // Retorna null si no hay errores
+        const response = await fetch('https://www.codemx.net/codemx/backend/config/verificar_email.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ email }), // Construir los datos para enviar
+        });
+
+        const result = await response.json();
+        if (!result.success) {
+            return result.error; // Retorna el error si el correo está registrado
+        }
+        return null; // Retorna null si no hay errores
     } catch (error) {
-      console.error('Error al verificar el correo:', error);
-      return 'Error de conexión con el servidor';
+        console.error('Error al verificar el correo:', error);
+        return 'Error de conexión con el servidor';
     }
-  };
+};
 
   const validarPaso = async (currentStep) => {
     const stepErrors = {};
