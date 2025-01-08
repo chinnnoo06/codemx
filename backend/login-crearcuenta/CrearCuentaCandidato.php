@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insertar tecnologías dominadas
         if (!empty($tecnologias)) {
-            $tecnologiasQuery = "INSERT INTO Tecnologias_dominadas (Candidato_ID, Tecnologia) VALUES ";
+            $tecnologiasQuery = "INSERT INTO tecnologias_dominadas (Candidato_ID, Tecnologia) VALUES ";
             $tecnologiasValues = [];
             foreach ($tecnologias as $tecnologiaId) {
                 $tecnologiasValues[] = "('$candidatoId', '$tecnologiaId')";

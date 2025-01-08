@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Guardar los datos de empresa
-    $consultaEmpresa = "INSERT INTO Empresa (Nombre, Password, Descripcion, Sector, Tamanio, Estado , Direccion, Telefono, Email, Fecha_Creacion, RFC, Logo)
+    $consultaEmpresa = "INSERT INTO empresa (Nombre, Password, Descripcion, Sector, Tamanio, Estado , Direccion, Telefono, Email, Fecha_Creacion, RFC, Logo)
         VALUES ('$nombre', '$passwordHash', '$descripcion', '$sector', '$tamanio', '$estado', '$direccion', '$telefono', '$email', '$fechaCreacion', '$rfc', '$logoRutaRelativa')";
 
     if (mysqli_query($conexion, $consultaEmpresa)) {
