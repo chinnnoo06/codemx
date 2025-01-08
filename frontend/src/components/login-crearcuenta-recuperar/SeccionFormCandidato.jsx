@@ -157,7 +157,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
 
   const verificarEmail = async (email) => {
     try {
-      const response = await fetch('/config/verificar_email.php', {
+      const response = await fetch('https://www.codemx.net/codemx/backend/config/verificar_email.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email }),
