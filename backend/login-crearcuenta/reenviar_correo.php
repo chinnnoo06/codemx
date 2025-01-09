@@ -8,20 +8,38 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Captura salida no deseada
+ob_start();
+
 // Cargar las variables de entorno desde .env
 loadEnv(__DIR__ . '/../../.env');
 
 // Verificar que las variables de entorno se cargaron
 if (!getenv('SMTP_HOST')) {
-    die('Error: No se pudieron cargar las variables de entorno');
+    echo json_encode(['success' => false, 'error' => 'No se pudieron cargar las variables de entorno']);
+    ob_end_clean();
+    exit();
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
+
+if (empty($data['email'])) {
+    echo json_encode(['success' => false, 'error' => 'El correo electrónico es requerido']);
+    ob_end_clean();
+    exit();
+}
+
 $email = mysqli_real_escape_string($conexion, $data['email']);
 
 // Buscar el token del usuario
-$consulta = "SELECT Token_Verificacion FROM verificacion_usuarios INNER JOIN candidato ON verificacion_usuario.Candidato_ID = candidato.ID WHERE candidato.Email = '$email' AND Correo_Verificado = 0";
+$consulta = "SELECT Token_Verificacion FROM verificacion_usuarios INNER JOIN candidato ON verificacion_usuarios.Candidato_ID = candidato.ID WHERE candidato.Email = '$email' AND Correo_Verificado = 0";
 $resultado = mysqli_query($conexion, $consulta);
+
+if (!$resultado) {
+    echo json_encode(['success' => false, 'error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
+    ob_end_clean();
+    exit();
+}
 
 if (mysqli_num_rows($resultado) > 0) {
     $row = mysqli_fetch_assoc($resultado);
@@ -55,4 +73,9 @@ if (mysqli_num_rows($resultado) > 0) {
 } else {
     echo json_encode(['success' => false, 'error' => 'Correo no encontrado o ya verificado.']);
 }
-?>
+
+// Limpiar cualquier salida no deseada
+$output = ob_get_clean();
+if (!empty($output)) {
+    file_put_contents('debug_output.txt', $output); // Guarda la salida inesperada en un archivo para inspección
+}
