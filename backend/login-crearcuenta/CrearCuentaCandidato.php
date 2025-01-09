@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insertar el token en la tabla de verificación
         $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado, Fecha_Registro, Fecha_Actualizacion)
-        VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0, , '$fechaActual', '$fechaActual')";
+        VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0, '$fechaActual', '$fechaActual')";
         if (!mysqli_query($conexion, $consultaToken)) {
             die(json_encode(['error' => 'Error al guardar el token de verificación: ' . mysqli_error($conexion)]));
         }
