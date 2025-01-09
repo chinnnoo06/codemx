@@ -1,6 +1,6 @@
 <?php
 require_once '../config/conexion.php';
-require_once '../env_loader.php'; // Ruta al cargador de variables de entorno
+require_once '../env_loader.php';
 require '../phpmailer/src/PHPMailer.php';
 require '../phpmailer/src/SMTP.php';
 require '../phpmailer/src/Exception.php';
@@ -8,52 +8,39 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Captura salida no deseada
-ob_start();
-
 // Cargar las variables de entorno desde .env
 loadEnv(__DIR__ . '/../../.env');
 
-// Verificar que las variables de entorno se cargaron
-if (!getenv('SMTP_HOST')) {
-    echo json_encode(['success' => false, 'error' => 'No se pudieron cargar las variables de entorno']);
-    ob_end_clean();
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = file_get_contents('php://input'); // Leer el correo electrónico del cuerpo de la solicitud
 
-$data = json_decode(file_get_contents('php://input'), true);
+    // Validar el correo electrónico
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'error' => 'Correo electrónico inválido']);
+        exit;
+    }
 
-if (empty($data['email'])) {
-    echo json_encode(['success' => false, 'error' => 'El correo electrónico es requerido']);
-    ob_end_clean();
-    exit();
-}
+    // Verificar si el correo existe en la base de datos
+    $consulta = "SELECT Candidato_ID, Token_Verificacion FROM verificacion_usuarios WHERE Correo_Verificado = 0 AND Candidato_ID = (SELECT Candidato_ID FROM candidato WHERE Email = '$email')";
+    $resultado = mysqli_query($conexion, $consulta);
 
-$email = mysqli_real_escape_string($conexion, $data['email']);
+    if (!$resultado || mysqli_num_rows($resultado) === 0) {
+        echo json_encode(['success' => false, 'error' => 'El correo no está registrado o ya fue verificado.']);
+        exit;
+    }
 
-// Buscar el token del usuario
-$consulta = "SELECT Token_Verificacion FROM verificacion_usuarios INNER JOIN candidato ON verificacion_usuarios.Candidato_ID = candidato.ID WHERE candidato.Email = '$email' AND Correo_Verificado = 0";
-$resultado = mysqli_query($conexion, $consulta);
+    $fila = mysqli_fetch_assoc($resultado);
+    $token = $fila['Token_Verificacion'];
 
-if (!$resultado) {
-    echo json_encode(['success' => false, 'error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
-    ob_end_clean();
-    exit();
-}
-
-if (mysqli_num_rows($resultado) > 0) {
-    $row = mysqli_fetch_assoc($resultado);
-    $token = $row['Token_Verificacion'];
-
-    // Enviar el correo
+    // Reenviar correo de verificación
     $mail = new PHPMailer(true);
     try {
         // Configuración del servidor SMTP
         $mail->isSMTP();
-        $mail->Host = getenv('SMTP_HOST'); // Cambia por tu servidor SMTP
+        $mail->Host = getenv('SMTP_HOST');
         $mail->SMTPAuth = true;
-        $mail->Username = getenv('SMTP_USERNAME'); // Cambia por tu correo
-        $mail->Password = getenv('SMTP_PASSWORD'); // Cambia por tu contraseña
+        $mail->Username = getenv('SMTP_USERNAME');
+        $mail->Password = getenv('SMTP_PASSWORD');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = getenv('SMTP_PORT');
 
@@ -62,20 +49,15 @@ if (mysqli_num_rows($resultado) > 0) {
         $mail->addAddress($email);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Reenvío de verificación';
-        $mail->Body = "Hola, aquí tienes el enlace para verificar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar.php?token=$token'>Verificar Cuenta</a>";
+        $mail->Subject = 'Reenvío de verificación de cuenta';
+        $mail->Body = "Hola, por favor verifica tu cuenta haciendo clic en el siguiente enlace: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar.php?token=$token'>Verificar Cuenta</a>";
 
         $mail->send();
         echo json_encode(['success' => true]);
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo: ' . $mail->ErrorInfo]);
+        echo json_encode(['success' => false, 'error' => 'No se pudo reenviar el correo: ' . $mail->ErrorInfo]);
     }
 } else {
-    echo json_encode(['success' => false, 'error' => 'Correo no encontrado o ya verificado.']);
-}
-
-// Limpiar cualquier salida no deseada
-$output = ob_get_clean();
-if (!empty($output)) {
-    file_put_contents('debug_output.txt', $output); // Guarda la salida inesperada en un archivo para inspección
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Método no permitido']);
 }
