@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->addAddress($email);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Reenvío de verificación de cuenta';
+        $mail->Subject = 'REENVIO DE TOKEN PARA VERIFICAR CUENTA';
         $mail->Body = "Hola, por favor verifica tu cuenta haciendo clic en el siguiente enlace: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$token'>Verificar Cuenta</a>";
 
         $mail->send();

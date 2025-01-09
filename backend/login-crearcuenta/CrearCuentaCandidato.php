@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Generar token de verificación
         $token = bin2hex(random_bytes(16)); 
-        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 minute')); // Expira en 1 hora
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
         $fechaActual = date('Y-m-d H:i:s');
 
         $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado, Fecha_Registro, Fecha_Actualizacion)
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->addAddress($email);
 
             $mail->isHTML(true);
-            $mail->Subject = 'Verificar de cuenta';
+            $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
             $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace, te mandará a la pagína de iniciar sesión y ya podras utilizar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$token'>Verificar Cuenta</a>";
 
             $mail->send();
