@@ -31,6 +31,16 @@ if (isset($_GET['token'])) {
         }
     } else {
         echo 'El token es inválido o ha expirado.';
+        echo '
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="color: red;">El token es inválido o ha expirado.</p>
+                <a href="https://codemx.net/codemx/frontend/build/iniciar-sesion" style="text-decoration: none;">
+                    <button style="padding: 10px 20px; font-size: 16px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Ir a Iniciar Sesión
+                    </button>
+                </a>
+            </div>
+        ';
     }
 } else {
     echo 'No se proporcionó un token válido.';
