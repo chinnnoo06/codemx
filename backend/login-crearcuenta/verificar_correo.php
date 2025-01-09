@@ -5,8 +5,10 @@ if (isset($_GET['token'])) {
     $token = mysqli_real_escape_string($conexion, $_GET['token']);
     echo "Token recibido: $token<br>";
 
+    $fechaActual = date('Y-m-d H:i:s');
+
     // Consulta para verificar el token
-    $consulta = "SELECT * FROM verificacion_usuarios WHERE Token_Verificacion = '$token' AND Correo_Verificado = 0 AND Fecha_Expiracion_Token > NOW()";
+    $consulta = "SELECT * FROM verificacion_usuarios WHERE Token_Verificacion = '$token' AND Correo_Verificado = 0 AND Fecha_Expiracion_Token > '$fechaActual'";
     $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
@@ -19,10 +21,8 @@ if (isset($_GET['token'])) {
         echo "Candidato ID: $candidatoId<br>";
 
         // Actualizar el estado de verificación
-        $fechaActual = date('Y-m-d H:i:s');
         $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1, Fecha_Actualizacion = '$fechaActual'  WHERE Candidato_ID = '$candidatoId'";
         if (mysqli_query($conexion, $update)) {
-
             // Redirigir al usuario a la página de inicio de sesión
             header('Location: https://codemx.net/codemx/frontend/build/iniciar-sesion'); 
             exit();
