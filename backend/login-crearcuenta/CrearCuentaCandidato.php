@@ -73,14 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Guardar los datos del candidato
     $consultaCandidato = "INSERT INTO candidato (Nombre, Apellido, Password, Fecha_Nacimiento, Email, Telefono, Estado, Direccion, Sexo, Universidad, Tiempo_Restante, Modalidad_Trabajo, Fotografia, CV)
         VALUES ('$nombre', '$apellido', '$passwordHash', '$fechaNacimiento', '$email', '$telefono', '$estado', '$direccion', '$sexo', '$universidad', '$tiempoRestante', '$modalidadTrabajo', '$fotoRutaRelativa', '$cvRutaRelativa')";
 
     if (mysqli_query($conexion, $consultaCandidato)) {
-        $candidatoId = mysqli_insert_id($conexion); // Obtener el ID del candidato recién creado
+        $candidatoId = mysqli_insert_id($conexion); 
 
-        // Insertar tecnologías dominadas
         if (!empty($tecnologias)) {
             $tecnologiasQuery = "INSERT INTO tecnologias_dominadas (Candidato_ID, Tecnologia) VALUES ";
             $tecnologiasValues = [];
@@ -95,27 +93,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Generar token de verificación
-        $token = bin2hex(random_bytes(16)); // Generar un token único
-        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
+        $token = bin2hex(random_bytes(16)); 
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 minute')); // Expira en 1 hora
         $fechaActual = date('Y-m-d H:i:s');
 
-        // Insertar el token en la tabla de verificación
         $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado, Fecha_Registro, Fecha_Actualizacion)
         VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0, '$fechaActual', '$fechaActual')";
         if (!mysqli_query($conexion, $consultaToken)) {
             die(json_encode(['error' => 'Error al guardar el token de verificación: ' . mysqli_error($conexion)]));
         }
 
-
-        // Enviar correo de verificación
         $mail = new PHPMailer(true);
         try {
             // Configuración del servidor SMTP
             $mail->isSMTP();
-            $mail->Host = getenv('SMTP_HOST'); // Cambia por tu servidor SMTP
+            $mail->Host = getenv('SMTP_HOST'); 
             $mail->SMTPAuth = true;
-            $mail->Username = getenv('SMTP_USERNAME'); // Cambia por tu correo
-            $mail->Password = getenv('SMTP_PASSWORD'); // Cambia por tu contraseña
+            $mail->Username = getenv('SMTP_USERNAME'); 
+            $mail->Password = getenv('SMTP_PASSWORD'); 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = getenv('SMTP_PORT');
 

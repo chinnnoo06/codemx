@@ -12,7 +12,7 @@ use PHPMailer\PHPMailer\Exception;
 loadEnv(__DIR__ . '/../../.env');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = file_get_contents('php://input'); // Leer el correo electrónico del cuerpo de la solicitud
+    $email = file_get_contents('php://input'); 
 
     // Validar el correo electrónico
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fila = mysqli_fetch_assoc($resultado);
     $token = $fila['Token_Verificacion'];
 
-    // Reenviar correo de verificación
     $mail = new PHPMailer(true);
     try {
         // Configuración del servidor SMTP
