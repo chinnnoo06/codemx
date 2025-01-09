@@ -97,10 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Generar token de verificación
         $token = bin2hex(random_bytes(16)); // Generar un token único
         $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
+        $fechaActual = date('Y-m-d H:i:s');
 
         // Insertar el token en la tabla de verificación
-        $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado)
-        VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0)";
+        $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado, Fecha_Registro, Fecha_Actualizacion)
+        VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0, , $fechaActual, $fechaActual)";
         if (!mysqli_query($conexion, $consultaToken)) {
             die(json_encode(['error' => 'Error al guardar el token de verificación: ' . mysqli_error($conexion)]));
         }

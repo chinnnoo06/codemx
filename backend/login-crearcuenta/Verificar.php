@@ -19,7 +19,8 @@ if (isset($_GET['token'])) {
         echo "Candidato ID: $candidatoId<br>";
 
         // Actualizar el estado de verificación
-        $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1 WHERE Candidato_ID = '$candidatoId'";
+        $fechaActual = date('Y-m-d H:i:s');
+        $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1, Fecha_Actualizacion = '$fechaActual'  WHERE Candidato_ID = '$candidatoId'";
         if (mysqli_query($conexion, $update)) {
 
             // Redirigir al usuario a la página de inicio de sesión
@@ -34,3 +35,4 @@ if (isset($_GET['token'])) {
 } else {
     echo 'No se proporcionó un token válido.';
 }
+?>
