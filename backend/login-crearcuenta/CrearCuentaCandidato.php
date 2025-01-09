@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
 
         // Insertar el token en la tabla de verificación
-        $consultaToken = "INSERT INTO verificacion_usuario (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado)
+        $consultaToken = "INSERT INTO verificacion_usuarios (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado)
         VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0)";
         if (!mysqli_query($conexion, $consultaToken)) {
             die(json_encode(['error' => 'Error al guardar el token de verificación: ' . mysqli_error($conexion)]));

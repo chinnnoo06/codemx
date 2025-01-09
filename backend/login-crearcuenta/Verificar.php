@@ -5,7 +5,7 @@ if (isset($_GET['token'])) {
     $token = mysqli_real_escape_string($conexion, $_GET['token']);
 
     // Consulta para verificar el token
-    $consulta = "SELECT * FROM verificacion_usuario WHERE Token_Verificacion = '$token' AND Correo_Verificado = 0 AND Fecha_Expiracion_Token > NOW()";
+    $consulta = "SELECT * FROM verificacion_usuarios WHERE Token_Verificacion = '$token' AND Correo_Verificado = 0 AND Fecha_Expiracion_Token > NOW()";
     $resultado = mysqli_query($conexion, $consulta);
 
     if (mysqli_num_rows($resultado) > 0) {

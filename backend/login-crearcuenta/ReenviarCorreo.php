@@ -20,7 +20,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $email = mysqli_real_escape_string($conexion, $data['email']);
 
 // Buscar el token del usuario
-$consulta = "SELECT Token_Verificacion FROM verificacion_usuario INNER JOIN candidato ON verificacion_usuario.Candidato_ID = candidato.ID WHERE candidato.Email = '$email' AND Correo_Verificado = 0";
+$consulta = "SELECT Token_Verificacion FROM verificacion_usuarios INNER JOIN candidato ON verificacion_usuario.Candidato_ID = candidato.ID WHERE candidato.Email = '$email' AND Correo_Verificado = 0";
 $resultado = mysqli_query($conexion, $consulta);
 
 if (mysqli_num_rows($resultado) > 0) {
