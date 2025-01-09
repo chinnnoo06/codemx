@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $mail->isHTML(true);
             $mail->Subject = 'Verificar de cuenta';
-            $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace, te mandará a la pagína de iniciar sesión y ya podras utilizar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar.php?token=$token'>Verificar Cuenta</a>";
+            $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace, te mandará a la pagína de iniciar sesión y ya podras utilizar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$token'>Verificar Cuenta</a>";
 
             $mail->send();
             echo json_encode(['success' => 'Registro exitoso. Correo de verificación enviado.']);
