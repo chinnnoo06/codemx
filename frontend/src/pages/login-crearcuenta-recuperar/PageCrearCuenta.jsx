@@ -15,6 +15,31 @@ export const PageCrearCuenta = () => {
     setEstadoRegistro('verificacion');
   };
 
+  // Función para reenviar el correo de verificación
+  const reenviarCorreo = async () => {
+    try {
+      const response = await fetch(
+        'https://www.codemx.net/codemx/backend/login-crearcuenta/ReenviarCorreo.php',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailUsuario }), // Pasar el correo del usuario
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        alert('El enlace de verificación ha sido reenviado a tu correo.');
+      } else {
+        alert(result.error || 'Hubo un problema al reenviar el enlace.');
+      }
+    } catch (error) {
+      console.error('Error al reenviar el correo:', error);
+      alert('Hubo un error al intentar reenviar el correo.');
+    }
+  };
+
+
   return (
     <>
       {/* Header */}
@@ -56,7 +81,7 @@ export const PageCrearCuenta = () => {
           <SeccionFormEmpresa onRegistroCompleto={manejarRegistroCompleto} />
         )
       ) : (
-        <SeccionVerificacionCorreo email={emailUsuario}/>
+        <SeccionVerificacionCorreo email={emailUsuario}  reenviarCorreo={reenviarCorreo}/>
       )}
     </>
   );
