@@ -13,6 +13,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   const [tecnologias, setTecnologias] = useState([]); 
   const [modalidades, setModalidades] = useState([]); 
   const [universidades, setUniversidades] = useState([]); 
+  const [isLoading, setIsLoading] = useState(false); 
   
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
@@ -138,7 +139,6 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
         const result = await response.json();
   
         if (result.success) {
-          alert('Registro exitoso');
           if (onRegistroCompleto) onRegistroCompleto(formData.email);
         } else {
           alert(result.error || 'Hubo un error al registrar');
@@ -269,8 +269,8 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
             Anterior
           </button>
         )}
-        <button className="btn-tipodos btn" onClick={avanzarPaso}>
-          {step === 3 ? 'Enviar' : 'Siguiente'}
+        <button className="btn-tipodos btn" onClick={avanzarPaso} disabled={isLoading}>
+          {isLoading ? 'Enviando...' : step === 3 ? 'Enviar' : 'Siguiente'}
         </button>
       </div>
     </div>
