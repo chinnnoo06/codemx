@@ -1,5 +1,21 @@
 <?php
 require_once '../config/conexion.php';
+require_once '../env_loader.php'; // Ruta al cargador de variables de entorno
+require '../phpmailer/src/PHPMailer.php';
+require '../phpmailer/src/SMTP.php';
+require '../phpmailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Cargar las variables de entorno desde .env
+loadEnv(__DIR__ . '/../../.env');
+
+// Verificar que las variables de entorno se cargaron
+if (!getenv('SMTP_HOST')) {
+    die('Error: No se pudieron cargar las variables de entorno');
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Datos recibidos del formulario
@@ -78,7 +94,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        echo json_encode(['success' => 'Registro exitoso.']);
+        // Generar token de verificación
+        $token = bin2hex(random_bytes(16)); // Generar un token único
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
+
+        // Insertar el token en la tabla de verificación
+        $consultaToken = "INSERT INTO verificacion_usuario (Candidato_ID, Token_Verificacion, Fecha_Expiracion_Token, Correo_Verificado)
+        VALUES ('$candidatoId', '$token', '$fechaExpiracion', 0)";
+        if (!mysqli_query($conexion, $consultaToken)) {
+            die(json_encode(['error' => 'Error al guardar el token de verificación: ' . mysqli_error($conexion)]));
+        }
+
+
+        // Enviar correo de verificación
+        $mail = new PHPMailer(true);
+        try {
+            // Configuración del servidor SMTP
+            $mail->isSMTP();
+            $mail->Host = getenv('SMTP_HOST'); // Cambia por tu servidor SMTP
+            $mail->SMTPAuth = true;
+            $mail->Username = getenv('SMTP_USERNAME'); // Cambia por tu correo
+            $mail->Password = getenv('SMTP_PASSWORD'); // Cambia por tu contraseña
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = getenv('SMTP_PORT');
+
+            // Configuración del correo
+            $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Verificación de cuenta';
+            $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar.php?token=$token'>Verificar Cuenta</a>";
+
+            $mail->send();
+            echo json_encode(['success' => 'Registro exitoso. Correo de verificación enviado.']);
+        } catch (Exception $e) {
+            die(json_encode(['error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]));
+        }
+
+
     } else {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
     }
