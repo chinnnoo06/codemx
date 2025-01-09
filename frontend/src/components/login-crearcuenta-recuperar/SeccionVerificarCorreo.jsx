@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/login-crearcuenta-recuperar/form.css';
 
-export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 300, reenviarCorreo }) => {
+export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCorreo }) => {
   const [tiempoRestante, setTiempoRestante] = useState(tiempoLimite); // Tiempo límite en segundos
   const [puedeReenviar, setPuedeReenviar] = useState(false);
   const [mensaje, setMensaje] = useState(''); // Mensaje de éxito o error
