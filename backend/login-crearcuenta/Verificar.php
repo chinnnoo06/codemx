@@ -30,7 +30,7 @@ if (isset($_GET['token'])) {
             die('Error al verificar la cuenta: ' . mysqli_error($conexion));
         }
     } else {
-        echo 'El token es inválido o ha expirado.';
+        echo 'El token es inválido o ha expirado. Ingrese al link e ingrese sus credenciales para poder general un nuevo token';
         echo '
             <div style="text-align: center; margin-top: 20px;">
                 <p style="color: red;">El token es inválido o ha expirado.</p>
