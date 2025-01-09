@@ -9,6 +9,7 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
   const [estados, setEstados] = useState([]); 
   const [tamanios, setTamanios] = useState([]);
   const [sectores, setSectores] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); 
 
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
@@ -80,10 +81,15 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
   };
 
   const avanzarPaso = async () => {
+    if (isLoading) return; 
+    setIsLoading(true); 
+
     const isValid = await validarPaso(step); // Espera el resultado de la validación
     if (!isValid) {
-      return; // Detener si hay errores
+      setIsLoading(false);
+      return; 
     }
+
     if (step === 2) { // Último paso: enviar datos
       try {
         const formDataToSend = new FormData();
@@ -112,9 +118,12 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
         }
       } catch (error) {
         alert('Hubo un error al enviar los datos.');
+      } finally {
+        setIsLoading(false); 
       }
     } else {
       setStep((prev) => prev + 1); // Avanzar al siguiente paso
+      setIsLoading(false);
     }
   };
   
@@ -231,8 +240,8 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
             Anterior
           </button>
         )}
-        <button className="btn-tipodos btn" onClick={avanzarPaso}>
-          {step === 2 ? 'Enviar' : 'Siguiente'}
+        <button className="btn-tipodos btn" onClick={avanzarPaso} disabled={isLoading}>
+          {isLoading ? 'Enviando...' : step === 2 ? 'Enviar' : 'Siguiente'}
         </button>
       </div>
     </div>
