@@ -17,10 +17,10 @@ export const PageCrearCuenta = () => {
   };
 
   // Función para reenviar el correo de verificación
-  const reenviarCorreo = async () => {
+  const reenviarCorreo = async (email) => {
     try {
       const response = await fetch(
-        'https://www.codemx.net/codemx/backend/login-crearcuenta/ReenviarCorreo.php',
+        'https://www.codemx.net/codemx/backend/login-crearcuenta/reenviar_correo.php',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
