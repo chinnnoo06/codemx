@@ -106,8 +106,12 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   };
 
   const avanzarPaso = async () => {
+    if (isLoading) return; 
+    setIsLoading(true); 
+
     const isValid = await validarPaso(step); // Espera el resultado de la validación
     if (!isValid) {
+      setIsLoading(false);
       return; 
     }
   
@@ -145,9 +149,12 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
         }
       } catch (error) {
         alert('Hubo un error al enviar los datos.');
+      } finally {
+        setIsLoading(false); 
       }
     } else {
       setStep((prev) => prev + 1); // Avanzar al siguiente paso
+      setIsLoading(false);
     }
   };
 
