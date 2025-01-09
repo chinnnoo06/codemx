@@ -6,6 +6,7 @@ $dbname = "u499414612_codemx"; // Nombre de tu base de datos
 
 // Conexión a la base de datos con mysqli
 $conexion = mysqli_connect($host, $username, $password, $dbname);
+date_default_timezone_set('America/Mexico_City');
 
 // Verificar la conexión
 if (!$conexion) {
