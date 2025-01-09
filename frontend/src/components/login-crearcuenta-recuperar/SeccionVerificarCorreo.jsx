@@ -30,7 +30,7 @@ export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCo
     setMensaje(''); // Limpiar mensaje previo
 
     try {
-      await reenviarCorreo(email); // Llama a la función de reenvío
+      await reenviarCorreo(); // Llama a la función de reenvío
       setMensaje('El enlace de verificación ha sido reenviado a tu correo.');
     } catch (error) {
       setMensaje('Hubo un error al intentar reenviar el correo. Inténtalo nuevamente.');
