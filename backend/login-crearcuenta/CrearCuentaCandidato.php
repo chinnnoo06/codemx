@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->addAddress($email);
 
             $mail->isHTML(true);
-            $mail->Subject = 'Verificación de cuenta';
+            $mail->Subject = 'Verificar de cuenta';
             $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar.php?token=$token'>Verificar Cuenta</a>";
 
             $mail->send();
