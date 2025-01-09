@@ -19,7 +19,7 @@ export const RutasBienvenida = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <img src={logo} alt="Logo" />
+                        <Link to="/"><img src={logo} alt="Logo" /></Link>
                     </div>
                     {/* Opciones de botones grandes */}
                     <div className="botones d-none d-md-flex gap-3">

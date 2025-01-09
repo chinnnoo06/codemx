@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import '../../styles/header-footer.css';
 import logo from '../../resources/logo.png';
@@ -14,7 +15,7 @@ export const PageRecuperar = () => {
       <div className="contenedor-header container-fluid w-100">
         <header className="d-flex justify-content-center align-items-center">
           <div className="logo">
-            <img src={logo} alt="Logo" />
+            <Link to="/"><img src={logo} alt="Logo" /></Link>
           </div>
         </header>
       </div>
