@@ -21,8 +21,8 @@ export const RutasCandidato = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
+                    <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
-                    <Route path="*" element={<Navigate to="/usuario-candidato/inicio-candidato" />} />
                 </Routes>
             </section>
 
