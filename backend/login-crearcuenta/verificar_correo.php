@@ -21,7 +21,7 @@ if (isset($_GET['token'])) {
         echo "Candidato ID: $candidatoId<br>";
 
         // Actualizar el estado de verificación
-        $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1, Fecha_Actualizacion = '$fechaActual'  WHERE Candidato_ID = '$candidatoId'";
+        $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1, Fecha_Actualizacion = '$fechaActual'  WHERE  (Candidato_ID = '$candidatoId' OR Empresa_ID = '$empresaId')";
         if (mysqli_query($conexion, $update)) {
             // Redirigir al usuario a la página de inicio de sesión
             header('Location: https://codemx.net/codemx/frontend/build/iniciar-sesion'); 
