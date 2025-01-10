@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, Link, NavLink } from 'react-router-dom';
+import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import '../styles/bienvenida/Bienvenida.css';

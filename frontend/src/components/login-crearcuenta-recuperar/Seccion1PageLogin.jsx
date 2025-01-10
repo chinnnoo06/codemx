@@ -8,6 +8,11 @@ export const Seccion1PageLogin = () => {
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
+
+  const visibilidadPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const enviar = async (e) => {
     e.preventDefault(); 
@@ -32,7 +37,7 @@ export const Seccion1PageLogin = () => {
         if (result.tipo === 'candidato') {
           window.location.href = '/codemx/frontend/build/usuario-candidato';
         } else if (result.tipo === 'empresa') {
-          window.location.href = '/inicio-empresa';
+          window.location.href = '/codemx/frontend/build/usuario-empresa';
         }
       } else {
         setMensaje(result.error || 'Error al iniciar sesión. Intenta nuevamente.');
@@ -57,6 +62,9 @@ export const Seccion1PageLogin = () => {
           <div className="mb-3">
               <label htmlFor="password" className="form-label"><i className="fas fa-lock"></i> Contraseña</label>
               <input type="password" id="password" name="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+              <span className="input-group-text" onClick={visibilidadPassword}>
+                <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+              </span>
           </div>
           <button
             type="submit"
