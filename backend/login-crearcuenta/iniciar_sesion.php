@@ -3,13 +3,13 @@ require_once '../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Datos recibidos del formulario
-    $email = mysqli_real_escape_string($conexion, $_POST['email']);
-    $Password = $_POST['Password'];
+    $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
+    $password = $_POST['Password'];    
 
     $consulta = "
-    SELECT 'candidato' as tipo, ID, Password FROM Candidato WHERE Email='$Email'
+    SELECT 'candidato' as tipo, ID, Password FROM Candidato WHERE Email='$email'
     UNION
-    SELECT 'empresa' as tipo, ID, Password FROM Empresa WHERE Email='$Email'
+    SELECT 'empresa' as tipo, ID, Password FROM Empresa WHERE Email='$email'
     LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } else {
         // Si no se encuentra el usuario o la contraseña es incorrecta
-        die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
+        echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos.']);
         exit();
     }
 } else {
