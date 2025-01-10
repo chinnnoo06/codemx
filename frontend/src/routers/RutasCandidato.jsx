@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Routes, Route, NavLink, Link } from 'react-router-dom';
-import { PageInicioCandidao } from '../pages/candidato/PageInicioCandidato';
+import React from 'react';
+import { Routes, Route, Navigate, Link, NavLink } from 'react-router-dom';
+import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import '../styles/bienvenida/Bienvenida.css';
 import logo from '../resources/logo.png';
@@ -21,8 +21,8 @@ export const RutasCandidato = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
-                    <Route path="/" element={<PageInicioCandidao />} />
-                    <Route path="/inicio-candidato" element={<PageInicioCandidao />} />
+                    <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
+                    <Route path="*" element={<Navigate to="/usuario-candidato/inicio-candidato" />} />
                 </Routes>
             </section>
 

@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { PageLogin } from './pages/login-crearcuenta-recuperar/PageLogin';
 import { PageRecuperar } from './pages/login-crearcuenta-recuperar/PageRecuperar';
 import { PageCrearCuenta } from './pages/login-crearcuenta-recuperar/PageCrearCuenta';
+import { RutasCandidato } from './routers/RutasCandidato';
 
 function App() {
    return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/iniciar-sesion" element={<PageLogin />} />
             <Route path="/recuperar-password" element={<PageRecuperar />} />
             <Route path="/recuperar-password/:token" element={<PageRecuperar />} />
+            <Route path="/usuario-candidato/*" element={<RutasCandidato />} />
         </Routes>
     </BrowserRouter>
 

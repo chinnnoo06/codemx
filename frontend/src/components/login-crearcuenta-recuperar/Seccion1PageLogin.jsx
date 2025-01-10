@@ -30,7 +30,7 @@ export const Seccion1PageLogin = () => {
       if (result.success) {
         // Redirigir según el tipo de usuario
         if (result.tipo === 'candidato') {
-          window.location.href = '/codemx/frontend/build/inicio-candidato';
+          window.location.href = '/codemx/frontend/build/usuario-candidato';
         } else if (result.tipo === 'empresa') {
           window.location.href = '/inicio-empresa';
         }
