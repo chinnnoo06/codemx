@@ -61,7 +61,7 @@ export const Seccion1PageLogin = () => {
           </div>
           <div className="mb-3">
               <label htmlFor="password" className="form-label"><i className="fas fa-lock"></i> Contraseña</label>
-              <input type="password" id="password" name="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required/>
+              <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required/>
               <span className="input-group-text" onClick={visibilidadPassword}>
                 <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
               </span>
