@@ -6,9 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['Password'];
 
     $consulta = "
-    SELECT 'candidato' as tipo, ID, Password FROM Candidato WHERE Email='$email'
+    SELECT 'candidato' as tipo, ID, Password FROM candidato WHERE Email='$email'
     UNION
-    SELECT 'empresa' as tipo, ID, Password FROM Empresa WHERE Email='$email'
+    SELECT 'empresa' as tipo, ID, Password FROM empresa WHERE Email='$email'
     LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
