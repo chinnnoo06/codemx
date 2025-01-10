@@ -4,7 +4,6 @@ import '../../styles/login-crearcuenta-recuperar/form.css';
 export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCorreo }) => {
   const [tiempoRestante, setTiempoRestante] = useState(tiempoLimite); // Tiempo límite en segundos
   const [puedeReenviar, setPuedeReenviar] = useState(false);
-  const [mensaje, setMensaje] = useState(''); // Mensaje de éxito o error
   const [enProceso, setEnProceso] = useState(false); // Estado de solicitud en curso
 
   useEffect(() => {
@@ -13,7 +12,7 @@ export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCo
         setTiempoRestante((prev) => prev - 1);
       }, 1000);
 
-      return () => clearInterval(timer); // Limpiar el temporizador al desmontar
+      return () => clearInterval(timer); 
     } else {
       setPuedeReenviar(true); // Permitir reenviar cuando el tiempo expira
     }
@@ -27,13 +26,12 @@ export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCo
 
   const manejarReenvio = async () => {
     setEnProceso(true);
-    setMensaje(''); // Limpiar mensaje previo
 
     try {
       await reenviarCorreo(); // Llama a la función de reenvío
-      setMensaje('El enlace de verificación ha sido reenviado a tu correo.');
+      setTiempoRestante(tiempoLimite);
+      setPuedeReenviar(false);
     } catch (error) {
-      setMensaje('Hubo un error al intentar reenviar el correo. Inténtalo nuevamente.');
       console.error('Error al reenviar el correo:', error);
     } finally {
       setEnProceso(false);
@@ -54,12 +52,11 @@ export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCo
       <p className="text-muted">
         Tiempo restante para verificar: <strong>{formatoTiempo(tiempoRestante)}</strong>
       </p>
-      {mensaje && <p className={`text-${mensaje.includes('error') ? 'danger' : 'success'}`}>{mensaje}</p>}
       {puedeReenviar ? (
         <button
           className="btn-tipouno btn mt-4"
           onClick={manejarReenvio}
-          disabled={enProceso} // Deshabilitar mientras está en proceso
+          disabled={enProceso} 
         >
           {enProceso ? 'Reenviando...' : 'Reenviar Enlace'}
         </button>
