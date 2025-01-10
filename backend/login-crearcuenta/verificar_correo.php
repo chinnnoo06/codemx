@@ -18,7 +18,7 @@ if (isset($_GET['token'])) {
     if (mysqli_num_rows($resultado) > 0) {
         $row = mysqli_fetch_assoc($resultado);
         $candidatoId = $row['Candidato_ID'];
-        echo "Candidato ID: $candidatoId<br>";
+        $empresaId = $row['Empresa_ID'];
 
         // Actualizar el estado de verificación
         $update = "UPDATE verificacion_usuarios SET Correo_Verificado = 1, Fecha_Actualizacion = '$fechaActual'  WHERE  (Candidato_ID = '$candidatoId' OR Empresa_ID = '$empresaId')";
