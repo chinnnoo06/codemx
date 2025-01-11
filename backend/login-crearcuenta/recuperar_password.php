@@ -37,7 +37,7 @@ try {
 
 
         // Verificar si el correo existe en la tabla Candidato
-        $consultaCandidato = "SELECT ID FROM Candidato WHERE Email = '$email'";
+        $consultaCandidato = "SELECT ID FROM candidato WHERE Email = '$email'";
         $resultadoCandidato = mysqli_query($conexion, $consultaCandidato);
 
         if (mysqli_num_rows($resultadoCandidato) > 0) {
@@ -46,7 +46,7 @@ try {
             $tipoUsuario = 'Candidato'; // Tipo de usuario identificado
         } else {
             // Si no es un candidato, verificar en la tabla Empresa
-            $consultaEmpresa = "SELECT ID FROM Empresa WHERE Email = '$email'";
+            $consultaEmpresa = "SELECT ID FROM empresa WHERE Email = '$email'";
             $resultadoEmpresa = mysqli_query($conexion, $consultaEmpresa);
 
             if (mysqli_num_rows($resultadoEmpresa) > 0) {
