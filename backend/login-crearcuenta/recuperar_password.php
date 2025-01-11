@@ -29,12 +29,10 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = file_get_contents('php://input'); 
 
-        // Validar el correo electrónico
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             echo json_encode(['success' => false, 'error' => 'Correo electrónico inválido']);
             exit;
         }
-
 
         // Verificar si el correo existe en la tabla Candidato
         $consultaCandidato = "SELECT ID FROM candidato WHERE Email = '$email'";

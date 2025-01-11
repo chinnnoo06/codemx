@@ -24,14 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (mysqli_num_rows($resultado) > 0) {
         // Determinar el tipo de usuario (Candidato o Empresa)
-        $consultaUsuario = "SELECT ID FROM Candidato WHERE Email = '$email'";
+        $consultaUsuario = "SELECT ID FROM candidato WHERE Email = '$email'";
         $resultadoUsuario = mysqli_query($conexion, $consultaUsuario);
 
         if (mysqli_num_rows($resultadoUsuario) > 0) {
-            // Actualizar contraseña en la tabla Candidato
             $actualizarPassword = "UPDATE candidato SET Password = '$hashedPassword' WHERE Email = '$email'";
         } else {
-            // Actualizar contraseña en la tabla Empresa
             $actualizarPassword = "UPDATE empresa SET Password = '$hashedPassword' WHERE Email = '$email'";
         }
 
