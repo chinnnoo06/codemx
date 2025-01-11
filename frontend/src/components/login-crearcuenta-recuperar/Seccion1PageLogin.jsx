@@ -39,10 +39,7 @@ export const Seccion1PageLogin = () => {
           window.location.href = `/codemx/frontend/build/usuario-${result.tipo}`;
         }
       } else {
-        setMensaje(result.message || 'Error al iniciar sesión. Intenta nuevamente.');
-        if (result.redirect) {
-          setTimeout(() => navigate(result.redirect), 3000); // Redirige tras mostrar mensaje, si aplica
-        }
+        setMensaje(result.message);
       }
     } catch (error) {
       setMensaje('Hubo un problema con el servidor. Intenta más tarde.');
