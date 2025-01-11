@@ -14,6 +14,8 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   const [modalidades, setModalidades] = useState([]); 
   const [universidades, setUniversidades] = useState([]); 
   const [isLoading, setIsLoading] = useState(false); 
+
+
   
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
