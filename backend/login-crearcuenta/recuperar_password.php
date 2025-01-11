@@ -81,11 +81,11 @@ try {
         $mail->Port = getenv('SMTP_PORT');
 
         // Configuración del correo
-        $mail->setFrom(getenv('SMTP_USERNAME'), 'Soporte');
+        $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Recuperación de Contraseña';
+        $mail->Subject = 'Recuperacion de Contraseña';
         $mail->Body = "
             <p>Hola,</p>
             <p>Has solicitado restablecer tu contraseña. Usa el siguiente código para continuar con el proceso:</p>

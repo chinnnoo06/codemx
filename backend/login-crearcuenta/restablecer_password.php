@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE Token = '$token' 
         AND Fecha_Expiracion_Token > '$fechaActual'
         AND (
-            Candidato_ID = (SELECT ID FROM Candidato WHERE Email = '$email') 
-            OR Empresa_ID = (SELECT ID FROM Empresa WHERE Email = '$email')
+            Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email') 
+            OR Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email')
         )
     ";
     $resultado = mysqli_query($conexion, $consultaToken);
@@ -29,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (mysqli_num_rows($resultadoUsuario) > 0) {
             // Actualizar contraseña en la tabla Candidato
-            $actualizarPassword = "UPDATE Candidato SET Password = '$hashedPassword' WHERE Email = '$email'";
+            $actualizarPassword = "UPDATE candidato SET Password = '$hashedPassword' WHERE Email = '$email'";
         } else {
             // Actualizar contraseña en la tabla Empresa
-            $actualizarPassword = "UPDATE Empresa SET Password = '$hashedPassword' WHERE Email = '$email'";
+            $actualizarPassword = "UPDATE empresa SET Password = '$hashedPassword' WHERE Email = '$email'";
         }
 
         if (mysqli_query($conexion, $actualizarPassword)) {
