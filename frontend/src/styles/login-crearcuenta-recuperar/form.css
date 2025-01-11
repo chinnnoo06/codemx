@@ -83,6 +83,11 @@
   max-width: 800px ;
 }
 
+.verificacion-correo h2,
+.verificacion-correo p{
+  color: #0B1C26;
+}
+
 
 @media (max-width: 768px) { 
   .contenedor_todo {
