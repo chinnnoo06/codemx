@@ -58,7 +58,7 @@ try {
         }
 
         $token = random_int(100000, 999999); // Token de 6 dígitos
-        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora // Expira en 15 minutos
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+15 minutes')); // Expira en 1 hora // Expira en 15 minutos
 
         // Guardar el token en la tabla restablecer_contrasenia
         $columnaUsuario = $tipoUsuario === 'Candidato' ? 'Candidato_ID' : 'Empresa_ID';
