@@ -118,6 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
+                echo json_encode(['success' => true, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar RFC.']);
+                exit();
+            } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
                 // Actualizar fecha de expiración del token
                 $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
                 $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
@@ -158,10 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Correo de verificación reenviado.']);
                 } catch (Exception $e) {
                     echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]);
-                }
-                exit();
-            } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => false, 'redirect' => '/falta-verificar-correo', 'message' => 'Tu correo no está verificado.']);
+                } 
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0 && $fila['RFC_Verificado'] == 1) {
                 echo json_encode(['success' => false, 'message' => 'Tu cuenta está deshabilitada.']);
