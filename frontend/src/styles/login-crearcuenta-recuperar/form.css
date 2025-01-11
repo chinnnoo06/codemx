@@ -66,12 +66,10 @@
   font-size: 1rem; 
 }
 
-.titulo-form{
+.titulo-form,
+.form-crearcuenta label,
+.texto-color{
   color: #0B1C26;
-}
-
-.form-crearcuenta label{
-  color: #0B1C26; 
 }
 
 .info-text {

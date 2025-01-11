@@ -27,15 +27,15 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
 
   return (
     <div>
-      <h4>Agrega las tecnologías que dominas</h4>
-      <p>
+      <h4 className='texto-color'>Agrega las tecnologías que dominas</h4>
+      <p className='texto-color'>
         Haz clic en las tecnologías para seleccionarlas. Las seleccionadas cambiarán de estilo.{' '}
         <span className="text-danger">*</span>
       </p>
 
       {Object.entries(tecnologiasPorCategoria).map(([categoria, tecnologiasCategoria]) => (
         <div key={categoria} className="mb-4">
-          <h5 className="text-primary">{categoria}</h5>
+          <h5 className="className='texto-color'">{categoria}</h5>
           <div className="d-flex flex-wrap gap-2">
             {tecnologiasCategoria.map((tecnologia) => (
               <motion.button
