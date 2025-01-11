@@ -7,6 +7,8 @@ import { PageRecuperar } from './pages/login-crearcuenta-recuperar/PageRecuperar
 import { PageCrearCuenta } from './pages/login-crearcuenta-recuperar/PageCrearCuenta';
 import { RutasCandidato } from './routers/RutasCandidato';
 import { RutasEmpresa } from './routers/RutasEmpresa';
+import { PageFaltaVerificarCorreo } from './pages/PageFaltaVerificarCorreo';
+import { PageFaltaVerificarRFC } from './pages/PageFaltaVerificarRFC';
 
 function App() {
    return (
@@ -21,6 +23,8 @@ function App() {
             <Route path="/recuperar-password/:token" element={<PageRecuperar />} />
             <Route path="/usuario-candidato/*" element={<RutasCandidato />} />
             <Route path="/usuario-empresa/*" element={<RutasEmpresa />} />
+            <Route path="/falta-verificar-correo/" element={<PageFaltaVerificarCorreo />} />
+            <Route path="/falta-verificar-rfc/" element={<PageFaltaVerificarRFC />} />
         </Routes>
     </BrowserRouter>
 

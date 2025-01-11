@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
-                echo json_encode(['success' => true, 'redirect' => '/reenviar-correo', 'message' => 'Tu correo no está verificado.']);
+                echo json_encode(['success' => true, 'redirect' => '/codemx/frontend/build/falta-verificar-correo', 'message' => 'Tu correo no está verificado.']);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0) {
                 echo json_encode(['success' => false,  'message' => 'Tu cuenta está deshabilitada.']);
@@ -63,10 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => false, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar el RFC de tu cuenta.']);
+                echo json_encode(['success' => false, 'redirect' => '/codemx/frontend/build/falta-verificar-rfc', 'message' => 'Falta verificar el RFC de tu cuenta.']);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => false, 'redirect' => '/reenviar-correo', 'message' => 'Tu correo no está verificado.']);
+                echo json_encode(['success' => false, 'redirect' => '/codemx/frontend/build/falta-verificar-correo', 'message' => 'Tu correo no está verificado.']);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0 && $fila['RFC_Verificado'] == 1) {
                 echo json_encode(['success' => false, 'message' => 'Tu cuenta está deshabilitada.']);
