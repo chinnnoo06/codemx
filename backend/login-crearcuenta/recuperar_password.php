@@ -27,7 +27,9 @@ if (!getenv('SMTP_HOST')) {
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = file_get_contents('php://input'); 
+        // Leer el JSON enviado desde el cliente
+        $input = json_decode(file_get_contents('php://input'), true);
+        $email = $input['email'] ?? '';
 
         // Validar correo electrónico
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
