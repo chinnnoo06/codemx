@@ -7,7 +7,7 @@ import { Seccion2PageRecuperar } from '../../components/login-crearcuenta-recupe
 import { Seccion3PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion3PageRecuperar';
 
 export const PageRecuperar = () => {
-  const [step, setStep] = useState(1); // Controla el paso actual: 1 = Correo, 2 = Token, 3 = Restablecer Contraseña
+  const [step, setStep] = useState(1); 
   const [email, setEmail] = useState(''); // Guarda el correo ingresado
   const [token, setToken] = useState(''); // Guarda el token validado
 

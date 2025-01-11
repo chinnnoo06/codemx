@@ -20,7 +20,6 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
 
       const data = await response.json();
       if (data.success) {
-        setMessage('Correo enviado exitosamente. Revisa tu bandeja de entrada.');
         onEmailSubmitted(email);
       } else {
         setMessage(data.error || 'Error al enviar el correo.');
