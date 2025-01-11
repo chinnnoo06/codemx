@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 include 'conexion.php';
 
 // Consulta para obtener los estados
-$query = "SELECT id, tecnologia FROM tecnologias";
+$query = "SELECT id, tecnologia, categoria FROM tecnologias";
 $result = mysqli_query($conexion, $query);
 
 if ($result) {
