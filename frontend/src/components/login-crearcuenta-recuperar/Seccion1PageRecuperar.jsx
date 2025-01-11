@@ -10,8 +10,8 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
     try {
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/recuperar_password.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: email, // Enviar el correo directamente como texto plano
+        headers: { 'Content-Type': 'application/json' }, // Enviar como JSON
+        body: JSON.stringify({ email }), // Convertir los datos a formato JSON
       });
 
       if (!response.ok) {
