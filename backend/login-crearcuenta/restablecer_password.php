@@ -23,6 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ";
     $resultado = mysqli_query($conexion, $consultaToken);
 
+     // Depuración
+     error_log("Consulta ejecutada: $consultaToken");
+
     if (mysqli_num_rows($resultado) > 0) {
         // Determinar el tipo de usuario (Candidato o Empresa)
         $row = mysqli_fetch_assoc($resultado);
@@ -42,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['error' => 'Error al actualizar la contraseña: ' . mysqli_error($conexion)]);
         }
     } else {
-        echo json_encode(['error' => 'Token inválido o expiradooo']);
+        echo json_encode(['error' => 'Token inválido o expirado']);
     }
 } else {
     http_response_code(405);
