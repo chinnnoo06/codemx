@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import '../../styles/login-crearcuenta-recuperar/form.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Seccion1PageLogin = () => {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); 
+  const navigate = useNavigate();
 
   const visibilidadPassword = () => {
     setShowPassword(!showPassword);
@@ -33,14 +33,16 @@ export const Seccion1PageLogin = () => {
       const result = await response.json();
 
       if (result.success) {
-        // Redirigir según el tipo de usuario
-        if (result.tipo === 'candidato') {
-          window.location.href = '/codemx/frontend/build/usuario-candidato';
-        } else if (result.tipo === 'empresa') {
-          window.location.href = '/codemx/frontend/build/usuario-empresa';
+        if (result.redirect) {
+          navigate(result.redirect); // Redirige según el valor de `redirect` recibido del backend
+        } else {
+          window.location.href = `/codemx/frontend/build/usuario-${result.tipo}`;
         }
       } else {
-        setMensaje(result.error || 'Error al iniciar sesión. Intenta nuevamente.');
+        setMensaje(result.message || 'Error al iniciar sesión. Intenta nuevamente.');
+        if (result.redirect) {
+          setTimeout(() => navigate(result.redirect), 3000); // Redirige tras mostrar mensaje, si aplica
+        }
       }
     } catch (error) {
       setMensaje('Hubo un problema con el servidor. Intenta más tarde.');
@@ -84,5 +86,5 @@ export const Seccion1PageLogin = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
