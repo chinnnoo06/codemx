@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
-                echo json_encode(['success' => false, 'redirect' => '/reenviar-correo', 'message' => 'Tu correo no está verificado.']);
+                echo json_encode(['success' => true, 'redirect' => '/reenviar-correo', 'message' => 'Tu correo no está verificado.']);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0) {
                 echo json_encode(['success' => false,  'message' => 'Tu cuenta está deshabilitada.']);
