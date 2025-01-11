@@ -10,8 +10,14 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
     try {
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/recuperar_password.php', {
         method: 'POST',
-        body: email,
+        headers: { 'Content-Type': 'text/plain' },
+        body: email, // Enviar el correo directamente como texto plano
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error desconocido.');
+      }
 
       const data = await response.json();
       if (data.success) {
@@ -21,7 +27,7 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
         setMessage(data.error || 'Error al enviar el correo.');
       }
     } catch (error) {
-      setMessage('Error al conectar con el servidor.');
+      setMessage(`Error al conectar con el servidor: ${error.message}`);
     }
   };
 
