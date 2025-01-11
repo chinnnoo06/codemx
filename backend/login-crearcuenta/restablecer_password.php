@@ -6,28 +6,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = mysqli_real_escape_string($conexion, $_POST['token']);
     $newPassword = mysqli_real_escape_string($conexion, $_POST['newPassword']);
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+    // Obtener la hora actual desde PHP
     $fechaActual = date('Y-m-d H:i:s');
 
-
-    // Verificar si el token es válido
+    // Verificar si el token es válido y no expirado
     $consultaToken = "
         SELECT * 
         FROM restablecer_contrasenia 
         WHERE Token = '$token' 
         AND Fecha_Expiracion_Token > '$fechaActual'
         AND (
-            Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email') 
-            OR Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email')
+            (Candidato_ID IS NOT NULL AND Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email'))
+            OR
+            (Empresa_ID IS NOT NULL AND Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email'))
         )
     ";
     $resultado = mysqli_query($conexion, $consultaToken);
 
     if (mysqli_num_rows($resultado) > 0) {
         // Determinar el tipo de usuario (Candidato o Empresa)
-        $consultaUsuario = "SELECT ID FROM candidato WHERE Email = '$email'";
-        $resultadoUsuario = mysqli_query($conexion, $consultaUsuario);
-
-        if (mysqli_num_rows($resultadoUsuario) > 0) {
+        $row = mysqli_fetch_assoc($resultado);
+        if (!empty($row['Candidato_ID'])) {
             $actualizarPassword = "UPDATE candidato SET Password = '$hashedPassword' WHERE Email = '$email'";
         } else {
             $actualizarPassword = "UPDATE empresa SET Password = '$hashedPassword' WHERE Email = '$email'";
