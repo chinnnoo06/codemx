@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['error' => 'Error al actualizar la contraseña: ' . mysqli_error($conexion)]);
         }
     } else {
-        echo json_encode(['error' => 'Token inválido o expirado']);
+        echo json_encode(['error' => 'Token inválido o expiradooo']);
     }
 } else {
     http_response_code(405);
