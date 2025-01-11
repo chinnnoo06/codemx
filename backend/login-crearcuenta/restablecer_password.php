@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT * 
         FROM restablecer_contrasenia 
         WHERE Token = '$token' 
-        AND Fecha_Expiracion_Token > '$fechaActual'
         AND (
             Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email') 
             OR Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email')
@@ -23,8 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ";
     $resultado = mysqli_query($conexion, $consultaToken);
 
-     // Depuración
-     error_log("Consulta ejecutada: $consultaToken");
 
     if (mysqli_num_rows($resultado) > 0) {
         // Determinar el tipo de usuario (Candidato o Empresa)
