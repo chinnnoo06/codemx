@@ -17,9 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE Token = '$token' 
         AND Fecha_Expiracion_Token > '$fechaActual'
         AND (
-            (Candidato_ID IS NOT NULL AND Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email'))
-            OR
-            (Empresa_ID IS NOT NULL AND Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email'))
+            Candidato_ID = (SELECT ID FROM candidato WHERE Email = '$email') 
+            OR Empresa_ID = (SELECT ID FROM empresa WHERE Email = '$email')
         )
     ";
     $resultado = mysqli_query($conexion, $consultaToken);
