@@ -1,5 +1,20 @@
 <?php
 require_once '../config/conexion.php';
+require_once '../env_loader.php'; // Ruta al cargador de variables de entorno
+require '../phpmailer/src/PHPMailer.php';
+require '../phpmailer/src/SMTP.php';
+require '../phpmailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Cargar las variables de entorno desde .env
+loadEnv(__DIR__ . '/../../.env');
+
+// Verificar que las variables de entorno se cargaron
+if (!getenv('SMTP_HOST')) {
+    die('Error: No se pudieron cargar las variables de entorno');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
@@ -47,7 +62,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
-                echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Tu correo no está verificado.']);
+                 // Actualizar fecha de expiración del token
+                 $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
+                 $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
+ 
+                 $actualizarToken = "
+                 UPDATE verificacion_usuarios 
+                 SET Token_Verificacion = '$nuevoToken', Fecha_Expiracion_Token = '$fechaExpiracion' 
+                 WHERE (Candidato_ID = {$fila['ID']})";
+ 
+                 if (!mysqli_query($conexion, $actualizarToken)) {
+                     echo json_encode(['success' => false, 'error' => 'Error al actualizar el token: ' . mysqli_error($conexion)]);
+                     exit();
+                 }
+ 
+                 // Enviar correo de verificación
+                 $mail = new PHPMailer(true);
+                 try {
+                     // Configuración del servidor SMTP
+                     $mail->isSMTP();
+                     $mail->Host = getenv('SMTP_HOST'); 
+                     $mail->SMTPAuth = true;
+                     $mail->Username = getenv('SMTP_USERNAME'); 
+                     $mail->Password = getenv('SMTP_PASSWORD'); 
+                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                     $mail->Port = getenv('SMTP_PORT');
+ 
+                     // Configuración del correo
+                     $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
+                     $mail->addAddress($email);
+ 
+                     $nombre = $fila['Nombre'];
+                     $mail->isHTML(true);
+                     $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
+                     $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: 
+                     <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$nuevoToken'>Verificar Cuenta</a>";
+ 
+                     $mail->send();
+                     echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Correo de verificación reenviado.']);
+                 } catch (Exception $e) {
+                     echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]);
+                 }
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0) {
                 echo json_encode(['success' => false,  'message' => 'Tu cuenta está deshabilitada.']);
@@ -63,7 +118,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => false, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar el RFC de tu cuenta.']);
+                // Actualizar fecha de expiración del token
+                $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
+                $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+                $actualizarToken = "
+                UPDATE verificacion_usuarios 
+                SET Token_Verificacion = '$nuevoToken', Fecha_Expiracion_Token = '$fechaExpiracion' 
+                WHERE (Empresa_ID = {$fila['ID']})";
+
+                if (!mysqli_query($conexion, $actualizarToken)) {
+                    echo json_encode(['success' => false, 'error' => 'Error al actualizar el token: ' . mysqli_error($conexion)]);
+                    exit();
+                }
+
+                // Enviar correo de verificación
+                $mail = new PHPMailer(true);
+                try {
+                    // Configuración del servidor SMTP
+                    $mail->isSMTP();
+                    $mail->Host = getenv('SMTP_HOST'); 
+                    $mail->SMTPAuth = true;
+                    $mail->Username = getenv('SMTP_USERNAME'); 
+                    $mail->Password = getenv('SMTP_PASSWORD'); 
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = getenv('SMTP_PORT');
+
+                    // Configuración del correo
+                    $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
+                    $mail->addAddress($email);
+
+                    $nombre = $fila['Nombre'];
+                    $mail->isHTML(true);
+                    $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
+                    $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: 
+                    <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$nuevoToken'>Verificar Cuenta</a>";
+
+                    $mail->send();
+                    echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Correo de verificación reenviado.']);
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]);
+                }
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
                 echo json_encode(['success' => false, 'redirect' => '/falta-verificar-correo', 'message' => 'Tu correo no está verificado.']);
