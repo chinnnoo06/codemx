@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 import '../../styles/header-footer.css';
 import logo from '../../resources/logo.png';
 import { Seccion1PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion1PageRecuperar';
 import { Seccion2PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion2PageRecuperar';
+import { Seccion3PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion3PageRecuperar';
 
 export const PageRecuperar = () => {
-  const { token } = useParams(); // Leer el parámetro de la URL
+  const [step, setStep] = useState(1); // Controla el paso actual: 1 = Correo, 2 = Token, 3 = Restablecer Contraseña
+  const [email, setEmail] = useState(''); // Guarda el correo ingresado
+  const [token, setToken] = useState(''); // Guarda el token validado
+
+  const handleEmailSubmitted = (email) => {
+    setEmail(email);
+    setStep(2); // Avanza a la sección del token
+  };
+
+  const handleTokenValidated = (validatedToken) => {
+    setToken(validatedToken);
+    setStep(3); // Avanza a la sección para restablecer la contraseña
+  };
 
   return (
     <>
-      {/* Header */}
       <div className="contenedor-header container-fluid w-100">
         <header className="d-flex justify-content-center align-items-center">
           <div className="logo">
@@ -20,20 +31,30 @@ export const PageRecuperar = () => {
         </header>
       </div>
 
-      {/* Mostrar contenido basado en el token */}
-      {!token ? (
+      {step === 1 && (
         <>
           <div className="container text-center pt-4 pb-4">
-            <h2>Ingresa el correo electrónico de tu cuenta para que puedas recibir un enlace para restablecer la contraseña</h2>
+            <h2>Ingresa tu correo electrónico para recibir un token de recuperación</h2>
           </div>
-          <Seccion1PageRecuperar />
+          <Seccion1PageRecuperar onEmailSubmitted={handleEmailSubmitted} />
         </>
-      ) : (
+      )}
+
+      {step === 2 && (
         <>
           <div className="container text-center pt-4 pb-4">
-            <h2>Ingresa una contraseña y confirmarla, <span className='fw-semibold'>recuerdala, será la nueva contraseña de tu cuenta</span></h2>
+            <h2>Ingresa el token enviado a tu correo</h2>
           </div>
-          <Seccion2PageRecuperar />
+          <Seccion2PageRecuperar email={email} onTokenValidated={handleTokenValidated} />
+        </>
+      )}
+
+      {step === 3 && (
+        <>
+          <div className="container text-center pt-4 pb-4">
+            <h2>Ingresa tu nueva contraseña</h2>
+          </div>
+          <Seccion3PageRecuperar email={email} token={token} />
         </>
       )}
     </>

@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/codemx/frontend/build/static/css/main.9dc2e720.css",
-    "main.js": "/codemx/frontend/build/static/js/main.02111b1e.js",
+    "main.js": "/codemx/frontend/build/static/js/main.0e0d7dda.js",
     "static/media/logo.png": "/codemx/frontend/build/static/media/logo.8da5157fad010dfcf737.png",
     "static/media/fondo.png": "/codemx/frontend/build/static/media/fondo.c467a09ea9a26cc36781.png",
     "index.html": "/codemx/frontend/build/index.html",
     "main.9dc2e720.css.map": "/codemx/frontend/build/static/css/main.9dc2e720.css.map",
-    "main.02111b1e.js.map": "/codemx/frontend/build/static/js/main.02111b1e.js.map"
+    "main.0e0d7dda.js.map": "/codemx/frontend/build/static/js/main.0e0d7dda.js.map"
   },
   "entrypoints": [
     "static/css/main.9dc2e720.css",
-    "static/js/main.02111b1e.js"
+    "static/js/main.0e0d7dda.js"
   ]
 }
