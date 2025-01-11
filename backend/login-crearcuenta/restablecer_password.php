@@ -7,20 +7,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newPassword = mysqli_real_escape_string($conexion, $_POST['newPassword']);
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    // Obtener la hora actual desde PHP
-    $fechaActual = date('Y-m-d H:i:s');
-
     // Actualizar la contraseña y eliminar el token en una sola consulta
     $actualizarPasswordYEliminarToken = "
         UPDATE candidato AS c 
-        JOIN restablecer_contrasenia AS r ON c.ID = r.Candidato_ID AND r.Token = '$token' AND r.Fecha_Expiracion_Token > '$fechaActual'
+        JOIN restablecer_contrasenia AS r ON c.ID = r.Candidato_ID
         SET c.Password = '$hashedPassword'
         WHERE c.Email = '$email'
         
         UNION
         
         UPDATE empresa AS e 
-        JOIN restablecer_contrasenia AS r ON e.ID = r.Empresa_ID AND r.Token = '$token' AND r.Fecha_Expiracion_Token > '$fechaActual'
+        JOIN restablecer_contrasenia AS r ON e.ID = r.Empresa_ID
         SET e.Password = '$hashedPassword'
         WHERE e.Email = '$email';
 
