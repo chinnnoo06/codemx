@@ -27,15 +27,14 @@ if (!getenv('SMTP_HOST')) {
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Leer el JSON enviado desde el cliente
-        $input = json_decode(file_get_contents('php://input'), true);
-        $email = $input['email'] ?? '';
+        $email = file_get_contents('php://input'); 
 
-        // Validar correo electrónico
+        // Validar el correo electrónico
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo json_encode(['error' => 'Correo electrónico inválido']);
+            echo json_encode(['success' => false, 'error' => 'Correo electrónico inválido']);
             exit;
         }
+
 
         // Verificar si el correo existe en la tabla Candidato
         $consultaCandidato = "SELECT ID FROM Candidato WHERE Email = '$email'";
