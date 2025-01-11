@@ -39,7 +39,7 @@ export const Seccion1PageLogin = () => {
           window.location.href = `/codemx/frontend/build/usuario-${result.tipo}`;
         }
       } else {
-        setMensaje(result.error || 'Correo o contraseña incorrectos.');
+        setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');
       }
     } catch (error) {
       setMensaje('Hubo un problema con el servidor. Intenta más tarde.');
