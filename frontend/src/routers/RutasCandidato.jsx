@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
-import '../styles/bienvenida/Bienvenida.css';
 import logo from '../resources/logo.png';
 
 export const RutasCandidato = () => {
+     const [candidato, setCandidato] = useState([]);
+     const [fotoPerfil, setFotoPerfil] = useState('');
+
+    useEffect(() => {
+        // Función para obtener datos del backend
+        const fetchData = async () => {
+        try {
+            // Fetch para obtener datos del usuario candidato
+            const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
+            if (!candidatoResponse.ok) {
+            throw new Error('Error al obtener los datos del usuario');
+            }
+            const candidatoData = await candidatoResponse.json();
+
+            // Actualizar estados
+            setCandidato(candidatoData);
+            setFotoPerfil(candidatoData.fotografia || '');
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+        };
+
+        fetchData();
+    }, []);
+
 
     return (
         <>
@@ -15,7 +39,45 @@ export const RutasCandidato = () => {
                     <div className="logo">
                         <Link to="/"><img src={logo} alt="Logo" /></Link>
                     </div>
+                    <nav className="nav d-none d-md-flex gap-4">
+                        <NavLink to="/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-house"></i>
+                            <span>Inicio</span>
+                        </NavLink>
+                        <NavLink to="/recomendaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-file-pen"></i>
+                            Recomendaciones
+                        </NavLink>
+                        <NavLink to="/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-briefcase"></i>
+                            Vacantes
+                        </NavLink>
+                        <NavLink to="/chats-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-comment"></i>
+                            Chats
+                        </NavLink>
+                        <NavLink to="/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-bell"></i>
+                            Notificaciones
+                        </NavLink>
+                        <NavLink to="/informacion-candidatos" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-chart-simple"></i>
+                            Información
+                        </NavLink>
+                        <NavLink to="/busqueda-candidatos" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Buscar
+                        </NavLink>
+                    </nav>
+                    {/* Opciones de botones grandes */}
+                    <div className="perfil d-none d-md-flex gap-3">
+                        <Link to="/informacion-candidatos">
+                                <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                        </Link>
+                    </div>
+
                 </header>
+
             </div>
 
             {/* Contenido Principal */}

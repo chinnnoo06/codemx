@@ -52,6 +52,17 @@
     border-color: #F2A922;
 }
 
+.contenedor-header .nav a{
+    text-decoration: none;
+    color: #dde1e9;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.contenedor-header .nav a:hover{
+    color: #F2A922;
+}
+
 .nav-responsive {
     color: #F2A922;
     font-size: 1.6rem; 
@@ -61,6 +72,8 @@
 .menu-responsive {
     display: none;
 }
+
+
 
 /* FOOTER */
 
