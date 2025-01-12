@@ -7,48 +7,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newPassword = mysqli_real_escape_string($conexion, $_POST['newPassword']);
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    // Obtener el ID del usuario basado en el token
-    $consultaUsuario = "
-        SELECT Candidato_ID, Empresa_ID 
+    // Obtener la hora actual desde PHP
+    $fechaActual = date('Y-m-d H:i:s');
+
+    $consultaToken = "
+        SELECT * 
         FROM restablecer_contrasenia 
-        WHERE Token = '$token'
     ";
-    $resultadoUsuario = mysqli_query($conexion, $consultaUsuario);
+    $resultado = mysqli_query($conexion, $consultaToken);
 
-    if ($resultadoUsuario && mysqli_num_rows($resultadoUsuario) > 0) {
-        $fila = mysqli_fetch_assoc($resultadoUsuario);
-        $candidatoId = $fila['Candidato_ID'];
-        $empresaId = $fila['Empresa_ID'];
 
-        $actualizado = false;
-
-        // Actualizar contraseña según el tipo de usuario
-        if (!is_null($candidatoId)) {
-            $actualizarCandidato = "
-                UPDATE candidato 
-                SET Password = '$hashedPassword' 
-                WHERE ID = '$candidatoId' AND Email = '$email';
-            ";
-            $actualizado = mysqli_query($conexion, $actualizarCandidato);
-        } elseif (!is_null($empresaId)) {
-            $actualizarEmpresa = "
-                UPDATE empresa 
-                SET Password = '$hashedPassword' 
-                WHERE ID = '$empresaId' AND Email = '$email';
-            ";
-            $actualizado = mysqli_query($conexion, $actualizarEmpresa);
-        }
-
-        // Eliminar el token si la contraseña se actualizó correctamente
-        if ($actualizado) {
-            $eliminarToken = "DELETE FROM restablecer_contrasenia WHERE Token = '$token';";
-            mysqli_query($conexion, $eliminarToken); // No necesitamos verificar el resultado aquí
-            echo json_encode(['success' => 'Contraseña actualizada exitosamente']);
-        } else {
-            echo json_encode(['error' => 'Error al actualizar la contraseña']);
-        }
+    if (mysqli_num_rows($resultado) > 0) {
+        echo json_encode(['success' => 'ok']);
     } else {
-        echo json_encode(['error' => 'Token no válido o usuario no encontrado']);
+        echo json_encode(['error' => 'Token inválido o expirado']);
     }
 } else {
     http_response_code(405);
