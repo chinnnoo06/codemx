@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
     // Actualizar la contraseña y eliminar el token en una sola consulta
+    
     $actualizarPasswordYEliminarToken = "
         UPDATE candidato AS c 
         JOIN restablecer_contrasenia AS r ON c.ID = r.Candidato_ID
