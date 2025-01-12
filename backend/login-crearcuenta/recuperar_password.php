@@ -83,7 +83,7 @@ try {
         $mail->addAddress($email);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Recuperacion de Contraseña';
+        $mail->Subject = 'Recuperacion';
         $mail->Body = "
             <p>Hola,</p>
             <p>Has solicitado restablecer tu contraseña. Usa el siguiente código para continuar con el proceso:</p>

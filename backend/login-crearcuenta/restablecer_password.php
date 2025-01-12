@@ -32,6 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Eliminar el token después de usarlo
             $eliminarToken = "DELETE FROM restablecer_contrasenia WHERE Token = '$token'";
             mysqli_query($conexion, $eliminarToken);
+            // Eliminar tokens caducados automáticamente
+            $fechaActual = date('Y-m-d H:i:s');
+            $consultaEliminar = "DELETE FROM restablecer_contrasenia WHERE Fecha_Expiracion_Token <= '$fechaActual'";
+            mysqli_query($conexion, $consultaEliminar);
+
 
             echo json_encode(['success' => 'Contraseña actualizada exitosamente']);
         } else {
