@@ -4,9 +4,13 @@ import '../../styles/login-crearcuenta-recuperar/form.css';
 export const Seccion2PageRecuperar = ({ email, onTokenValidated }) => {
   const [token, setToken] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); 
 
-  const handleSubmit = async (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
+    if (isLoading) return; 
+    setIsLoading(true);
+
     try {
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/validar_token.php', {
         method: 'POST',
@@ -17,20 +21,21 @@ export const Seccion2PageRecuperar = ({ email, onTokenValidated }) => {
       const data = await response.json();
       if (data.success) {
         setMessage('Token válido. Redirigiendo al siguiente paso...');
-        onTokenValidated(token); // Avanza al siguiente paso
+        onTokenValidated(token);
       } else {
         setMessage(data.error || 'Token inválido o expirado.');
       }
     } catch (error) {
       setMessage('Error al conectar con el servidor.');
+    } finally {
+      setIsLoading(false); 
     }
   };
 
   return (
-    <section id="form-login" className="contenedor_todo">
-      <div className="contenedor-form">
-        <form className="formulario-login" onSubmit={handleSubmit}>
-          <h2 className="text-center mb-4">Validar Token</h2>
+
+      <div className="contenedor-form container py5">
+        <form className="form" onSubmit={manejarEnvio}>    
           <div className="mb-3">
             <label htmlFor="token" className="form-label">
               <i className="fas fa-key"></i> Token
@@ -45,11 +50,14 @@ export const Seccion2PageRecuperar = ({ email, onTokenValidated }) => {
               onChange={(e) => setToken(e.target.value)}
               required
             />
+            {message && <small className="text-danger">{message}</small>}
           </div>
-          <button type="submit" className="btn-1 btn w-100 mt-3">Validar Token</button>
-          {message && <p className="text-center mt-3">{message}</p>}
+          <div className='d-flex justify-content-center align-items-center'>
+            <button type="submit" className="btn-tipouno btn" disabled={isLoading}>
+              {isLoading ? 'Validando...' :  'Validar Token' }
+            </button>
+          </div>
         </form>
       </div>
-    </section>
   );
 };

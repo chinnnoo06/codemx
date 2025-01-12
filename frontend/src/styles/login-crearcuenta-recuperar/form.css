@@ -1,44 +1,3 @@
-
-.contenedor_todo {
-    display: flex;
-    justify-content: center;
-}
-
-.contenedor-form {
-  background: rgba(255, 255, 255, 0.9); 
-  border-radius: 15px; 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  padding: 2rem; 
-  max-width: 400px; 
-  width: 100%; 
-}
-
-.contenedor-form a{
-  text-decoration: none;
-}
-
-.contenedor-form h2,
-.contenedor-form label{
-  color: #0B1C26; 
-}
-
-.contenedor-form .btn-1{
-  background-color: #0B1C26; 
-  color: #dde1e9; 
-  transition: all 0.3s ease; 
-}
-
-.contenedor-form .btn-2{
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #0B1C26; 
-  border: 1px solid #0B1C26; 
-}
-
-.contenedor-form .btn-1:hover,
-.contenedor-form .btn-2:hover{
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-}
-
 .btn-tipouno{
   background-color: #0B1C26; 
   color: #dde1e9; 
@@ -54,6 +13,7 @@
 .btn-tipodos:hover,
 .btn-tipouno:hover{
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #0B1C26;
 }
 
 .custom-font-select {
@@ -67,7 +27,7 @@
 }
 
 .titulo-form,
-.form-crearcuenta label,
+.form label,
 .texto-color{
   color: #0B1C26;
 }
@@ -79,12 +39,18 @@
   line-height: 1.6; 
 }
 
-.contenedor-crear-cuenta{
-  max-width: 800px ;
+.contenedor-form{
+  max-width: 600px ;
+}
+
+.contenedor-form a{
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .verificacion-correo h2,
-.verificacion-correo p{
+.verificacion-correo p,
+.icono{
   color: #0B1C26;
 }
 

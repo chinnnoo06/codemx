@@ -4,9 +4,13 @@ import '../../styles/login-crearcuenta-recuperar/form.css';
 export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); 
 
-  const handleSubmit = async (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
+    if (isLoading) return; 
+    setIsLoading(true);
+
     try {
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/recuperar_password.php', {
         method: 'POST',
@@ -26,14 +30,16 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
       }
     } catch (error) {
       setMessage(`Error al conectar con el servidor: ${error.message}`);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
   return (
-    <section id="form-login" className="contenedor_todo">
-      <div className="contenedor-form">
-        <form className="formulario-login" onSubmit={handleSubmit}>
-          <h2 className="text-center mb-4">Recuperar Contraseña</h2>
+
+
+      <div className="contenedor-form container py5">
+        <form className="form" onSubmit={manejarEnvio}>
           <div className="mb-3">
             <label htmlFor="correoElectronico" className="form-label">
               <i className="fas fa-envelope"></i> Correo Electrónico
@@ -48,11 +54,17 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+            {message && <small className="text-danger">{message}</small>}
           </div>
-          <button type="submit" className="btn-1 btn w-100 mt-3">Enviar Correo</button>
-          {message && <p className="text-center mt-3">{message}</p>}
+          <div className='d-flex justify-content-center align-items-center'>
+            <button type="submit" className="btn-tipouno btn" disabled={isLoading}>
+              {isLoading ? 'Enviando...' :  'Enviar' }
+            </button>
+          </div>
         </form>
-      </div>
-    </section>
+    </div>
+
+
+
   );
 };

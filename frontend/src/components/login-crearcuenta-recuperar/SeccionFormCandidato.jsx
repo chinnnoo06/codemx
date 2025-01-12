@@ -263,7 +263,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   
 
   return (
-    <div className="contenedor-crear-cuenta container py-5">
+    <div className="contenedor-form container py-5">
       <h3 className="titulo-form text-center">Diseña tu perfil de Candidato</h3>
 
       {/* Render condicional basado en el paso */}
@@ -287,7 +287,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
 };
 
 const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visibilidadConfirmarPassword, showPassword, showConfirmPassword, estados, sexos }) => (
-  <form className="form-crearcuenta" data-step="1">
+  <form className="form" data-step="1">
 
     <div className="mb-3">
       <label htmlFor="nombre" className="form-label">Nombre <span className="text-danger">*</span></label>
@@ -385,7 +385,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 );
 
 const Paso2 = ({ errors, formData, manejarValorInput, modalidades, universidades }) => (
-  <form className="form-crearcuenta" data-step="2">
+  <form className="form" data-step="2">
 
     <div className="mb-3">
       <label htmlFor="universidad" className="form-label">
@@ -464,7 +464,7 @@ const Paso3 = ({ errors, formData, manejarValorInput, tecnologias }) => {
   };
 
   return (
-    <form className="form-crearcuenta" data-step="3">
+    <form className="form" data-step="3">
 
 
       <SeccionTecnologiasDominadas

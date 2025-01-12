@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/header-footer.css';
+import '../../styles/login-crearcuenta-recuperar/form.css';
 import logo from '../../resources/logo.png';
 import { Seccion1PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion1PageRecuperar';
 import { Seccion2PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion2PageRecuperar';
@@ -34,7 +35,7 @@ export const PageRecuperar = () => {
       {step === 1 && (
         <>
           <div className="container text-center pt-4 pb-4">
-            <h2>Ingresa tu correo electrónico para recibir un token de recuperación</h2>
+            <h2 className='titulo-form'>Ingresa tu correo electrónico para recibir un token de recuperación</h2>
           </div>
           <Seccion1PageRecuperar onEmailSubmitted={handleEmailSubmitted} />
         </>
@@ -43,7 +44,7 @@ export const PageRecuperar = () => {
       {step === 2 && (
         <>
           <div className="container text-center pt-4 pb-4">
-            <h2>Ingresa el token enviado a tu correo</h2>
+            <h2 className='titulo-form'>Ingresa el token enviado a tu correo</h2>
           </div>
           <Seccion2PageRecuperar email={email} onTokenValidated={handleTokenValidated} />
         </>
@@ -52,7 +53,7 @@ export const PageRecuperar = () => {
       {step === 3 && (
         <>
           <div className="container text-center pt-4 pb-4">
-            <h2>Ingresa tu nueva contraseña</h2>
+            <h2 className='titulo-form'>Ingresa tu nueva contraseña</h2>
           </div>
           <Seccion3PageRecuperar email={email} token={token} />
         </>

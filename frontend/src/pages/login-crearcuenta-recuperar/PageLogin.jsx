@@ -15,8 +15,8 @@ export const PageLogin = () => {
                 </div>
             </header>
         </div>
-        <div className="container text-center pt-4 pb-4">
-          <h2 >Rodeate de oportunidades laborales para encontrar tu trabajo soñado</h2>
+        <div className="container text-center pt-5">
+          <h2 className="text-center mb-4"><i className="fas fa-user-circle icono"></i> Iniciar Sesión</h2>
         </div>
 
         <Seccion1PageLogin />

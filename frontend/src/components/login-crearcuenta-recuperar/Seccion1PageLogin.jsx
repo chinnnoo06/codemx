@@ -49,10 +49,8 @@ export const Seccion1PageLogin = () => {
   };
 
   return (
-    <section id="form-login" className="contenedor_todo">
-      <div className='contenedor-form'>
-        <form className='formulario-login' onSubmit={enviar}>
-          <h2 className="text-center mb-4"><i className="fas fa-user-circle"></i> Iniciar Sesión</h2>
+      <div className='contenedor-form container py5'>
+        <form className='form' onSubmit={enviar}>
           {mensaje && <p className="text-danger text-center">{mensaje}</p>}
           <div className="mb-3">
             <label htmlFor="email" className="form-label"><i className="fas fa-envelope"></i> Correo Electrónico</label>
@@ -65,13 +63,11 @@ export const Seccion1PageLogin = () => {
                 <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
               </span>
           </div>
-          <button
-            type="submit"
-            className="btn-1 btn w-100 mt-3"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Cargando...' : 'Entrar'}
-          </button>
+          <div className='d-flex justify-content-center align-items-center'>
+            <button type="submit" className="btn-tipouno btn  w-50 mt-3" disabled={isLoading}>
+              {isLoading ? 'Cargando...' : 'Entrar'}
+            </button>
+          </div>
           <div className="text-center mt-4">
               <Link to="/recuperar-password" className="link-primary">¿Olvidaste tu contraseña?</Link>
           </div>
@@ -79,9 +75,10 @@ export const Seccion1PageLogin = () => {
         <div className="text-center mt-4">
             <h3>¿Aún no tienes una cuenta?</h3>
             <p>Regístrate para entrar a la página</p>
-            <Link to="/crear-cuenta"><button id="btn_registrarse" className="btn-2 btn w-100">Registrarse</button></Link>
+        </div>
+        <div className="text-center mt-4">
+          <Link to="/crear-cuenta"><button id="btn_registrarse" className="btn-tipodos btn w-50">Registrarse</button></Link>
         </div>
       </div>
-    </section>
   );
 };
