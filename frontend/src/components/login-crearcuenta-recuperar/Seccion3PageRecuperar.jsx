@@ -16,14 +16,19 @@ export const Seccion3PageRecuperar = ({ email, token }) => {
     }
 
     try {
+        console.log(email, token, newPassword);
       // Enviar la nueva contraseña al backend
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/restablecer_password.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email, token, newPassword }),
       });
-
+      
       const data = await response.json();
+      console.log("Email:", email);
+        console.log("Token:", token);
+        console.log("New Password:", newPassword);
+
       if (data.success) {
         setMessage('Contraseña actualizada exitosamente. Ahora puedes iniciar sesión.');
       } else {
