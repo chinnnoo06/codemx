@@ -16,7 +16,6 @@ export const Seccion3PageRecuperar = ({ email, token }) => {
     }
 
     try {
-        console.log(email, token, newPassword);
       // Enviar la nueva contraseña al backend
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/restablecer_password.php', {
         method: 'POST',

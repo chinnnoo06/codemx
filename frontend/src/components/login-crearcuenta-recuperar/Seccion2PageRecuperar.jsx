@@ -17,7 +17,7 @@ export const Seccion2PageRecuperar = ({ email, onTokenValidated }) => {
       const data = await response.json();
       if (data.success) {
         setMessage('Token válido. Redirigiendo al siguiente paso...');
-        onTokenValidated(); // Avanza al siguiente paso
+        onTokenValidated(token); // Avanza al siguiente paso
       } else {
         setMessage(data.error || 'Token inválido o expirado.');
       }
