@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-session_start();
+/*session_start();
 
 if (!isset($_SESSION['usuario'])) {
     echo json_encode(['success' => false, 'error' => 'Usuario no autenticado.']);
@@ -9,20 +9,20 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 $email = $_SESSION['usuario'];
-
+*/
 
 
 try {
     // Consultar el ID y la foto del candidato asociado al email
-    $consulta = "
+    /*$consulta = "
         SELECT 
             ID,
             Fotografia 
         FROM candidato 
         WHERE Email = '$email'
         LIMIT 1
-    ";
-   /* $consulta = "
+    ";*/
+    $consulta = "
         SELECT 
             ID,
             Fotografia 
@@ -30,7 +30,7 @@ try {
         WHERE ID = 1
         LIMIT 1
     ";
-    */
+    
     $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
