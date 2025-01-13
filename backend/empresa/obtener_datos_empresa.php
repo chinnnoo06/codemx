@@ -17,8 +17,8 @@ try {
     /*$consulta = "
         SELECT 
             ID,
-            Fotografia 
-        FROM eandidato 
+            Logo 
+        FROM empresa 
         WHERE Email = '$email'
         LIMIT 1
     ";*/
@@ -26,7 +26,7 @@ try {
         SELECT 
             ID,
             Logo 
-        FROM eandidato 
+        FROM empresa 
         WHERE ID = 1
         LIMIT 1
     ";
