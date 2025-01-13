@@ -86,9 +86,11 @@ export const RutasEmpresa = () => {
                 {/* Menú desplegable para pantallas pequeñas */}
                 {menuVisible && (
                     <div className="menu-responsive">
-                        <div className="perfil-responsive text-center mb-3">
-                            <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
-                        </div>
+                        {fotoPerfil && (
+                            <Link to="/perfil-empresa">
+                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                            </Link>
+                        )}
                         <NavLink to="/usuario-empresa/inicio-empresa"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-empresa/vacantes-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
                         <NavLink to="/usuario-empresa/chats-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>

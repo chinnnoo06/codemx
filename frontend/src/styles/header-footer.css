@@ -26,7 +26,7 @@
     color: #F2A922;
 }
 
-.contenedor-header header .perfil-img {
+.contenedor-header .perfil-img {
     width: 3rem; 
     height: 3rem; 
     border-radius: 50%; 
@@ -97,21 +97,6 @@
 .menu-responsive {
     display: none;
 }
-
-.perfil-responsive {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.perfil-responsive img {
-    width: 4rem;
-    height: 4rem;
-    object-fit: cover;
-    border-radius: 50%;
-
-}
-
 
 
 /* FOOTER */

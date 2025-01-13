@@ -91,9 +91,11 @@ export const RutasCandidato = () => {
                 {/* Menú desplegable para pantallas pequeñas */}
                 {menuVisible && (
                     <div className="menu-responsive">
-                        <div className="perfil-responsive text-center mb-3">
-                            <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
-                        </div>
+                        {fotoPerfil && (
+                            <Link to="/perfil-candidato">
+                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                            </Link>
+                        )}
                         <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Recomendaciones</NavLink>
                         <NavLink to="/usuario-candidato/vacantes-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
