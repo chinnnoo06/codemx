@@ -36,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tecnologias = json_decode($_POST['tecnologias'], true); // Decodificar tecnologías del JSON enviado
 
     // Rutas relativas y absolutas para almacenamiento
-    $fotografiaDirRelativo = 'frontend/src/resources/fotos_perfil_candidatos/';
-    $curriculumDirRelativo = 'frontend/src/resources/cv/';
-    $fotografiaDir = realpath(__DIR__ . '/../../frontend/src/resources/fotos_perfil_candidatos/');
-    $curriculumDir = realpath(__DIR__ . '/../../frontend/src/resources/cv/');
+    $fotografiaDirRelativo = '/resources/fotos_perfil_candidatos/';
+    $curriculumDirRelativo = '/resources/cv/';
+    $fotografiaDir = realpath(__DIR__ . '/../../public/resources/fotos_perfil_candidatos/');
+    $curriculumDir = realpath(__DIR__ . '/../../public/resources/cv/');
 
     // Validar rutas y crear carpetas si no existen
     if (!$fotografiaDir || !$curriculumDir) {
