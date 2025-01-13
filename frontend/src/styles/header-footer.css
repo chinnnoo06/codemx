@@ -25,9 +25,13 @@
 .txtspan{
     color: #F2A922;
 }
-.contenedor-header header .perfil img {
-    max-height: 3rem; 
-    width: 2rem;
+
+.contenedor-header header .perfil-img {
+    width: 3rem; 
+    height: 3rem; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    overflow: hidden;
 }
 
 .contenedor-header .botones .login {

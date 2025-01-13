@@ -74,7 +74,7 @@ export const RutasEmpresa = () => {
                     <div className="perfil d-none d-md-flex">
                         {fotoPerfil && (
                             <Link to="/perfil-empresa">
-                                <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
                     </div>

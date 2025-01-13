@@ -79,7 +79,7 @@ export const RutasCandidato = () => {
                     <div className="perfil d-none d-md-flex">
                         {fotoPerfil && (
                             <Link to="/perfil-candidato">
-                                <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
                     </div>
