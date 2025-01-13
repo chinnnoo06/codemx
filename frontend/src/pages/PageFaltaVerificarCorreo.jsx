@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import logo from '../resources/logo.png';
 import '../styles/login-crearcuenta-recuperar/form.css';
 
 export const PageFaltaVerificarCorreo = () => {
@@ -12,7 +11,7 @@ export const PageFaltaVerificarCorreo = () => {
         <div className="contenedor-header container-fluid w-100">
             <header className="d-flex justify-content-center align-items-center">
             <div className="logo">
-                <Link to="/"><img src={logo} alt="Logo" /></Link>
+                <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
             </div>
             </header>
         </div>

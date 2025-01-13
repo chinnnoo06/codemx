@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/login-crearcuenta-recuperar/form.css';
-import logo from '../../resources/logo.png';
 import { SeccionFormCandidato } from '../../components/login-crearcuenta-recuperar/SeccionFormCandidato';
 import { SeccionFormEmpresa } from '../../components/login-crearcuenta-recuperar/SeccionFormEmpresa';
 import { SeccionVerificacionCorreo } from '../../components/login-crearcuenta-recuperar/SeccionVerificarCorreo';
@@ -45,7 +44,7 @@ export const PageCrearCuenta = () => {
       <div className="contenedor-header container-fluid w-100">
         <header className="d-flex justify-content-center align-items-center">
           <div className="logo">
-            <Link to="/"><img src={logo} alt="Logo" /></Link>
+            <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
           </div>
         </header>
       </div>

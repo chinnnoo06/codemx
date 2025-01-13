@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
-import logo from '../resources/logo.png';
+import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
+
 
 export const RutasCandidato = () => {
-     const [candidato, setCandidato] = useState([]);
      const [fotoPerfil, setFotoPerfil] = useState('');
+     const [menuVisible, setMenuVisible] = useState(false);
 
     useEffect(() => {
         // Función para obtener datos del backend
@@ -18,10 +19,9 @@ export const RutasCandidato = () => {
                 throw new Error('Error al obtener los datos del usuario');
             }
             const candidatoData = await candidatoResponse.json();
-            console.log('Datos del candidato:', candidatoData); // Verifica qué datos se reciben
+            console.log('Datos del candidato:', candidatoData); 
 
             // Actualizar estados
-            setCandidato(candidatoData);
             setFotoPerfil(candidatoData.fotografia || '');
         } catch (error) {
             console.error('Error al obtener los datos:', error);
@@ -32,66 +32,92 @@ export const RutasCandidato = () => {
     }, []);
 
 
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
+
+
     return (
         <>
             {/* Header */}
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="/"><img src={logo} alt="Logo" /></Link>
+                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-none d-md-flex gap-4">
-                        <NavLink to="/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-house"></i>
-                            <span>Inicio</span>
+                        <NavLink to="/usuario-candidato/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-house"></i>
+                            Inicio
                         </NavLink>
-                        <NavLink to="/recomendaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-file-pen"></i>
+                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-file-pen"></i>
                             Recomendaciones
                         </NavLink>
-                        <NavLink to="/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-briefcase"></i>
+                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-briefcase"></i>
                             Vacantes
                         </NavLink>
-                        <NavLink to="/chats-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-comment"></i>
+                        <NavLink to="/usuario-candidato/chats-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-comment"></i>
                             Chats
                         </NavLink>
-                        <NavLink to="/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-bell"></i>
+                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-bell"></i>
                             Notificaciones
                         </NavLink>
-                        <NavLink to="/informacion-candidatos" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-chart-simple"></i>
+                        <NavLink to="/usuario-candidato/informacion-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-chart-simple"></i>
                             Información
                         </NavLink>
-                        <NavLink to="/busqueda-candidatos" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "d-flex flex-column align-items-center" }>
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-magnifying-glass"></i>
                             Buscar
                         </NavLink>
                     </nav>
-                    {/* Opciones de botones grandes */}
-                    <div className="perfil d-none d-md-flex gap-3">
-                        <Link to="/informacion-candidatos">
+                    {/* perfil*/}
+                    <div className="perfil d-none d-md-flex">
+                        {fotoPerfil && (
+                            <Link to="/perfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
-                        </Link>
+                            </Link>
+                        )}
                     </div>
-
+                    {/* Menú responsive */}
+                    <div className="nav-responsive d-md-none" onClick={toggleMenu}>
+                        <i className="fa-solid fa-bars"></i>
+                    </div>
                 </header>
-
+                {/* Menú desplegable para pantallas pequeñas */}
+                {menuVisible && (
+                    <div className="menu-responsive">
+                        <div className="perfil-responsive text-center mb-3">
+                            <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                        </div>
+                        <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
+                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Recomendaciones</NavLink>
+                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
+                        <NavLink to="/usuario-candidato/chats-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
+                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Notificaciones</NavLink>
+                        <NavLink to="/usuario-candidato/informacion-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Información</NavLink>
+                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Buscar</NavLink>
+                    </div>
+                )}
             </div>
+
 
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
                     <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
+                    <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
                 </Routes>
             </section>
 
             {/* Footer */}
             <footer className="footer text-white py-4">
-                <div className="container">
+                <div className="footer-container mx-auto">
                     <div className="row text-center">
                         {/* Sobre Nosotros */}
                         <div className="col-lg-4 col-md-6 mb-4 mx-auto">
@@ -108,13 +134,38 @@ export const RutasCandidato = () => {
                             <h4 className="text-uppercase mb-3">Enlaces</h4>
                             <ul className="list-unstyled">
                                 <li>
-                                    <NavLink to="/iniciar-sesion" className="footer-link">
-                                        Iniciar Sesión
+                                    <NavLink to="/usuario-candidato/inicio-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-house"></i> &nbsp; Inicio
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/crear-cuenta" className="footer-link">
-                                        Crear Cuenta
+                                    <NavLink to="/usuario-candidato/recomendaciones-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-file-pen"></i> &nbsp; Recomendaciones
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/vacantes-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-file-pen"></i> &nbsp; Vacantes
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/chats-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-comment"></i> &nbsp; Chats
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/notificaciones-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-bell"></i> &nbsp; Notificaciones
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/informacion-" className="footer-link" >
+                                        <i className="fa-solid fa-chart-simple"></i> &nbsp; Información
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/busqueda-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-magnifying-glass"></i> &nbsp; Buscar
                                     </NavLink>
                                 </li>
                             </ul>
@@ -126,13 +177,13 @@ export const RutasCandidato = () => {
                             <ul className="list-unstyled">
                                 <li>2025 - <span className="fw-bold">CODEMX</span></li>
                                 <li>Teléfono: <a href="tel:+523318237277" className="footer-link">3318237277</a></li>
-                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">contacto@codemx.com</a></li>
+                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
                             </ul>
                         </div>
 
                         {/* Redes Sociales */}
                         <div className="col-lg-3 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Síguenos</h4>
+                            <h4 className="text-uppercase mb-3">Síguenos en redes</h4>
                             <div className="d-flex justify-content-center gap-3">
                                 <a href="https://facebook.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-facebook-f"></i>
@@ -154,7 +205,6 @@ export const RutasCandidato = () => {
                     </div>
                 </div>
             </footer>
-
         </>
     );
 };

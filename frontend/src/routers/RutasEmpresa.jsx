@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
 import '../styles/header-footer.css';
 import '../styles/bienvenida/Bienvenida.css';
-import logo from '../resources/logo.png';
 
 export const RutasEmpresa = () => {
+    const [fotoPerfil, setFotoPerfil] = useState('');
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    useEffect(() => {
+        // Función para obtener datos del backend
+        const fetchData = async () => {
+        try {
+            // Fetch para obtener datos del usuario candidato
+            const empresaResponse = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_datos_empresa.php');
+            if (!empresaResponse.ok) {
+                throw new Error('Error al obtener los datos del usuario');
+            }
+            const empresaData = await empresaResponse.json();
+            console.log('Datos de la empresa:', empresaData); 
+
+            // Actualizar estados
+            setFotoPerfil(empresaData.logo || '');
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+        };
+
+        fetchData();
+    }, []);
+
+
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
+
 
     return (
         <>
@@ -13,9 +42,61 @@ export const RutasEmpresa = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="/"><img src={logo} alt="Logo" /></Link>
+                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
+                    </div>
+                    <nav className="nav d-none d-md-flex gap-4">
+                        <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-house"></i>
+                            Inicio
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-file-pen"></i>
+                            Vacantes
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/chats-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-comment"></i>
+                            Chats
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-bell"></i>
+                            Notificaciones
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/informacion-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-chart-simple"></i>
+                            Información
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                            <i className="fa-solid fa-magnifying-glass"></i>
+                            Buscar
+                        </NavLink>
+                    </nav>
+                    {/* perfil*/}
+                    <div className="perfil d-none d-md-flex">
+                        {fotoPerfil && (
+                            <Link to="/perfil-empresa">
+                                <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                            </Link>
+                        )}
+                    </div>
+                    {/* Menú responsive */}
+                    <div className="nav-responsive d-md-none" onClick={toggleMenu}>
+                        <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
+                {/* Menú desplegable para pantallas pequeñas */}
+                {menuVisible && (
+                    <div className="menu-responsive">
+                        <div className="perfil-responsive text-center mb-3">
+                            <img src={fotoPerfil} alt="Perfil" className="perfil rounded-circle" />
+                        </div>
+                        <NavLink to="/usuario-empresa/inicio-empresa"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
+                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
+                        <NavLink to="/usuario-empresa/chats-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
+                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Notificaciones</NavLink>
+                        <NavLink to="/usuario-empresa/informacion-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Información</NavLink>
+                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Buscar</NavLink>
+                    </div>
+                )}
             </div>
 
             {/* Contenido Principal */}
@@ -45,13 +126,33 @@ export const RutasEmpresa = () => {
                             <h4 className="text-uppercase mb-3">Enlaces</h4>
                             <ul className="list-unstyled">
                                 <li>
-                                    <NavLink to="/iniciar-sesion" className="footer-link">
-                                        Iniciar Sesión
+                                    <NavLink to="/usuario-empresa/inicio-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-house"></i> &nbsp; Inicio
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/crear-cuenta" className="footer-link">
-                                        Crear Cuenta
+                                    <NavLink to="/usuario-empresa/vacantes-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-file-pen"></i> &nbsp; Vacantes
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-empresa/chats-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-comment"></i> &nbsp; Chats
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-empresa/notificaciones-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-bell"></i> &nbsp; Notificaciones
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-empresa/informacion-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-chart-simple"></i> &nbsp; Información
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-empresa/busqueda-empresa" className="footer-link" >
+                                        <i className="fa-solid fa-magnifying-glass"></i> &nbsp; Buscar
                                     </NavLink>
                                 </li>
                             </ul>
@@ -63,13 +164,13 @@ export const RutasEmpresa = () => {
                             <ul className="list-unstyled">
                                 <li>2025 - <span className="fw-bold">CODEMX</span></li>
                                 <li>Teléfono: <a href="tel:+523318237277" className="footer-link">3318237277</a></li>
-                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">contacto@codemx.com</a></li>
+                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
                             </ul>
                         </div>
 
                         {/* Redes Sociales */}
                         <div className="col-lg-3 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Síguenos</h4>
+                            <h4 className="text-uppercase mb-3">Síguenos en redes</h4>
                             <div className="d-flex justify-content-center gap-3">
                                 <a href="https://facebook.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-facebook-f"></i>

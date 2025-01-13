@@ -36,7 +36,7 @@ export const Seccion1PageLogin = () => {
         if (result.redirect) {
           navigate(result.redirect); // Redirige según el valor de `redirect` recibido del backend
         } else {
-          window.location.href = `/codemx/frontend/build/usuario-${result.tipo}`;
+          window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
         }
       } else {
         setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');

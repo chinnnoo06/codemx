@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/header-footer.css';
 import '../../styles/login-crearcuenta-recuperar/form.css';
-import logo from '../../resources/logo.png';
 import { Seccion1PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion1PageRecuperar';
 import { Seccion2PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion2PageRecuperar';
 import { Seccion3PageRecuperar } from '../../components/login-crearcuenta-recuperar/Seccion3PageRecuperar';
@@ -27,7 +26,7 @@ export const PageRecuperar = () => {
       <div className="contenedor-header container-fluid w-100">
         <header className="d-flex justify-content-center align-items-center">
           <div className="logo">
-            <Link to="/"><img src={logo} alt="Logo" /></Link>
+              <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
           </div>
         </header>
       </div>

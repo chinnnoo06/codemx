@@ -3,7 +3,6 @@ import { Routes, Route, NavLink, Link } from 'react-router-dom';
 import { PageBienvenida } from '../pages/bienvenida/PageBienvenida';
 import '../styles/header-footer.css';
 import '../styles/bienvenida/Bienvenida.css';
-import logo from '../resources/logo.png';
 
 export const RutasBienvenida = () => {
 
@@ -19,7 +18,7 @@ export const RutasBienvenida = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="/"><img src={logo} alt="Logo" /></Link>
+                        <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
                     </div>
                     {/* Opciones de botones grandes */}
                     <div className="botones d-none d-md-flex gap-3">
@@ -50,7 +49,7 @@ export const RutasBienvenida = () => {
 
             {/* Footer */}
             <footer className="footer text-white py-4">
-                <div className="container">
+                <div className="footer-container mx-auto">
                     <div className="row text-center">
                         {/* Sobre Nosotros */}
                         <div className="col-lg-4 col-md-6 mb-4 mx-auto">
@@ -68,12 +67,12 @@ export const RutasBienvenida = () => {
                             <ul className="list-unstyled">
                                 <li>
                                     <NavLink to="/iniciar-sesion" className="footer-link">
-                                        Iniciar Sesión
+                                        <i className="fa-solid fa-right-to-bracket"></i> &nbsp; Iniciar Sesión
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to="/crear-cuenta" className="footer-link">
-                                        Crear Cuenta
+                                        <i class="fa-solid fa-plus"></i> &nbsp; Crear Cuenta
                                     </NavLink>
                                 </li>
                             </ul>
@@ -85,13 +84,13 @@ export const RutasBienvenida = () => {
                             <ul className="list-unstyled">
                                 <li>2025 - <span className="fw-bold">CODEMX</span></li>
                                 <li>Teléfono: <a href="tel:+523318237277" className="footer-link">3318237277</a></li>
-                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">contacto@codemx.com</a></li>
+                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
                             </ul>
                         </div>
 
                         {/* Redes Sociales */}
                         <div className="col-lg-3 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Síguenos</h4>
+                            <h4 className="text-uppercase mb-3">Síguenos en redes</h4>
                             <div className="d-flex justify-content-center gap-3">
                                 <a href="https://facebook.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-facebook-f"></i>
@@ -113,7 +112,6 @@ export const RutasBienvenida = () => {
                     </div>
                 </div>
             </footer>
-
         </>
     );
 };
