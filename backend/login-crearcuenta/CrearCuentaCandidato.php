@@ -38,15 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Rutas relativas y absolutas para almacenamiento
     $fotografiaDirRelativo = '/resources/fotos_perfil_candidatos/';
     $curriculumDirRelativo = '/resources/cv/';
-    $fotografiaDir = realpath(__DIR__ . '/../../public/resources/fotos_perfil_candidatos/');
-    $curriculumDir = realpath(__DIR__ . '/../../public/resources/cv/');
+    $fotografiaDir = __DIR__ . '/../../public/resources/fotos_perfil_candidatos/';
+    $curriculumDir = __DIR__ . '/../../public/resources/cv/';
 
     // Validar rutas y crear carpetas si no existen
-    if (!$fotografiaDir || !$curriculumDir) {
-        die(json_encode(['error' => 'Las rutas para almacenar los archivos no son válidas.']));
+    if (!file_exists($fotografiaDir)) {
+        if (!mkdir($fotografiaDir, 0777, true)) {
+            die(json_encode(['error' => 'No se pudo crear el directorio para las fotografías.']));
+        }
     }
-    if (!file_exists($fotografiaDir)) mkdir($fotografiaDir, 0777, true);
-    if (!file_exists($curriculumDir)) mkdir($curriculumDir, 0777, true);
+    if (!file_exists($curriculumDir)) {
+        if (!mkdir($curriculumDir, 0777, true)) {
+            die(json_encode(['error' => 'No se pudo crear el directorio para los currículums.']));
+        }
+    }
 
     // Guardar la fotografía
     $fotoRutaRelativa = null;
