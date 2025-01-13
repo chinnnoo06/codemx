@@ -10,14 +10,23 @@ if (!isset($_SESSION['usuario'])) {
 
 $email = $_SESSION['usuario'];
 
+
 try {
     // Consultar el ID y la foto del candidato asociado al email
-    $consulta = "
+    /*$consulta = "
         SELECT 
             ID,
             Fotografia 
         FROM candidato 
         WHERE Email = '$email'
+        LIMIT 1
+    ";*/
+    $consulta = "
+        SELECT 
+            ID,
+            Fotografia 
+        FROM candidato 
+        WHERE ID = 1
         LIMIT 1
     ";
 
