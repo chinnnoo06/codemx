@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $serverUrl = 'https://codemx.net/codemx/public';
 
     // Rutas relativas y absolutas para almacenamiento
-    $logoDirRelativo = '/resources/fotos_perfil_empresa/';
-    $logoDir = realpath(__DIR__ . '/../../public/resources/fotos_perfil_empresa/');
+    $logoDirRelativo = '/resources/fotos_perfil_empresas/';
+    $logoDir = realpath(__DIR__ . '/../../public/resources/fotos_perfil_empresas/');
 
 
     // Validar rutas y crear carpetas si no existen
