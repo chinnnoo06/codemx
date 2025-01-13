@@ -31,29 +31,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fechaCreacion = mysqli_real_escape_string($conexion, $_POST['fechaCreacion']);
     $rfc = mysqli_real_escape_string($conexion, $_POST['rfc']);
 
+    // Dominio del servidor
+    $serverUrl = 'https://codemx.net/codemx/public';
+
     // Rutas relativas y absolutas para almacenamiento
-    $logoDirRelativo = 'frontend/src/resources/fotos_perfil_empresas/';
-    $logoDir = realpath(__DIR__ . '/../../frontend/src/resources/fotos_perfil_empresas/');
+    $logoDirRelativo = '/resources/fotos_perfil_empresa/';
+    $logoDir = realpath(__DIR__ . '/../../public/resources/fotos_perfil_empresa/');
 
 
     // Validar rutas y crear carpetas si no existen
-    if (!$logoDir) {
-        die(json_encode(['error' => 'Las rutas para almacenar los archivos no son válidas.']));
+    if (!file_exists($logoDir)) {
+        if (!mkdir($logoDir, 0777, true)) {
+            die(json_encode(['error' => 'No se pudo crear el directorio para las fotografías.']));
+        }
     }
-    if (!file_exists($logoDir)) mkdir($logoDir, 0777, true);
 
     // Guardar el logo
-    $logoRutaRelativa = null;
+    $logoRutaCompleta = null;
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $logoNumero = count(glob($logoDir . "/perfil*")) + 1;
         $logoNombre = "perfil" . $logoNumero . "." . pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
         $logoRutaRelativa = $logoDirRelativo . $logoNombre;
-        if (!move_uploaded_file($_FILES['logo']['tmp_name'], $logoDir . '/' . $logoNombre)) {
+        $logoRutaCompleta = $serverUrl . $logoRutaRelativa;
+        if (!move_uploaded_file($_FILES['logo']['tmp_name'], $fotografiaDir . '/' . $fotoNombre)) {
             die(json_encode(['error' => 'Error al guardar el logo.']));
         }
     } else {
         // Asignar una imagen por defecto si no se subió ninguna fotografía
-        $logoRutaRelativa = $logoDirRelativo . 'Usuario.png';
+        $logoRutaCompleta = $serverUrl . $logoDirRelativo . 'Usuario.png';
     }
 
     // Guardar los datos de empresa
