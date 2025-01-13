@@ -46,14 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validar rutas y crear carpetas si no existen
     if (!file_exists($fotografiaDir)) {
-        if (!mkdir($fotografiaDir, 0777, true)) {
-            die(json_encode(['error' => 'No se pudo crear el directorio para las fotografías.']));
-        }
+        die(json_encode(['error' => 'El directorio para las fotografías no existe.']));
     }
     if (!file_exists($curriculumDir)) {
-        if (!mkdir($curriculumDir, 0777, true)) {
-            die(json_encode(['error' => 'No se pudo crear el directorio para los currículums.']));
-        }
+        die(json_encode(['error' => 'El directorio para los cv no existe.']));
     }
 
     // Guardar la fotografía

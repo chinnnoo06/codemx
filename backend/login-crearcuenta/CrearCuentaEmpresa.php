@@ -41,9 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validar rutas y crear carpetas si no existen
     if (!file_exists($logoDir)) {
-        if (!mkdir($logoDir, 0777, true)) {
-            die(json_encode(['error' => 'No se pudo crear el directorio para las fotografías.']));
-        }
+        die(json_encode(['error' => 'El directorio para las fotografías no existe.']));
     }
 
     // Guardar el logo
@@ -63,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Guardar los datos de empresa
     $consultaEmpresa = "INSERT INTO empresa (Nombre, Password, Descripcion, Sector, Tamanio, Estado , Direccion, Telefono, Email, Fecha_Creacion, RFC, Logo)
-        VALUES ('$nombre', '$passwordHash', '$descripcion', '$sector', '$tamanio', '$estado', '$direccion', '$telefono', '$email', '$fechaCreacion', '$rfc', '$logoRutaRelativa')";
+        VALUES ('$nombre', '$passwordHash', '$descripcion', '$sector', '$tamanio', '$estado', '$direccion', '$telefono', '$email', '$fechaCreacion', '$rfc', '$logoRutaCompleto')";
 
     if (mysqli_query($conexion, $consultaEmpresa)) {
         $empresaId = mysqli_insert_id($conexion); 
