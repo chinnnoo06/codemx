@@ -35,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $tecnologias = json_decode($_POST['tecnologias'], true); // Decodificar tecnologías del JSON enviado
 
+    // Dominio del servidor
+    $serverUrl = 'https://codemx.net/codemx/public';
+
     // Rutas relativas y absolutas para almacenamiento
     $fotografiaDirRelativo = '/resources/fotos_perfil_candidatos/';
     $curriculumDirRelativo = '/resources/cv/';
@@ -54,25 +57,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Guardar la fotografía
-    $fotoRutaRelativa = null;
+    $fotoRutaCompleta = null;
     if (isset($_FILES['fotografia']) && $_FILES['fotografia']['error'] === UPLOAD_ERR_OK) {
         $fotoNumero = count(glob($fotografiaDir . "/perfil*")) + 1;
         $fotoNombre = "perfil" . $fotoNumero . "." . pathinfo($_FILES['fotografia']['name'], PATHINFO_EXTENSION);
         $fotoRutaRelativa = $fotografiaDirRelativo . $fotoNombre;
+        $fotoRutaCompleta = $serverUrl . $fotoRutaRelativa;
         if (!move_uploaded_file($_FILES['fotografia']['tmp_name'], $fotografiaDir . '/' . $fotoNombre)) {
             die(json_encode(['error' => 'Error al guardar la fotografía.']));
         }
     } else {
         // Asignar una imagen por defecto si no se subió ninguna fotografía
-        $fotoRutaRelativa = $fotografiaDirRelativo . 'Usuario.png';
+        $fotoRutaCompleta = $serverUrl . $fotografiaDirRelativo . 'Usuario.png';
     }
 
     // Guardar el currículum
-    $cvRutaRelativa = null;
+    $cvRutaCompleta = null;
     if (isset($_FILES['curriculum']) && $_FILES['curriculum']['error'] === UPLOAD_ERR_OK) {
         $cvNumero = count(glob($curriculumDir . "/curriculum*")) + 1;
         $cvNombre = "curriculum" . $cvNumero . "." . pathinfo($_FILES['curriculum']['name'], PATHINFO_EXTENSION);
         $cvRutaRelativa = $curriculumDirRelativo . $cvNombre;
+        $cvRutaCompleta = $serverUrl . $cvRutaRelativa;
         if (!move_uploaded_file($_FILES['curriculum']['tmp_name'], $curriculumDir . '/' . $cvNombre)) {
             die(json_encode(['error' => 'Error al guardar el currículum.']));
         }
