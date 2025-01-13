@@ -27,7 +27,7 @@
 }
 .contenedor-header header .perfil img {
     max-height: 3rem; 
-    height: auto;
+    width: 2rem;
 }
 
 .contenedor-header .botones .login {
