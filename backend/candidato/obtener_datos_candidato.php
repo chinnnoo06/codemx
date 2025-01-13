@@ -1,27 +1,8 @@
 <?php
 require_once '../config/conexion.php';
-/*
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['success' => false, 'error' => 'Usuario no autenticado.']);
-    exit();
-}
-
-$email = $_SESSION['usuario'];
-
-*/
 
 try {
-    // Consultar el ID y la foto del candidato asociado al email
-   /* $consulta = "
-        SELECT 
-            ID,
-            Fotografia 
-        FROM candidato 
-        WHERE Email = '$email'
-        LIMIT 1
-    ";*/
+    // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
     $consulta = "
         SELECT 
             candidato.ID,
@@ -46,7 +27,7 @@ try {
         WHERE candidato.ID = 1
         LIMIT 1
     ";
-    
+
     $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
@@ -61,17 +42,17 @@ try {
             'success' => true,
             'id' => $fila['ID'],
             'nombre' => $fila['Nombre'],
-            'Apellido' => $fila['Apellido'],
+            'apellido' => $fila['Apellido'],
             'fecha_nacimiento' => $fila['Fecha_Nacimiento'],
             'email' => $fila['Email'],
             'telefono' => $fila['Telefono'],
             'direccion' => $fila['Direccion'],
-            'estado' => $fila['Estado'],
-            'sexo' => $fila['Sexo'],
-            'fotografia' => $fila['Forografia'],
-            'universidad' => $fila['Universidad'],
+            'estado' => $fila['Nombre'],
+            'sexo' => $fila['Nombre'],
+            'fotografia' => $fila['Fotografia'],
+            'universidad' => $fila['Nombre'],
             'tiempo_restante' => $fila['Tiempo_Restante'],
-            'modalidad_trabajo' => $fila['Modalidad_Trabajo'],
+            'modalidad_trabajo' => $fila['Nombre'],
             'cv' => $fila['CV']
         ]);
     } else {
