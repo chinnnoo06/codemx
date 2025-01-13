@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $logoNombre = "perfil" . $logoNumero . "." . pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
         $logoRutaRelativa = $logoDirRelativo . $logoNombre;
         $logoRutaCompleta = $serverUrl . $logoRutaRelativa;
-        if (!move_uploaded_file($_FILES['logo']['tmp_name'], $fotografiaDir . '/' . $fotoNombre)) {
+        if (!move_uploaded_file($_FILES['logo']['tmp_name'], $logoDir . '/' . $logoNombre)) {
             die(json_encode(['error' => 'Error al guardar el logo.']));
         }
     } else {
