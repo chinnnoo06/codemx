@@ -15,9 +15,10 @@ export const RutasCandidato = () => {
             // Fetch para obtener datos del usuario candidato
             const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
             if (!candidatoResponse.ok) {
-            throw new Error('Error al obtener los datos del usuario');
+                throw new Error('Error al obtener los datos del usuario');
             }
             const candidatoData = await candidatoResponse.json();
+            console.log('Datos del candidato:', candidatoData); // Verifica qué datos se reciben
 
             // Actualizar estados
             setCandidato(candidatoData);
