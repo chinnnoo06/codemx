@@ -20,10 +20,10 @@ try {
             modalidad_trabajo.Modalidad,
             candidato.CV
         FROM candidato
-        LEFT JOIN estado ON candidato.Estado = estado.ID
-        LEFT JOIN sexo ON candidato.Sexo = sexo.ID
-        LEFT JOIN universidad ON candidato.Universidad = universidad.ID
-        LEFT JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
+        INNER JOIN estado ON candidato.Estado = estado.ID
+        INNER JOIN sexo ON candidato.Sexo = sexo.ID
+        INNER JOIN universidad ON candidato.Universidad = universidad.ID
+        INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
         WHERE candidato.ID = 1
         LIMIT 1
     ";
