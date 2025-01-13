@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-session_start();
+/*session_start();
 
 if (!isset($_SESSION['usuario'])) {
     echo json_encode(['success' => false, 'error' => 'Usuario no autenticado.']);
@@ -9,6 +9,7 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 $email = $_SESSION['usuario'];
+*/
 
 
 try {
