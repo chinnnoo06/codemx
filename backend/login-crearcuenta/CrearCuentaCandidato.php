@@ -85,14 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mysqli_query($conexion, $consultaCandidato)) {
         $candidatoId = mysqli_insert_id($conexion); 
 
-        // Insertar valores predeterminados en detalles_publicos
-        $consultaDetallesPublicos = "INSERT INTO detalles_publicos (Candidato_ID, Fecha_Nacimiento, Genero, Universidad, Tiempo_Graduacion, Modalidad_Trabajo, Direccion, Telefono)
-        VALUES ('$candidatoId', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)";
-
-        if (!mysqli_query($conexion, $consultaDetallesPublicos)) {
-            die(json_encode(['error' => 'Error al guardar los detalles públicos: ' . mysqli_error($conexion)]));
-        }
-
         if (!empty($tecnologias)) {
             $tecnologiasQuery = "INSERT INTO tecnologias_dominadas (Candidato_ID, Tecnologia) VALUES ";
             $tecnologiasValues = [];
