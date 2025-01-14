@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fotografiaDir = __DIR__ . '/../../public/resources/fotos_perfil_candidatos/';
     $curriculumDir = __DIR__ . '/../../public/resources/cv/';
 
-    // Validar rutas y crear carpetas si no existen
+    // Validar rutas
     if (!file_exists($fotografiaDir)) {
         die(json_encode(['error' => 'El directorio para las fotografías no existe.']));
     }
