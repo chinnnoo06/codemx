@@ -40,4 +40,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Método no permitido
     echo json_encode(['error' => 'Método no permitido.']);
 }
-?>
