@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $modalidadTrabajo = mysqli_real_escape_string($conexion, $_POST['modalidadTrabajo']);
 
     // Verificar si el candidato existe
-    $verificarCandidato = "SELECT * FROM candidato WHERE id = '$idCandidato'";
+    $verificarCandidato = "SELECT * FROM candidato WHERE ID = '$idCandidato'";
     $resultado = mysqli_query($conexion, $verificarCandidato);
 
     if (mysqli_num_rows($resultado) > 0) {
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Universidad = '$universidad',
                 Tiempo_Restante = '$tiempoRestante',
                 Modalidad_Trabajo = '$modalidadTrabajo'
-            WHERE id = '$idCandidato'
+            WHERE ID = '$idCandidato'
         ";
 
         if (mysqli_query($conexion, $consultaCandidato)) {
