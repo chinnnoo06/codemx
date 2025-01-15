@@ -7,8 +7,26 @@ import { PageMiPerfilCandidato } from '../pages/candidato/PageMiPerfilCandidato'
 
 
 export const RutasCandidato = () => {
-     const [fotoPerfil, setFotoPerfil] = useState('');
-     const [menuVisible, setMenuVisible] = useState(false);
+    const [candidato, setCandidato] = useState(null);
+    const [fotoPerfil, setFotoPerfil] = useState('');
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const actualizarCandidato = (nuevoCandidato) => {
+    setCandidato(nuevoCandidato);
+
+    // Añadir timestamp a las URLs para forzar la actualización
+    const timestamp = new Date().getTime();
+    const nuevaFoto = nuevoCandidato.fotografia ? `${nuevoCandidato.fotografia}?t=${timestamp}` : '';
+    const nuevoCv = nuevoCandidato.cv ? `${nuevoCandidato.cv}?t=${timestamp}` : '';
+    setFotoPerfil(nuevaFoto);
+
+    // Actualizar el candidato con las URLs modificadas
+    setCandidato({
+        ...nuevoCandidato,
+        fotografia: nuevaFoto,
+        cv: nuevoCv,
+        });
+    };
 
     useEffect(() => {
         // Función para obtener datos del backend
@@ -115,7 +133,7 @@ export const RutasCandidato = () => {
                     <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
                     <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
-                    <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato />} />
+                    <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} actualizarCandidato={actualizarCandidato} />} />
                 </Routes>
             </section>
 
