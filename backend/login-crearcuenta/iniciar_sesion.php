@@ -80,17 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                setcookie('session_id', $session_id, [
-                    'expires' => $expira_en,
-                    'path' => '/',
-                    'domain' => 'codemx.net', // Cambia al dominio de tu aplicación
-                    'secure' => true, // Solo HTTPS
-                    'httponly' => true, // Inaccesible desde JavaScript
-                    'samesite' => 'Strict', // Solo envía cookies en el mismo dominio
-                ]);
-                
-
-                echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
+                echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
                  // Actualizar fecha de expiración del token
