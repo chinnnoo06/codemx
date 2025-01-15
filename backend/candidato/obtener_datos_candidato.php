@@ -33,7 +33,7 @@ try {
     INNER JOIN sexo ON candidato.Sexo = sexo.ID
     INNER JOIN universidad ON candidato.Universidad = universidad.ID
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
-    WHERE candidato.ID = 2
+    WHERE candidato.ID = 1
     LIMIT 1
     ";
 
