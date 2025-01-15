@@ -74,8 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                // Enviar cookie al navegador
-                setcookie('session_id', $session_id, time() + 3600, '/', '', true, true);
 
                 // Responder al cliente
                 echo json_encode(['success' => true, 'tipo' => $tipo, 'message' => 'Inicio de sesión exitoso']);
