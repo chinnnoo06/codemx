@@ -26,6 +26,25 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
         }
     };
 
+    const manejarCerrarSesion = async () => {
+        try {
+            const response = await fetch(
+                'https://www.codemx.net/codemx/backend/config/cerrar_sesion.php',
+                { method: 'POST', credentials: 'include' }
+            );
+            const result = await response.json();
+            if (result.success) {
+                alert('Sesión cerrada exitosamente.');
+                // Redirigir a la página de inicio de sesión
+                window.location.href = '/login';
+            } else {
+                alert('Error al cerrar la sesión: ' + result.error);
+            }
+        } catch (error) {
+            alert('Error al comunicarse con el servidor: ' + error.message);
+        }
+    };
+
     const manejarSubidaFoto = async (file) => {
         const formData = new FormData();
         formData.append('idCandidato', candidato.id);
@@ -185,6 +204,7 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
         <div className="botones-perfil mt-4 d-flex justify-content-center gap-3">
           <button className="btn btn-tipodos" onClick={manejarShowModalSeguidos}>Seguidos</button>
           <button className="btn btn-tipodos" onClick={manejarShowModalForm}>Actualizar información</button>
+          <button className="btn btn-danger" onClick={manejarCerrarSesion}>Cerrar Sesión</button>
         </div>
       </div>
 
