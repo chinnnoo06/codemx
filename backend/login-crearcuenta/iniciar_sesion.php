@@ -57,8 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fila['tipo'] === 'candidato') {
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
-                session_start();
-                $_SESSION['usuario'] = $email;
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
@@ -113,8 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif ($fila['tipo'] === 'empresa'){
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 1) {
-                session_start();
-                $_SESSION['usuario'] = $email;
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
