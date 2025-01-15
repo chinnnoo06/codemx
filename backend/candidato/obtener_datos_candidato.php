@@ -8,10 +8,16 @@ session_set_cookie_params([
     'domain' => '.codemx.net', // Dominio principal
     'secure' => true,         // Solo sobre HTTPS
     'httponly' => true,       // No accesible desde JavaScript
-    'samesite' => 'Lax',      // Compatible con navegadores modernos
+    'samesite' => 'None',     // Compatible con solicitudes cross-origin
 ]);
 
 session_start(); // Inicia la sesión
+
+// Habilitar CORS
+header('Access-Control-Allow-Origin: https://www.codemx.net');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Verificar si la sesión está activa
 if (!isset($_SESSION['usuario'])) {
