@@ -17,17 +17,6 @@ if (!isset($_SESSION['usuario'])) {
     echo json_encode(['success' => false, 'error' => 'Sesión no iniciada.']);
     exit();
 }
-
-setcookie('session_id', $session_id, [
-    'expires' => time() + 3600,  // 1 hora
-    'path' => '/codemx',         // Accesible desde cualquier subruta bajo /codemx
-    'domain' => 'codemx.net', // Asegura que la cookie esté disponible en todo el dominio    
-    'secure' => true,            // Requiere HTTPS
-    'httponly' => true,          // Evita acceso desde JavaScript
-    'samesite' => 'Lax',         // Suficiente para dominios locales
-]);
-
-
 $emailUsuario = $_SESSION['usuario'];
 
 try {
