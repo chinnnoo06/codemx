@@ -1,29 +1,19 @@
 <?php
 require_once '../config/conexion.php';
 
-// Configuración segura de la cookie de sesión
-session_set_cookie_params([
-    'lifetime' => 3600,       // Tiempo de vida de la cookie (1 hora)
-    'path' => '/',            // Disponible para todo el sitio
-    'domain' => '.codemx.net', // Dominio principal
-    'secure' => true,         // Solo sobre HTTPS
-    'httponly' => true,       // No accesible desde JavaScript
-    'samesite' => 'None',     // Compatible con solicitudes cross-origin
-]);
+session_start();
 
-session_start(); // Inicia la sesión
-
-// Habilitar CORS
 header('Access-Control-Allow-Origin: https://www.codemx.net');
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Verificar si la sesión está activa
 if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['success' => false, 'error' => 'Sesión no iniciada.']);
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Sesión no iniciada']);
     exit();
 }
+
 
 $emailUsuario = $_SESSION['usuario'];
 
