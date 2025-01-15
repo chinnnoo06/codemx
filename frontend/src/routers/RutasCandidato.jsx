@@ -117,13 +117,14 @@ export const RutasCandidato = () => {
                 {menuVisible && (
                     <div className="menu-responsive">
                         {fotoPerfil ? (
-                            <Link to="/usuario-candidato/miperfil-candidato">
+                            <Link to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         ) : (
-                            <Link to="/usuario-candidato/miperfil-candidato" className="perfil-text-link">
+                            <NavLink to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
                                 Mi perfil
-                            </Link>
+                                onClick={() => setMenuVisible(false)}
+                            </NavLink>
                         )}
                         <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Recomendaciones</NavLink>
