@@ -24,7 +24,7 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
             setNumSeguidos(seguidosData);
 
         } catch (error) {
-            console.error('Error al obtener los datos:', error);
+            console.error('Error al obtener los datos de seguidores:', error);
         }
         };
 
