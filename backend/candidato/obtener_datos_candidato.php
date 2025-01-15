@@ -1,9 +1,18 @@
 <?php
 require_once '../config/conexion.php';
 
+session_start(); // Inicia la sesión
+
+if (!isset($_SESSION['email'])) {
+    echo json_encode(['success' => false, 'error' => 'No se ha iniciado sesión.']);
+    exit();
+}
+
+$emailUsuario = $_SESSION['email'];
+
 try {
     // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
-    $consulta = "
+   /* $consulta = "
     SELECT 
         candidato.ID,
         candidato.Nombre AS Candidato_Nombre,
@@ -26,7 +35,31 @@ try {
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
     WHERE candidato.ID = 2
     LIMIT 1
-    ";
+    ";*/
+
+    $consulta = "
+    SELECT 
+        candidato.ID,
+        candidato.Nombre AS Candidato_Nombre,
+        candidato.Apellido,
+        candidato.Fecha_Nacimiento,
+        candidato.Email,
+        candidato.Telefono,
+        candidato.Direccion,
+        estado.Nombre AS Estado_Nombre,
+        sexo.Sexo AS Sexo_Nombre,
+        candidato.Fotografia,
+        universidad.Nombre AS Universidad_Nombre,
+        candidato.Tiempo_Restante,
+        modalidad_trabajo.Modalidad AS Modalidad_Trabajo_Nombre,
+        candidato.CV
+    FROM candidato
+    INNER JOIN estado ON candidato.Estado = estado.ID
+    INNER JOIN sexo ON candidato.Sexo = sexo.ID
+    INNER JOIN universidad ON candidato.Universidad = universidad.ID
+    INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
+    WHERE candidato.Email = '$emailUsuario'
+    LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
 
