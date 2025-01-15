@@ -41,6 +41,7 @@ export const RutasCandidato = () => {
             console.log('Datos del candidato:', candidatoData); 
 
             // Actualizar estados
+            setCandidato(candidatoData)
             setFotoPerfil(candidatoData.fotografia || '');
         } catch (error) {
             console.error('Error al obtener los datos:', error);
