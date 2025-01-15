@@ -3,6 +3,15 @@ require_once '../config/conexion.php';
 
 session_start(); // Inicia la sesión
 
+setcookie('session_id', $session_id, [
+    'expires' => time() + 3600,  // 1 hora
+    'path' => '/codemx',         // Accesible desde cualquier subruta bajo /codemx
+    'domain' => 'codemx.net', // Asegura que la cookie esté disponible en todo el dominio    
+    'secure' => true,            // Requiere HTTPS
+    'httponly' => true,          // Evita acceso desde JavaScript
+    'samesite' => 'Lax',         // Suficiente para dominios locales
+]);
+
 // Verificar si la sesión está activa
 if (!isset($_SESSION['usuario'])) {
     echo json_encode(['success' => false, 'error' => 'Sesión no iniciada.']);
