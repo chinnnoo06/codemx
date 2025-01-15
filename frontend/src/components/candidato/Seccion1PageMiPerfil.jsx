@@ -22,7 +22,7 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     const manejarCloseModalForm = async (nuevoCandidato) => {
         setShowModalForm(false);
         if (nuevoCandidato) {
-            actualizarCandidato(nuevoCandidato); // Actualizar el estado global
+            actualizarCandidato(nuevoCandidato); 
         }
     };
 
@@ -32,11 +32,10 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
                 'https://www.codemx.net/codemx/backend/config/cerrar_sesion.php',
                 { method: 'POST', credentials: 'include' }
             );
-            const result = await response.json();
+            const result = await response.json(); 
             if (result.success) {
-                alert('Sesión cerrada exitosamente.');
-                // Redirigir a la página de inicio de sesión
-                window.location.href = '/login';
+                alert(result.message); 
+                window.location.href = 'https://www.codemx.net/codemx/frontend/build';
             } else {
                 alert('Error al cerrar la sesión: ' + result.error);
             }
