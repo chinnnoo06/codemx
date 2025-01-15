@@ -1,16 +1,6 @@
 <?php
 require_once '../config/conexion.php';
 
-session_start(); // Inicia la sesión
-
-// Verificar si la sesión está activa
-if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['success' => false, 'error' => 'Sesión no iniciada.']);
-    exit();
-}
-
-$emailUsuario = $_SESSION['usuario'];
-
 try {
     // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
     /*$consulta = "
