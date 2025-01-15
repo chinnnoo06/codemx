@@ -1,11 +1,6 @@
 <?php
 require_once '../config/conexion.php';
 
-header('Access-Control-Allow-Origin: https://codemx.net'); 
-header('Access-Control-Allow-Credentials: false');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
 session_start();
 
 if (!isset($_SESSION['usuario'])) {
