@@ -167,6 +167,97 @@ export const RutasCandidato = () => {
                     <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} actualizarCandidato={actualizarCandidato} />} />
                 </Routes>
             </section>
+
+            {/* Footer */}
+            <footer className="footer text-white py-4">
+                <div className="footer-container mx-auto">
+                    <div className="row text-center">
+                        {/* Sobre Nosotros */}
+                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
+                            <p>
+                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
+                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
+                                a los programadores y empresas a encontrar la combinación perfecta.
+                            </p>
+                        </div>
+
+                        {/* Enlaces Rápidos */}
+                        <div className="col-lg-2 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Enlaces</h4>
+                            <ul className="list-unstyled">
+                                <li>
+                                    <NavLink to="/usuario-candidato/inicio-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-house"></i> &nbsp; Inicio
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/recomendaciones-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-file-pen"></i> &nbsp; Recomendaciones
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/vacantes-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-file-pen"></i> &nbsp; Vacantes
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/chats-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-comment"></i> &nbsp; Chats
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/notificaciones-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-bell"></i> &nbsp; Notificaciones
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/informacion-" className="footer-link" >
+                                        <i className="fa-solid fa-chart-simple"></i> &nbsp; Información
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-candidato/busqueda-candidato" className="footer-link" >
+                                        <i className="fa-solid fa-magnifying-glass"></i> &nbsp; Buscar
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Contacto */}
+                        <div className="col-lg-3 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Contacto</h4>
+                            <ul className="list-unstyled">
+                                <li>2025 - <span className="fw-bold">CODEMX</span></li>
+                                <li>Teléfono: <a href="tel:+523318237277" className="footer-link">3318237277</a></li>
+                                <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
+                            </ul>
+                        </div>
+
+                        {/* Redes Sociales */}
+                        <div className="col-lg-3 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Síguenos en redes</h4>
+                            <div className="d-flex justify-content-center gap-3">
+                                <a href="https://facebook.com" className="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i className="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://twitter.com" className="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i className="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://instagram.com" className="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i className="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://linkedin.com" className="social-icon" target="_blank" rel="noopener noreferrer">
+                                    <i className="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-center mt-4">
+                        <p className="mb-0">&copy; 2025 CODEMX. Todos los derechos reservados.</p>
+                    </div>
+                </div>
+            </footer>
         </>
     );
 };
