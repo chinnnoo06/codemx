@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
 import '../../styles/login-crearcuenta-recuperar/form.css';
 import { Link, useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 
 export const Seccion1PageLogin = () => {
   const [email, setEmail] = useState('');
@@ -34,8 +35,12 @@ export const Seccion1PageLogin = () => {
 
       if (result.success) {
         if (result.redirect) {
-          navigate(result.redirect); // Redirige según el valor de `redirect` recibido del backend
+          navigate(result.redirect); // Redirige según el valor de redirect recibido del backend
         } else {
+          const secretKey = process.env.REACT_APP_SECRET_KEY;
+          const encryptedSessionId = CryptoJS.AES.encrypt(result.session_id, secretKey).toString();
+
+          localStorage.setItem('session_id', encryptedSessionId);
           window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
         }
       } else {
@@ -47,6 +52,7 @@ export const Seccion1PageLogin = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
       <div className='contenedor-form container py5'>
