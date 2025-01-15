@@ -36,6 +36,7 @@ export const Seccion1PageLogin = () => {
         if (result.redirect) {
           navigate(result.redirect); // Redirige según el valor de `redirect` recibido del backend
         } else {
+          localStorage.setItem('session_id', result.session_id);
           window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
         }
       } else {
