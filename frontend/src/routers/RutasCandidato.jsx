@@ -3,6 +3,7 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
+import { PageMiPerfilCandidato } from '../pages/candidato/PageMiPerfilCandidato';
 
 
 export const RutasCandidato = () => {
@@ -78,7 +79,7 @@ export const RutasCandidato = () => {
                     {/* perfil*/}
                     <div className="perfil d-none d-md-flex">
                         {fotoPerfil && (
-                            <Link to="/usuario-candidato/perfil-candidato">
+                            <Link to="/usuario-candidato/miperfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
@@ -92,7 +93,7 @@ export const RutasCandidato = () => {
                 {menuVisible && (
                     <div className="menu-responsive">
                         {fotoPerfil && (
-                            <Link to="/usuario-candidato/perfil-candidato" onClick={() => setMenuVisible(false)}>
+                            <Link to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
@@ -114,6 +115,7 @@ export const RutasCandidato = () => {
                     <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
                     <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
+                    <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato />} />
                 </Routes>
             </section>
 
