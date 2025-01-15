@@ -40,12 +40,6 @@ export const RutasCandidato = () => {
             const candidatoData = await candidatoResponse.json();
             console.log('Datos del candidato:', candidatoData); 
 
-            if (!candidatoData.success) {
-                console.error('Sesión no iniciada:', candidatoData.error);
-                window.location.href = '/codemx/frontend/build/'; // Redirige si no hay sesión
-                return;
-            }
-
             // Actualizar estados
             setCandidato(candidatoData)
             setFotoPerfil(candidatoData.fotografia || '');
