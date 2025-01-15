@@ -2,7 +2,7 @@
 require_once '../config/conexion.php';
 
 try {
-    // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
+    // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas del candidato
     $consulta = "
     SELECT 
         candidato.ID,
