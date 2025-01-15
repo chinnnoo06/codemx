@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-session_start(); // Inicia la sesión
+/*session_start(); // Inicia la sesión
 
 if (!isset($_SESSION['usuario'])) {
     header('Location: https://www.codemx.net/codemx/frontend/build');
@@ -9,10 +9,10 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 $emailUsuario = $_SESSION['usuario'];
-
+*/
 try {
     // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
-   /* $consulta = "
+   $consulta = "
     SELECT 
         candidato.ID,
         candidato.Nombre AS Candidato_Nombre,
@@ -35,9 +35,9 @@ try {
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
     WHERE candidato.ID = 2
     LIMIT 1
-    ";*/
+    ";
 
-    $consulta = "
+   /* $consulta = "
     SELECT 
         candidato.ID,
         candidato.Nombre AS Candidato_Nombre,
@@ -60,7 +60,7 @@ try {
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
     WHERE candidato.Email = '$emailUsuario'
     LIMIT 1";
-
+*/
     $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
