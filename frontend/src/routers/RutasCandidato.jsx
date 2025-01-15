@@ -30,33 +30,26 @@ export const RutasCandidato = () => {
     };
 
     useEffect(() => {
-        // Función para obtener datos del backend
         const fetchData = async () => {
             try {
-                setLoading(true);
-
-                // Fetch para obtener datos del usuario candidato con cookies
-                const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php', {
+                const response = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php', {
                     method: 'POST',
-                    credentials: 'include', // Asegurar que las cookies de sesión se envían
+                    credentials: 'include',
                 });
-
-                if (!candidatoResponse.ok) {
-                    if (candidatoResponse.status === 401) {
-                        // Redirigir al login si no hay sesión
+    
+                if (!response.ok) {
+                    if (response.status === 401) {
                         window.location.href = '/iniciar-sesion';
                     } else {
                         throw new Error('Error al obtener los datos del usuario');
                     }
                 }
-
-                const candidatoData = await candidatoResponse.json();
-
-                if (candidatoData.success) {
-                    setCandidato(candidatoData);
-                    setFotoPerfil(candidatoData.fotografia || '');
+    
+                const data = await response.json();
+                if (data.success) {
+                    setCandidato(data.data);
                 } else {
-                    setError(candidatoData.error || 'No se pudo cargar la información del usuario');
+                    setError(data.error || 'Error desconocido');
                 }
             } catch (error) {
                 setError(error.message);
@@ -64,7 +57,7 @@ export const RutasCandidato = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
     }, []);
 
