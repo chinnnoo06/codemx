@@ -9,8 +9,6 @@ export const RutasCandidato = () => {
     const [candidato, setCandidato] = useState(null);
     const [fotoPerfil, setFotoPerfil] = useState('');
     const [menuVisible, setMenuVisible] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const actualizarCandidato = (nuevoCandidato) => {
         setCandidato(nuevoCandidato);
@@ -55,14 +53,6 @@ export const RutasCandidato = () => {
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
-
-    if (loading) {
-        return <p>Cargando datos...</p>;
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
 
     return (
         <>
