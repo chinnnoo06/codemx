@@ -3,7 +3,7 @@ require_once '../config/conexion.php';
 
 try {
     // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
-    /*$consulta = "
+    $consulta = "
     SELECT 
         candidato.ID,
         candidato.Nombre AS Candidato_Nombre,
@@ -26,8 +26,8 @@ try {
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
     WHERE candidato.ID = 1
     LIMIT 1
-    ";*/
-    $consulta = "
+    ";
+   /* $consulta = "
     SELECT 
         candidato.ID,
         candidato.Nombre AS Candidato_Nombre,
@@ -50,7 +50,7 @@ try {
     INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
     WHERE Email = '$emailUsuario'
     LIMIT 1
-    ";
+    ";*/
 
     $resultado = mysqli_query($conexion, $consulta);
 
