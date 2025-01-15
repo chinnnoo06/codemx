@@ -37,10 +37,24 @@ $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
 $password = $_POST['Password'];
 
 try {
-    // Consulta para verificar credenciales
-    $consulta = "SELECT ID, Password FROM candidato WHERE Email = ?";
+    // Consulta para verificar credenciales y tipo de usuario
+    $consulta = "
+    SELECT 
+        'candidato' AS tipo, 
+        ID, 
+        Password 
+    FROM candidato 
+    WHERE Email = ?
+    UNION
+    SELECT 
+        'empresa' AS tipo, 
+        ID, 
+        Password 
+    FROM empresa 
+    WHERE Email = ?";
+    
     $stmt = $conexion->prepare($consulta);
-    $stmt->bind_param('s', $email);
+    $stmt->bind_param('ss', $email, $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
@@ -56,10 +70,15 @@ try {
         exit();
     }
 
-    // Establecer sesión
+    // Establecer sesión y datos del usuario
     $_SESSION['usuario'] = $email;
+    $_SESSION['tipo'] = $usuario['tipo']; // Guardar tipo de usuario en sesión
 
-    echo json_encode(['success' => true, 'message' => 'Inicio de sesión exitoso']);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Inicio de sesión exitoso',
+        'tipo' => $usuario['tipo'], // Incluir el tipo de usuario en la respuesta
+    ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
