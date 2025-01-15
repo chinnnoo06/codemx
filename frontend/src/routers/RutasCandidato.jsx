@@ -78,7 +78,7 @@ export const RutasCandidato = () => {
                     {/* perfil*/}
                     <div className="perfil d-none d-md-flex">
                         {fotoPerfil && (
-                            <Link to="/perfil-candidato">
+                            <Link to="/usuario-candidato/perfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
@@ -92,7 +92,7 @@ export const RutasCandidato = () => {
                 {menuVisible && (
                     <div className="menu-responsive">
                         {fotoPerfil && (
-                            <Link to="/perfil-candidato">
+                            <Link to="/usuario-candidato/perfil-candidato" onClick={() => setMenuVisible(false)}>
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
