@@ -5,6 +5,12 @@ require '../phpmailer/src/PHPMailer.php';
 require '../phpmailer/src/SMTP.php';
 require '../phpmailer/src/Exception.php';
 
+$allowed_origin = 'https://www.codemx.net';
+header("Access-Control-Allow-Origin: $allowed_origin");
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -75,7 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Enviar cookie al navegador
-                setcookie('session_id', $session_id, time() + 3600, '/', '', true, true);
+                setcookie('session_id', $session_id, [
+                    'expires' => time() + 3600,  // 1 hora
+                    'path' => '/',
+                    'domain' => '.codemx.net',   // Permitir subdominios
+                    'secure' => true,            // Solo HTTPS
+                    'httponly' => true,          // Evita acceso desde JS
+                    'samesite' => 'None',        // Permitir uso entre sitios
+                ]);
    
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
