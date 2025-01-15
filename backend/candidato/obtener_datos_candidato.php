@@ -3,12 +3,12 @@ require_once '../config/conexion.php';
 
 session_start(); // Inicia la sesión
 
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['usuario'])) {
     echo json_encode(['success' => false, 'error' => 'No se ha iniciado sesión.']);
     exit();
 }
 
-$emailUsuario = $_SESSION['email'];
+$emailUsuario = $_SESSION['usuario'];
 
 try {
     // Consulta para obtener los datos completos del candidato y los nombres de las tablas relacionadas
