@@ -123,7 +123,6 @@ export const RutasCandidato = () => {
                         ) : (
                             <NavLink to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
                                 Mi perfil
-                                onClick={() => setMenuVisible(false)}
                             </NavLink>
                         )}
                         <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
