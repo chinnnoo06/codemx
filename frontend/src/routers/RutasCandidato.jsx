@@ -3,29 +3,11 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
-import { PageMiPerfilCandidato } from '../pages/candidato/PageMiPerfilCandidato';
+
 
 export const RutasCandidato = () => {
-    const [candidato, setCandidato] = useState(null);
-    const [fotoPerfil, setFotoPerfil] = useState('');
-    const [menuVisible, setMenuVisible] = useState(false);
-
-    const actualizarCandidato = (nuevoCandidato) => {
-        setCandidato(nuevoCandidato);
-
-        // Añadir timestamp a las URLs para forzar la actualización
-        const timestamp = new Date().getTime();
-        const nuevaFoto = nuevoCandidato.fotografia ? `${nuevoCandidato.fotografia}?t=${timestamp}` : '';
-        const nuevoCv = nuevoCandidato.cv ? `${nuevoCandidato.cv}?t=${timestamp}` : '';
-        setFotoPerfil(nuevaFoto);
-
-        // Actualizar el candidato con las URLs modificadas
-        setCandidato({
-            ...nuevoCandidato,
-            fotografia: nuevaFoto,
-            cv: nuevoCv,
-        });
-    };
+     const [fotoPerfil, setFotoPerfil] = useState('');
+     const [menuVisible, setMenuVisible] = useState(false);
 
     useEffect(() => {
         // Función para obtener datos del backend
@@ -40,7 +22,6 @@ export const RutasCandidato = () => {
             console.log('Datos del candidato:', candidatoData); 
 
             // Actualizar estados
-            setCandidato(candidatoData);
             setFotoPerfil(candidatoData.fotografia || '');
         } catch (error) {
             console.error('Error al obtener los datos:', error);
@@ -50,9 +31,11 @@ export const RutasCandidato = () => {
         fetchData();
     }, []);
 
+
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
+
 
     return (
         <>
@@ -60,47 +43,43 @@ export const RutasCandidato = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link>
+                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-none d-md-flex gap-4">
-                        <NavLink to="/usuario-candidato/inicio-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-house"></i>
                             Inicio
                         </NavLink>
-                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-file-pen"></i>
                             Recomendaciones
                         </NavLink>
-                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-briefcase"></i>
                             Vacantes
                         </NavLink>
-                        <NavLink to="/usuario-candidato/chats-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/chats-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-comment"></i>
                             Chats
                         </NavLink>
-                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-bell"></i>
                             Notificaciones
                         </NavLink>
-                        <NavLink to="/usuario-candidato/informacion-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/informacion-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-chart-simple"></i>
                             Información
                         </NavLink>
-                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({ isActive }) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center"}>
+                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-magnifying-glass"></i>
                             Buscar
                         </NavLink>
                     </nav>
                     {/* perfil*/}
                     <div className="perfil d-none d-md-flex">
-                        {fotoPerfil ? (
-                            <Link to="/usuario-candidato/miperfil-candidato">
+                        {fotoPerfil && (
+                            <Link to="/perfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
-                            </Link>
-                        ) : (
-                            <Link to="/usuario-candidato/miperfil-candidato" className="perfil-text-link">
-                                Mi perfil
                             </Link>
                         )}
                     </div>
@@ -112,16 +91,12 @@ export const RutasCandidato = () => {
                 {/* Menú desplegable para pantallas pequeñas */}
                 {menuVisible && (
                     <div className="menu-responsive">
-                        {fotoPerfil ? (
-                            <Link to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
+                        {fotoPerfil && (
+                            <Link to="/perfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
                             </Link>
-                        ) : (
-                            <NavLink to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
-                                Mi perfil
-                            </NavLink>
                         )}
-                        <NavLink to="/usuario-candidato/inicio-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Inicio</NavLink>
+                        <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Recomendaciones</NavLink>
                         <NavLink to="/usuario-candidato/vacantes-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
                         <NavLink to="/usuario-candidato/chats-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
@@ -132,13 +107,13 @@ export const RutasCandidato = () => {
                 )}
             </div>
 
+
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
                     <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
                     <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
-                    <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} actualizarCandidato={actualizarCandidato} />} />
                 </Routes>
             </section>
 
