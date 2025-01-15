@@ -4,10 +4,7 @@ require_once '../env_loader.php'; // Ruta al cargador de variables de entorno
 require '../phpmailer/src/PHPMailer.php';
 require '../phpmailer/src/SMTP.php';
 require '../phpmailer/src/Exception.php';
-require '../vendor/autoload.php'; // Autoload de Composer para JWT
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -18,10 +15,6 @@ loadEnv(__DIR__ . '/../../.env');
 if (!getenv('SMTP_HOST')) {
     die('Error: No se pudieron cargar las variables de entorno');
 }
-if (!getenv('JWT_SECRET')) {
-    die('Error: No se pudo cargar la clave secreta JWT');
-}
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
@@ -64,30 +57,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fila['tipo'] === 'candidato') {
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
-                // Crear el payload del token JWT
-                $payload = [
-                    'iss' => 'https://www.codemx.net', // Emisor del token
-                    'aud' => 'https://www.codemx.net', // Audiencia del token
-                    'iat' => time(), // Fecha de emisión
-                    'exp' => time() + 3600, // Expiración (1 hora)
-                    'data' => [
-                        'id' => $fila['ID'],
-                        'email' => $email,
-                        'tipo' => $fila['tipo']
-                    ]
-                ];
+                // Generar session_id único
+                $session_id = bin2hex(random_bytes(32));
+                $creado_en = date('Y-m-d H:i:s');
+                $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
-                // Generar el token
-                $jwt = JWT::encode($payload, getenv('JWT_SECRET'), 'HS256');
+                // Insertar sesión en la tabla
+                $tipo = $fila['tipo'];
+                $user_id = $fila['ID'];
+                $insert_query = "";
 
-                // Respuesta al cliente
-                echo json_encode([
-                    'success' => true,
-                    'token' => $jwt,
-                    'tipo' => $fila['tipo'],
-                    'message' => 'Inicio de sesión exitoso'
-                ]);
-                exit();
+                $insert_query = "INSERT INTO sesiones (Session_id, Candidato_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+
+                if (!mysqli_query($conexion, $insert_query)) {
+                    echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión: ' . mysqli_error($conexion)]);
+                    exit();
+                }
+
+                // Enviar cookie al navegador
+                setcookie('session_id', $session_id, time() + 3600, '/', '', true, true);
+
+                // Responder al cliente
+                echo json_encode(['success' => true, 'tipo' => $tipo, 'message' => 'Inicio de sesión exitoso']);
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
                  // Actualizar fecha de expiración del token
                  $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
@@ -140,29 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif ($fila['tipo'] === 'empresa'){
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 1) {
-                // Crear el payload del token JWT
-                $payload = [
-                    'iss' => 'https://www.codemx.net', // Emisor del token
-                    'aud' => 'https://www.codemx.net', // Audiencia del token
-                    'iat' => time(), // Fecha de emisión
-                    'exp' => time() + 3600, // Expiración (1 hora)
-                    'data' => [
-                        'id' => $fila['ID'],
-                        'email' => $email,
-                        'tipo' => $fila['tipo']
-                    ]
-                ];
-
-                // Generar el token
-                $jwt = JWT::encode($payload, getenv('JWT_SECRET'), 'HS256');
-
-                // Respuesta al cliente
-                echo json_encode([
-                    'success' => true,
-                    'token' => $jwt,
-                    'tipo' => $fila['tipo'],
-                    'message' => 'Inicio de sesión exitoso'
-                ]);
+                session_start();
+                $_SESSION['usuario'] = $email;
+                echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
                 echo json_encode(['success' => true, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar RFC.']);
