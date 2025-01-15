@@ -20,15 +20,15 @@ export const Seccion1PageLogin = () => {
 
     try {
         const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/iniciar_sesion.php', {
-            method: 'POST',
-            credentials: 'include', // Envía cookies de sesión
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                Correo_Electronico: email,
-                Password: password,
-            }),
+          method: 'POST',
+          credentials: 'include', // Envía cookies de sesión
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+              Correo_Electronico: email,
+              Password: password,
+          }),
         });
 
         const result = await response.json();
