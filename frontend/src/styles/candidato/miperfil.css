@@ -1,0 +1,199 @@
+.seccion {
+    max-width: 900px;
+    background: #dde1e9;
+    border-radius: 15px;
+    width: 100%;
+    padding: 0; /* Eliminar padding */
+}
+
+.perfil-container {
+    width: 100%; 
+    padding: 0; 
+    margin: 0; 
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Fondo del encabezado */
+.perfil-header img {
+    width: 100%;
+    height: 15rem;
+    object-fit: cover;
+}
+
+/* Contenedor de la foto de perfil */
+.foto-perfil-container {
+    position: relative;
+    margin-top: -5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Foto de perfil */
+.foto-perfil {
+    width: 10rem;
+    height: 10rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de editar foto */
+.perfilfoto-edit-btn {
+    position: absolute;
+    bottom: 0.5rem; 
+    right: 0.5rem; 
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+    border-radius: 50%;
+    padding: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.boton-container{
+    position: relative;
+}
+
+.perfil-edit-btn {
+    position: absolute;
+    top: -6rem; 
+    right: 0.5rem; 
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+    border-radius: 50%;
+    padding: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2; 
+}
+
+.perfilfoto-edit-btn:hover,
+.perfil-edit-btn:hover{
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);
+    color: #0B1C26;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #0B1C26; 
+}
+
+
+/* Detalles del usuario */
+.perfil-body h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.perfil-body p {
+    margin: 0;
+}
+
+.cv-link {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Botones */
+.foto-perfil-container .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+}
+
+.btn-tipouno{
+    background-color: #0B1C26; 
+    color: #dde1e9; 
+    transition: all 0.3s ease; 
+  }
+  
+.btn-tipodos{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+}
+
+.btn-tipodos:hover,
+.btn-tipouno:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #0B1C26;
+}
+
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+  
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    max-height: 80vh; 
+    overflow-y: auto;
+ }
+  
+.modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+  
+.form-group {
+    margin-bottom: 1rem;
+}
+  
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Botón de cierre */
+.close-button {
+    position: absolute;
+    top: 10px; 
+    left: 10px;
+    border-radius: 50%; 
+    width: 20px; 
+    height: 20px; 
+    font-size: 14px; 
+    font-weight: bold;
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+
+@media (max-width: 768px) { 
+    .contenedor-todo{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .foto-perfil-container .btn{
+        font-size: 0.80rem;
+    }
+    .botones-modal .btn,
+    .form .btn,
+    .botones-perfil .btn{
+        font-size: 0.80rem;
+    }
+
+}

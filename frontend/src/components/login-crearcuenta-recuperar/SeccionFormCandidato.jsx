@@ -391,31 +391,18 @@ const Paso2 = ({ errors, formData, manejarValorInput, modalidades, universidades
       <label htmlFor="universidad" className="form-label">
         Universidad donde estudiaste o donde sigues estudiando <span className="text-danger">*</span>
       </label>
-      <select id="universidad" name="universidad" className="form-select form-select-lg custom-font-select" value={formData.universidad}
-        onChange={(e) => {
-          const { value } = e.target;
-          manejarValorInput({
-            target: {
-              name: 'universidad',
-              value: value === 'Otra' || value === 'No estudio' ? null : value,
-            },
-          });
-        }}
-        required
-      >
-        <option value="">Seleccione una universidad</option>
-        {universidades.map((universidad) => (
-          <option key={universidad.id} value={universidad.id}>
-            {universidad.nombre}
-          </option>
-        ))}
-        <option value="Otra">Otra</option>
-        <option value="No estudio">No estudio</option>
+      <select id="universidad" name="universidad" className="form-select form-select-lg custom-font-select" value={formData.universidad} onChange={manejarValorInput} required>
+      <option value="">Seleccione una universidad</option>
+          {universidades.map((universidad) => (
+            <option key={universidad.id} value={universidad.id}>
+              {universidad.nombre}
+            </option>
+          ))}
       </select>
       {errors.universidad && <small className="text-danger">{errors.universidad}</small>}
     </div>
 
-    {formData.universidad !== null && (
+    {formData.universidad !== "56" && (
       <div className="mb-3">
         <label htmlFor="tiempoRestante" className="form-label">Tiempo restante (aproximado) para terminar la universidad <span className="text-danger">*</span></label>
         <select id="tiempoRestante" name="tiempoRestante" className="form-select form-select-lg custom-font-select" value={formData.tiempoRestante} onChange={manejarValorInput} required>
