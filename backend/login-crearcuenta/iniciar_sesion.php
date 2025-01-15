@@ -57,8 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fila['tipo'] === 'candidato') {
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
-                 
-                    echo json_encode(['success' => true, 'tipo' => $tipo, 'message' => 'Inicio de sesión exitoso']);
+                echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
                  // Actualizar fecha de expiración del token
