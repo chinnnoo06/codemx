@@ -4,7 +4,7 @@ require_once '../config/conexion.php';
 session_start(); // Inicia la sesión
 
 if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['success' => false, 'error' => 'No se ha iniciado sesión.']);
+    header('Location: https://www.codemx.net/codemx/frontend/build');
     exit();
 }
 
