@@ -15,38 +15,38 @@ export const Seccion1PageLogin = () => {
   };
 
   const enviar = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     setIsLoading(true);
 
     try {
-        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/iniciar_sesion.php', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-              Correo_Electronico: email,
-              Password: password,
-          }),
-        });
+      const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/iniciar_sesion.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ 
+          Correo_Electronico: email,
+          Password: password,
+        }),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (result.success) {
-            if (result.redirect) {
-                navigate(result.redirect);
-            } else {
-                window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
-            }
+      if (result.success) {
+        if (result.redirect) {
+          navigate(result.redirect); // Redirige según el valor de `redirect` recibido del backend
         } else {
-            setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');
+          window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
         }
+      } else {
+        setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');
+      }
     } catch (error) {
-        setMensaje('Hubo un problema con el servidor. Intenta más tarde.');
+      setMensaje('Hubo un problema con el servidor. Intenta más tarde.');
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
 
   return (
       <div className='contenedor-form container py5'>
