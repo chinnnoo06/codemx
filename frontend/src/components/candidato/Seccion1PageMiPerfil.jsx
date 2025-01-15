@@ -6,6 +6,30 @@ import { ModalEditarPerfil } from './ModalEditarPerfil';
 export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     const [showModalSeguidos, setShowModalSeguidos] = useState(false);
     const [showModalForm, setShowModalForm] = useState(false);
+    const [numSeguidos, setNumSeguidos] = useState(0);
+
+    useEffect(() => {
+        // Función para obtener datos del backend
+        const fetchData = async () => {
+        try {
+            // Fetch para obtener las cuentas que sigue el candidato
+            const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php');
+            if (!seguidosResponse.ok) {
+                throw new Error('Error al obtener los datos');
+            }
+            const seguidosData = await seguidosResponse.json();
+            console.log('Datos del candidato:', seguidosData); 
+
+            // Actualizar estados
+            setNumSeguidos(seguidosData);
+
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
+        };
+
+        fetchData();
+    }, []);
 
     const manejarShowModalSeguidos = () => {
         setShowModalSeguidos(true);
@@ -167,6 +191,8 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     
 
             <p className="text-muted">{`Teléfono: ${candidato.telefono}`}</p>
+
+            <p className="text-muted">{`Siguiendo: ${numSeguidos}`}</p>
 
             <p className="text-muted">
                 {candidato.cv ? (
