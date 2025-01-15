@@ -98,9 +98,13 @@ export const RutasCandidato = () => {
                     </nav>
                     {/* perfil*/}
                     <div className="perfil d-none d-md-flex">
-                        {fotoPerfil && (
+                        {fotoPerfil ? (
                             <Link to="/usuario-candidato/miperfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                            </Link>
+                        ) : (
+                            <Link to="/usuario-candidato/miperfil-candidato" className="perfil-text-link">
+                                Mi perfil
                             </Link>
                         )}
                     </div>
@@ -112,9 +116,13 @@ export const RutasCandidato = () => {
                 {/* Menú desplegable para pantallas pequeñas */}
                 {menuVisible && (
                     <div className="menu-responsive">
-                        {fotoPerfil && (
+                        {fotoPerfil ? (
                             <Link to="/usuario-candidato/miperfil-candidato">
                                 <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                            </Link>
+                        ) : (
+                            <Link to="/usuario-candidato/miperfil-candidato" className="perfil-text-link">
+                                Mi perfil
                             </Link>
                         )}
                         <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
