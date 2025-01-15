@@ -33,9 +33,7 @@ export const RutasCandidato = () => {
         const fetchData = async () => {
         try {
             // Fetch para obtener datos del usuario candidato
-            const candidatoResponse = await fetch('https://codemx.net/codemx/backend/candidato/obtener_datos_candidato.php', {
-                method: 'GET',
-            });
+            const candidatoResponse = await fetch('https://codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
             if (!candidatoResponse.ok) {
                 throw new Error('Error al obtener los datos del usuario');
             }
