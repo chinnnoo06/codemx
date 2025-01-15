@@ -57,6 +57,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fila['tipo'] === 'candidato') {
             if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
+                // Generar session_id único
+                $session_id = bin2hex(random_bytes(32));
+                $creado_en = date('Y-m-d H:i:s');
+                $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+                // Insertar sesión en la tabla
+                $tipo = $fila['tipo'];
+                $user_id = $fila['ID'];
+                $insert_query = "";
+
+                $insert_query = "INSERT INTO sesiones (Session_id, Candidato_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+
+                if (!mysqli_query($conexion, $insert_query)) {
+                    echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión: ' . mysqli_error($conexion)]);
+                    exit();
+                }
+
+                // Enviar cookie al navegador
+                setcookie('session_id', $session_id, time() + 3600, '/', '', true, true);
+   
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo']]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
