@@ -9,33 +9,9 @@ export const RutasCandidato = () => {
      const [fotoPerfil, setFotoPerfil] = useState('');
      const [menuVisible, setMenuVisible] = useState(false);
 
-    useEffect(() => {
-        // Función para obtener datos del backend
-        const fetchData = async () => {
-        try {
-            // Fetch para obtener datos del usuario candidato
-            const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-            if (!candidatoResponse.ok) {
-                throw new Error('Error al obtener los datos del usuario');
-            }
-            const candidatoData = await candidatoResponse.json();
-            console.log('Datos del candidato:', candidatoData); 
-
-            // Actualizar estados
-            setFotoPerfil(candidatoData.fotografia || '');
-        } catch (error) {
-            console.error('Error al obtener los datos:', error);
-        }
-        };
-
-        fetchData();
-    }, []);
-
-
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
-
 
     return (
         <>
