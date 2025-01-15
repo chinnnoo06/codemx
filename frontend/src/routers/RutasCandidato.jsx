@@ -30,34 +30,25 @@ export const RutasCandidato = () => {
     };
 
     useEffect(() => {
+        // Función para obtener datos del backend
         const fetchData = async () => {
-            try {
-                const response = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                });
-    
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        window.location.href = '/iniciar-sesion';
-                    } else {
-                        throw new Error('Error al obtener los datos del usuario');
-                    }
-                }
-    
-                const data = await response.json();
-                if (data.success) {
-                    setCandidato(data.data);
-                } else {
-                    setError(data.error || 'Error desconocido');
-                }
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+        try {
+            // Fetch para obtener datos del usuario candidato
+            const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
+            if (!candidatoResponse.ok) {
+                throw new Error('Error al obtener los datos del usuario');
             }
+            const candidatoData = await candidatoResponse.json();
+            console.log('Datos del candidato:', candidatoData); 
+
+            // Actualizar estados
+            setCandidato(candidatoData);
+            setFotoPerfil(candidatoData.fotografia || '');
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+        }
         };
-    
+
         fetchData();
     }, []);
 
