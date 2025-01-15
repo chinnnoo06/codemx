@@ -1,8 +1,8 @@
 <?php
 require_once '../config/conexion.php';
 
-header('Access-Control-Allow-Origin: https://codemx.net/codemx/frontend/build/usuario-candidato/'); 
-header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Origin: https://codemx.net'); 
+header('Access-Control-Allow-Credentials: false');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
