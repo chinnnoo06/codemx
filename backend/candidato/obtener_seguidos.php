@@ -1,19 +1,6 @@
 <?php
 require_once '../config/conexion.php';
 
-// Encabezados para habilitar CORS
-$allowed_origin = 'https://www.codemx.net';
-header("Access-Control-Allow-Origin: $allowed_origin");
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
-// Manejo del método OPTIONS (Preflight)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204); // No Content
-    exit();
-}
-
 // Verificar el método de la solicitud
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtener los datos del cuerpo de la solicitud
