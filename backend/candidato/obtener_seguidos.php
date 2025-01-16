@@ -2,9 +2,7 @@
 require_once '../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Datos recibidos del formulario
-    $data = json_decode(file_get_contents('php://input'), true);
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); 
+    $idCandidato = $_POST['idCandidato'] ?? null;
 
     // Verificar si el candidato sigue a alguna empresa
     $consultaSiguiendo = "
