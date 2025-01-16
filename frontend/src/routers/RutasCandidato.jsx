@@ -56,8 +56,8 @@ export const RutasCandidato = () => {
                     // Actualiza el estado con los datos recibidos
                     setCandidato(result);
                     setFotoPerfil(result.fotografia || "");
-                } else {
-                    console.error("Error en el backend:", result.error);
+                } else if (result.error) {
+                    window.location.href = `/codemx/frontend/build/iniciar-sesion`;
                 }
             } catch (error) {
                 console.error("Error al obtener los datos del candidato:", error);
