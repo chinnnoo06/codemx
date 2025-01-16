@@ -80,6 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
+                // Limpiar sesiones vencidas
+                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$expira_en'";
+
+                if (!mysqli_query($conexion, $consultaEliminar)) {
+                    echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
+                    exit();
+                }
+
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
                 exit();
             } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
