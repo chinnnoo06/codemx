@@ -57,6 +57,7 @@ export const RutasCandidato = () => {
                     setCandidato(result);
                     setFotoPerfil(result.fotografia || "");
                 } else if (result.error) {
+                    alert("Necesitas iniciar sesión")
                     window.location.href = `/codemx/frontend/build/iniciar-sesion`;
                 }
             } catch (error) {
