@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import img from '../../resources/fondo.png';
 import '../../styles/candidato/miperfil.css';
 import { ModalEditarPerfil } from './ModalEditarPerfil';
+import CryptoJS from "crypto-js";
 
 export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     const [showModalSeguidos, setShowModalSeguidos] = useState(false);
@@ -11,25 +12,25 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     useEffect(() => {
         // Función para obtener datos del backend
         const fetchData = async () => {
-        try {
-            // Fetch para obtener las cuentas que sigue el candidato
-            const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php');
-            if (!seguidosResponse.ok) {
-                throw new Error('Error al obtener los datos');
+            try {
+                // Fetch para obtener las cuentas que sigue el candidato
+                const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php');
+                if (!seguidosResponse.ok) {
+                    throw new Error('Error al obtener los datos');
+                }
+                const seguidosData = await seguidosResponse.json();
+                console.log('Datos del candidato:', seguidosData); 
+
+                // Actualizar estados
+                setNumSeguidos(seguidosData);
+
+            } catch (error) {
+                console.error('Error al obtener los datos de seguidores:', error);
             }
-            const seguidosData = await seguidosResponse.json();
-            console.log('Datos del candidato:', seguidosData); 
+            };
 
-            // Actualizar estados
-            setNumSeguidos(seguidosData);
-
-        } catch (error) {
-            console.error('Error al obtener los datos de seguidores:', error);
-        }
-        };
-
-        fetchData();
-    }, []);
+            fetchData();
+        }, []);
 
     const manejarShowModalSeguidos = () => {
         setShowModalSeguidos(true);
@@ -51,11 +52,21 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     };
 
     const manejarCerrarSesion = async () => {
+        const secretKey = process.env.REACT_APP_SECRET_KEY; // Clave secreta definida en tu archivo .env
+        const encryptedSessionId = localStorage.getItem("session_id"); // Obtén el session_id cifrado
+
+        if (!encryptedSessionId) {
+            console.error("No se encontró el session_id en el localStorage.");
+            return;
+        }
+
+        // Desencripta el session_id
+        const sessionId = CryptoJS.AES.decrypt(encryptedSessionId, secretKey).toString(CryptoJS.enc.Utf8);
         try {
-            const response = await fetch(
-                'https://www.codemx.net/codemx/backend/config/cerrar_sesion.php',
-                { method: 'POST', credentials: 'include' }
-            );
+            const response = await fetch("https://www.codemx.net/codemx/backend/config/cerrar_sesion.php", {
+                method: "POST",
+                body: JSON.stringify({ session_id: sessionId }), 
+            });
             const result = await response.json(); 
             if (result.success) {
                 alert(result.message); 
