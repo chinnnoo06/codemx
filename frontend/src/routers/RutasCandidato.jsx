@@ -99,7 +99,7 @@ export const RutasCandidato = () => {
                     <div className="perfil d-none d-md-flex">
                         {fotoPerfil && (
                             <Link to="/usuario-candidato/miperfil-candidato">
-                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                                <img src={`${fotoPerfil}?t=${new Date().getTime()}`} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
                     </div>
@@ -113,7 +113,7 @@ export const RutasCandidato = () => {
                     <div className="menu-responsive">
                         {fotoPerfil && (
                             <Link to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
-                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
+                                <img src={`${fotoPerfil}?t=${new Date().getTime()}`}alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
                         <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>

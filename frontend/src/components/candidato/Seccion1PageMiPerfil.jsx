@@ -8,13 +8,24 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
     const [showModalSeguidos, setShowModalSeguidos] = useState(false);
     const [showModalForm, setShowModalForm] = useState(false);
     const [numSeguidos, setNumSeguidos] = useState(0);
+    const[empresas, setEmpresas]=useState(null);
+
+
 
     useEffect(() => {
         // Función para obtener datos del backend
         const fetchData = async () => {
             try {
                 // Fetch para obtener las cuentas que sigue el candidato
-                const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php');
+                const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    },
+                    body: JSON.stringify({ idCandidato: candidato.id }), 
+                });
+                
+
                 if (!seguidosResponse.ok) {
                     throw new Error('Error al obtener los datos');
                 }
@@ -22,15 +33,16 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                 console.log('Datos del candidato:', seguidosData); 
 
                 // Actualizar estados
-                setNumSeguidos(seguidosData);
+                setNumSeguidos(seguidosData.cantidad);
+                setEmpresas(seguidosData.empresas);
 
             } catch (error) {
                 console.error('Error al obtener los datos de seguidores:', error);
             }
             };
-
+            
             fetchData();
-        }, []);
+    }, []);
 
     const manejarShowModalSeguidos = () => {
         setShowModalSeguidos(true);
@@ -118,8 +130,8 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
     
             const result = await response.json();
             if (result.success) {
-                window.location.reload(); // Recarga la página
                 alert('CV subido exitosamente');
+                window.location.reload(); 
 ;
             } else {
                 alert('Error al actualizar el cv:', result.error);
@@ -144,7 +156,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
         <div className="foto-perfil-container">
             {candidato.fotografia && (
                 <img
-                src={candidato.fotografia}
+                src={`${candidato.fotografia}?t=${new Date().getTime()}`}
                 alt="Perfil"
                 className="foto-perfil rounded-circle"
                 />
@@ -193,7 +205,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             <p className="text-muted">
                 {candidato.cv ? (
                     <>
-                        CV: <a href={candidato.cv} target="_blank" rel="noopener noreferrer" className="cv-link">Ver PDF</a>
+                        CV: <a href={`${candidato.cv}?t=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer" className="cv-link">Ver PDF</a>
                     </>
                 ) : (
                     "Sube tu currículum"
@@ -223,7 +235,6 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
         {/* Botones */}
         <div className="botones-perfil mt-4 d-flex justify-content-center gap-3">
-          <button className="btn btn-tipodos" onClick={manejarShowModalSeguidos}>Seguidos</button>
           <button className="btn btn-tipodos" onClick={manejarShowModalForm}>Actualizar información</button>
           <button className="btn btn-danger" onClick={manejarCerrarSesion}>Cerrar Sesión</button>
         </div>
