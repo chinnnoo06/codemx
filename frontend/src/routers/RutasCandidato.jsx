@@ -4,6 +4,7 @@ import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
 import { PageMiPerfilCandidato } from '../pages/candidato/PageMiPerfilCandidato';
+import CryptoJS from "crypto-js";
 
 
 export const RutasCandidato = () => {
@@ -29,28 +30,43 @@ export const RutasCandidato = () => {
     };
 
     useEffect(() => {
-        // Función para obtener datos del backend
         const fetchData = async () => {
-        try {
-            // Fetch para obtener datos del usuario candidato
-            const candidatoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-            if (!candidatoResponse.ok) {
-                throw new Error('Error al obtener los datos del usuario');
+            const secretKey = process.env.REACT_APP_SECRET_KEY; // Clave secreta definida en tu archivo .env
+            const encryptedSessionId = localStorage.getItem("session_id"); // Obtén el session_id cifrado
+    
+            if (!encryptedSessionId) {
+                console.error("No se encontró el session_id en el localStorage.");
+                return;
             }
-            const candidatoData = await candidatoResponse.json();
-            console.log('Datos del candidato:', candidatoData); 
-
-            // Actualizar estados
-            setCandidato(candidatoData)
-            setFotoPerfil(candidatoData.fotografia || '');
-        } catch (error) {
-            console.error('Error al obtener los datos:', error);
-        }
+    
+            // Desencripta el session_id
+            const sessionId = CryptoJS.AES.decrypt(encryptedSessionId, secretKey).toString(CryptoJS.enc.Utf8);
+    
+            try {
+                // Realiza la solicitud al backend enviando el session_id desencriptado
+                const response = await fetch("https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php", {
+                    method: "POST",
+                    body: JSON.stringify({ session_id: sessionId }), 
+                });
+    
+                const result = await response.json();
+    
+                if (result.success) {
+                    console.log("Datos del candidato:", result);
+                    // Actualiza el estado con los datos recibidos
+                    setCandidato(result);
+                    setFotoPerfil(result.fotografia || "");
+                } else {
+                    console.error("Error en el backend:", result.error);
+                }
+            } catch (error) {
+                console.error("Error al obtener los datos del candidato:", error);
+            }
         };
-
+    
         fetchData();
     }, []);
-
+    
 
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);

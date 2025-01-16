@@ -37,8 +37,14 @@ export const Seccion1PageLogin = () => {
         if (result.redirect) {
           navigate(result.redirect); // Redirige según el valor de redirect recibido del backend
         } else {
-          
-          localStorage.setItem('session_id', result.session_id);
+        // Obtén la clave secreta del archivo .env
+        const secretKey = process.env.REACT_APP_SECRET_KEY;
+
+        // Cifra el session_id con la clave secreta
+        const encryptedSessionId = CryptoJS.AES.encrypt(result.session_id, secretKey).toString();
+
+        // Guarda el session_id cifrado en localStorage
+        localStorage.setItem('session_id', encryptedSessionId);
           window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
         }
       } else {
