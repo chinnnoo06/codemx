@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consulta SQL para obtener las empresas que sigue el candidato
     $consultaSiguiendo = "
-        SELECT empresa.Empresa_ID, empresa.Nombre, empresa.Email
+        SELECT empresa.ID, empresa.Nombre, empresa.Logo
         FROM seguidores
-        INNER JOIN empresa ON seguidores.Empresa_ID = empresa.Empresa_ID
+        INNER JOIN empresa ON seguidores.Empresa_ID = empresa.ID
         WHERE seguidores.Candidato_ID = '$idCandidato'
     ";
 
