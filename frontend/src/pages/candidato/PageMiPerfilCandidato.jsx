@@ -13,7 +13,7 @@ export const PageMiPerfilCandidato = ({ candidato, actualizarCandidato }) => {
         <>
         <div className='contenedor-todo'>
             <div className='seccion container mt-4 d-flex justify-content-center'>
-                <Seccion1PageMiPerfil candidato={candidato} actualizarCandidato={actualizarCandidato}/>
+                <Seccion1PageMiPerfil candidato={candidato}/>
             </div>
             <div className='seccion container mt-4 py-5 d-flex justify-content-center'>
                 <Seccion2PageMiperfil/>

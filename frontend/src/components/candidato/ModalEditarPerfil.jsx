@@ -208,10 +208,8 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                 const result = await response.json();
     
                 if (result.success) {
-                    const actualizadoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-                    const candidatoActualizado = await actualizadoResponse.json();
-    
-                    manejarCloseModalForm(candidatoActualizado);
+                    manejarCloseModalForm();
+                    window.location.reload(); // Recarga la página
                 } else {
                     alert(result.error || 'Hubo un error al actualizar.');
                 }
@@ -252,10 +250,8 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                 const result = await response.json();
     
                 if (result.success) {
-                    const actualizadoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-                    const candidatoActualizado = await actualizadoResponse.json();
-    
-                    manejarCloseModalForm(candidatoActualizado);
+                    manejarCloseModalForm();
+                    window.location.reload(); 
                 } else {
                     alert(result.error || 'Hubo un error al actualizar.');
                 }

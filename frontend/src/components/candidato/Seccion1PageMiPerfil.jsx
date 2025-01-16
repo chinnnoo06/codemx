@@ -4,7 +4,7 @@ import '../../styles/candidato/miperfil.css';
 import { ModalEditarPerfil } from './ModalEditarPerfil';
 import CryptoJS from "crypto-js";
 
-export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
+export const Seccion1PageMiPerfil = ({ candidato }) => {
     const [showModalSeguidos, setShowModalSeguidos] = useState(false);
     const [showModalForm, setShowModalForm] = useState(false);
     const [numSeguidos, setNumSeguidos] = useState(0);
@@ -44,11 +44,8 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
         setShowModalForm(true);
     };
 
-    const manejarCloseModalForm = async (nuevoCandidato) => {
+    const manejarCloseModalForm = async () => {
         setShowModalForm(false);
-        if (nuevoCandidato) {
-            actualizarCandidato(nuevoCandidato); 
-        }
     };
 
     const manejarCerrarSesion = async () => {
@@ -95,14 +92,8 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     
             const result = await response.json();
             if (result.success) {
-                const actualizadoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-                const candidatoActualizado = await actualizadoResponse.json();
-
-                // Añadir timestamp para evitar problemas de caché
-                const timestamp = new Date().getTime();
-                candidatoActualizado.fotografia = `${candidatoActualizado.fotografia}?t=${timestamp}`;
-                actualizarCandidato(candidatoActualizado);
                 alert('Foto de perfil subida exitosamente');
+                window.location.reload(); // Recarga la página
             } else {
                 alert('Error al actualizar la foto:', result.error);
             }
@@ -127,13 +118,7 @@ export const Seccion1PageMiPerfil = ({ candidato, actualizarCandidato }) => {
     
             const result = await response.json();
             if (result.success) {
-                const actualizadoResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_datos_candidato.php');
-                const candidatoActualizado = await actualizadoResponse.json();
-
-                // Añadir timestamp para evitar problemas de caché
-                const timestamp = new Date().getTime();
-                candidatoActualizado.cv = `${candidatoActualizado.cv}?t=${timestamp}`;
-                actualizarCandidato(candidatoActualizado);
+                window.location.reload(); // Recarga la página
                 alert('CV subido exitosamente');
 ;
             } else {
