@@ -3,13 +3,14 @@ require_once '../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Datos recibidos del formulario
-    $idCandidato = file_get_contents('php://input'); 
+    $data = json_decode(file_get_contents('php://input'), true);
+    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); 
 
     // Verificar si el candidato sigue a alguna empresa
     $consultaSiguiendo = "
         SELECT empresa.Empresa_ID, empresa.Nombre, empresa.Email
         FROM seguidores
-        INNER JOIN empresa ON seguidores.Empresa_ID = empresas.Empresa_ID
+        INNER JOIN empresa ON seguidores.Empresa_ID = empresa.Empresa_ID
         WHERE seguidores.Candidato_ID = '$idCandidato'
     ";
     $resultado = mysqli_query($conexion, $consultaSiguiendo);
