@@ -7,9 +7,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verificar si el candidato sigue a alguna empresa
     $consultaSiguiendo = "
-        SELECT empresas.Empresa_ID, empresas.Nombre, empresas.Email
+        SELECT empresa.Empresa_ID, empresa.Nombre, empresa.Email
         FROM seguidores
-        INNER JOIN empresas ON seguidores.Empresa_ID = empresas.Empresa_ID
+        INNER JOIN empresa ON seguidores.Empresa_ID = empresas.Empresa_ID
         WHERE seguidores.Candidato_ID = '$idCandidato'
     ";
     $resultado = mysqli_query($conexion, $consultaSiguiendo);
