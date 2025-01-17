@@ -20,7 +20,7 @@ try {
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Sesión cerrada correctamente.']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Error al eliminar la sesión: ' . mysqli_error($conexion)]);
+        echo json_encode(['error' => false, 'error' => 'Error al eliminar la sesión: ' . mysqli_error($conexion)]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);

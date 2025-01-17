@@ -30,12 +30,12 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
     // Busca el ID del candidato en la tabla sesiones usando el session_id
-    $consulta = " DELETE FROM seguidores WHERE Candidato_ID = '$id_Candidato' AND Empresa_ID > '$idEmpresa' ";
+    $consulta = " DELETE FROM seguidores WHERE Candidato_ID = '$idCandidato' AND Empresa_ID > '$idEmpresa' ";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Siguimiento eliminado.']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
+        echo json_encode(['error' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
