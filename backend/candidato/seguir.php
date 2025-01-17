@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 try {
     // Obtén el cuerpo de la solicitud
+    $fechaActual = date('Y-m-d H:i:s');
     $data = json_decode(file_get_contents('php://input'), true);
 
     // Verificar que el idCandidato esté presente
@@ -29,12 +30,12 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
     // Busca el ID del candidato en la tabla sesiones usando el session_id
-    $consulta = " DELETE FROM seguidores WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa' ";
+    $consulta = "INSERT INTO seguidores (Candidato_ID, Empresa_ID, Fecha_Seguimiento) VALUES ('$idCandidato',  '$idEmpresa', '$fechaActual') ";
 
     if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => true, 'message' => 'Siguimiento eliminado.']);
+        echo json_encode(['success' => true, 'message' => 'Seguimiento agregado.']);
     } else {
-        echo json_encode(['error' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
+        echo json_encode(['error' => false, 'error' => 'Error al agregar: ' . mysqli_error($conexion)]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
