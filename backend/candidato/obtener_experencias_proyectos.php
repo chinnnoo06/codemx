@@ -25,45 +25,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Consulta SQL para obtener las empresas que sigue el candidato
-    $consultaSiguiendo = "
-        SELECT empresa.ID, empresa.Nombre, empresa.Logo
-        FROM seguidores
-        INNER JOIN empresa ON seguidores.Empresa_ID = empresa.ID
-        WHERE seguidores.Candidato_ID = '$idCandidato'
-    ";
+    $consultaExperiencias = "SELECT * FROM experencia_laboral WHERE Candidato_ID = '$idCandidato'";
+    $resultadoExperiencias = mysqli_query($conexion, $consultaExperiencias);
 
-    // Ejecutar la consulta
-    $resultado = mysqli_query($conexion, $consultaSiguiendo);
-
-    // Verificar si hay errores en la consulta
-    if (!$resultado) {
-        echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
-        http_response_code(500); // Internal Server Error
+    if (!$resultadoExperiencias) {
+        echo json_encode(['error' => 'Error en la consulta SQL de experiencias: ' . mysqli_error($conexion)]);
+        http_response_code(500); 
         exit();
     }
 
-    // Procesar los resultados
-    if (mysqli_num_rows($resultado) > 0) {
-        $listaDeEmpresas = [];
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $listaDeEmpresas[] = $fila;
+    $listaDeExperiencias = [];
+
+    while ($filaExperiencia = mysqli_fetch_assoc($resultadoExperiencias)) {
+        $idExperiencia = $filaExperiencia['ID'];
+
+        $consultaProyectos = "SELECT * FROM proyecto WHERE Experencia_Laboral = '$idExperiencia'";
+        $resultadoProyectos = mysqli_query($conexion, $consultaProyectos);
+
+        if (!$resultadoProyectos) {
+            echo json_encode(['error' => 'Error en la consulta SQL de proyectos: ' . mysqli_error($conexion)]);
+            http_response_code(500); 
+            exit();
         }
 
-        $cantidadDeEmpresas = count($listaDeEmpresas);
+        $proyectos = [];
+        while ($filaProyecto = mysqli_fetch_assoc($resultadoProyectos)) {
+            $proyectos[] = $filaProyecto;
+        }
 
-        // Respuesta con la cantidad de empresas y sus detalles
-        echo json_encode([
-            'cantidad' => $cantidadDeEmpresas,
-            'empresas' => $listaDeEmpresas
-        ]);
-    } else {
-        // Respuesta si no sigue a ninguna empresa
-        echo json_encode(['cantidad' => 0, 'empresas' => [], 'error' => 'El candidato no sigue a ninguna empresa.']);
+        $listaDeExperiencias[] = [
+            'experiencia' => $filaExperiencia,
+            'proyectos' => $proyectos
+        ];
     }
+
+    echo json_encode([
+        'success' => true,
+        'experiencias' => $listaDeExperiencias
+    ]);
 } else {
     // Método no permitido
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
 }
 ?>
