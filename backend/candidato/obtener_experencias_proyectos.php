@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
+    // Consulta SQL para obtener las empresas que sigue el candidato
     $consultaSiguiendo = "
         SELECT empresa.ID, empresa.Nombre, empresa.Logo
         FROM seguidores
@@ -32,14 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE seguidores.Candidato_ID = '$idCandidato'
     ";
 
+    // Ejecutar la consulta
     $resultado = mysqli_query($conexion, $consultaSiguiendo);
 
+    // Verificar si hay errores en la consulta
     if (!$resultado) {
         echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
-        http_response_code(500); 
+        http_response_code(500); // Internal Server Error
         exit();
     }
 
+    // Procesar los resultados
     if (mysqli_num_rows($resultado) > 0) {
         $listaDeEmpresas = [];
         while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -48,15 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $cantidadDeEmpresas = count($listaDeEmpresas);
 
+        // Respuesta con la cantidad de empresas y sus detalles
         echo json_encode([
             'cantidad' => $cantidadDeEmpresas,
             'empresas' => $listaDeEmpresas
         ]);
     } else {
+        // Respuesta si no sigue a ninguna empresa
         echo json_encode(['cantidad' => 0, 'empresas' => [], 'error' => 'El candidato no sigue a ninguna empresa.']);
     }
 } else {
-    http_response_code(405); 
+    // Método no permitido
+    http_response_code(405); // Method Not Allowed
     echo json_encode(['error' => 'El método no está permitido.']);
 }
 ?>

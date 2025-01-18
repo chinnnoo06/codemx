@@ -24,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
     $sector = mysqli_real_escape_string($conexion, $_POST['sector']);
     $tamanio = mysqli_real_escape_string($conexion, $_POST['tamanio']);
-    $estado = mysqli_real_escape_string($conexion, $_POST['estado']);
-    $direccion = mysqli_real_escape_string($conexion, $_POST['direccion']);
     $telefono = mysqli_real_escape_string($conexion, $_POST['telefono']);
     $email = mysqli_real_escape_string($conexion, $_POST['email']);
     $fechaCreacion = mysqli_real_escape_string($conexion, $_POST['fechaCreacion']);
@@ -60,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Guardar los datos de empresa
-    $consultaEmpresa = "INSERT INTO empresa (Nombre, Password, Descripcion, Sector, Tamanio, Estado , Direccion, Telefono, Email, Fecha_Creacion, RFC, Logo)
-        VALUES ('$nombre', '$passwordHash', '$descripcion', '$sector', '$tamanio', '$estado', '$direccion', '$telefono', '$email', '$fechaCreacion', '$rfc', '$logoRutaCompleta')";
+    $consultaEmpresa = "INSERT INTO empresa (Nombre, Password, Descripcion, Sector, Tamanio, Telefono, Email, Fecha_Creacion, RFC, Logo)
+        VALUES ('$nombre', '$passwordHash', '$descripcion', '$sector', '$tamanio', '$telefono', '$email', '$fechaCreacion', '$rfc', '$logoRutaCompleta')";
 
     if (mysqli_query($conexion, $consultaEmpresa)) {
         $empresaId = mysqli_insert_id($conexion); 
