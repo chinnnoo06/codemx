@@ -54,8 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $listaDeExperiencias[] = [
-            'experiencia' => $filaExperiencia,
-            'proyectos' => $proyectos
+            'experiencia' => [
+                'ID' => $filaExperiencia['ID'],
+                'Empresa' => $filaExperiencia['Empresa'],
+                'Duracion' => $filaExperiencia['Duracion']
+            ],
+            'proyectos' => array_map(function ($proyecto) {
+                return [
+                    'ID' => $proyecto['ID'],
+                    'Nombre' => $proyecto['Nombre'],
+                    'Descripcion' => $proyecto['Descripcion']
+                ];
+            }, $proyectos)
         ];
     }
 

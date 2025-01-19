@@ -28,26 +28,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         foreach ($experiencias as $exp) {
-            // Si la experiencia tiene un ID, actualizamos
             if (isset($exp['id']) && $exp['id']) {
+                // Actualizar experiencia existente
                 $idExperiencia = mysqli_real_escape_string($conexion, $exp['id']);
                 $empresa = mysqli_real_escape_string($conexion, $exp['empresa']);
                 $duracion = mysqli_real_escape_string($conexion, $exp['tiempo']);
-
+        
                 $queryActualizarExp = "
                     UPDATE experencia_laboral 
                     SET Empresa = '$empresa', Duracion = $duracion
                     WHERE ID = $idExperiencia AND Candidato_ID = $idCandidato
                 ";
                 mysqli_query($conexion, $queryActualizarExp);
-
-                // Actualizamos o agregamos proyectos
+        
                 foreach ($exp['proyectos'] as $proyecto) {
                     if (isset($proyecto['id']) && $proyecto['id']) {
+                        // Actualizar proyecto existente
                         $idProyecto = mysqli_real_escape_string($conexion, $proyecto['id']);
                         $nombre = mysqli_real_escape_string($conexion, $proyecto['nombre']);
                         $descripcion = mysqli_real_escape_string($conexion, $proyecto['descripcion']);
-
+        
                         $queryActualizarProyecto = "
                             UPDATE proyecto 
                             SET Nombre = '$nombre', Descripcion = '$descripcion'
@@ -55,9 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ";
                         mysqli_query($conexion, $queryActualizarProyecto);
                     } else {
+                        // Insertar nuevo proyecto
                         $nombre = mysqli_real_escape_string($conexion, $proyecto['nombre']);
                         $descripcion = mysqli_real_escape_string($conexion, $proyecto['descripcion']);
-
+        
                         $queryInsertarProyecto = "
                             INSERT INTO proyecto (Experencia_Laboral, Nombre, Descripcion) 
                             VALUES ($idExperiencia, '$nombre', '$descripcion')
@@ -66,22 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             } else {
-                // Si no tiene ID, es una nueva experiencia
+                // Insertar nueva experiencia
                 $empresa = mysqli_real_escape_string($conexion, $exp['empresa']);
                 $duracion = mysqli_real_escape_string($conexion, $exp['tiempo']);
-
+        
                 $queryInsertarExp = "
                     INSERT INTO experencia_laboral (Candidato_ID, Empresa, Duracion) 
                     VALUES ($idCandidato, '$empresa', $duracion)
                 ";
                 mysqli_query($conexion, $queryInsertarExp);
                 $idExperiencia = mysqli_insert_id($conexion);
-
-                // Insertamos los proyectos relacionados
+        
+                // Insertar proyectos relacionados
                 foreach ($exp['proyectos'] as $proyecto) {
                     $nombre = mysqli_real_escape_string($conexion, $proyecto['nombre']);
                     $descripcion = mysqli_real_escape_string($conexion, $proyecto['descripcion']);
-
+        
                     $queryInsertarProyecto = "
                         INSERT INTO proyecto (Experencia_Laboral, Nombre, Descripcion) 
                         VALUES ($idExperiencia, '$nombre', '$descripcion')
