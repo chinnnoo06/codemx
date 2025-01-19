@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $experiencias = $data['experiencias'];
 
     try {
-        // Obtener IDs de experiencias existentes
+        // Obtener IDs de experiencias existentes en la base de datos
         $queryExperienciasExistentes = "
             SELECT ID FROM experencia_laboral WHERE Candidato_ID = '$idCandidato'
         ";
@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idsExperienciasExistentes[] = $row['ID'];
         }
 
-        // IDs de experiencias recibidas en la solicitud
+        // IDs de experiencias recibidas
         $idsExperienciasRecibidas = [];
 
         foreach ($experiencias as $exp) {
-            if (isset($exp['id']) && $exp['id']) {
+            if (isset($exp['id']) && !empty($exp['id'])) {
                 // Actualizar experiencia existente
                 $idExperiencia = mysqli_real_escape_string($conexion, $exp['id']);
                 $empresa = mysqli_real_escape_string($conexion, $exp['empresa']);
@@ -54,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ";
                 mysqli_query($conexion, $queryActualizarExp);
 
-                // Agregar ID de la experiencia recibida
                 $idsExperienciasRecibidas[] = $idExperiencia;
 
                 // Manejar proyectos relacionados
@@ -69,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $idsProyectosRecibidos = [];
                 foreach ($exp['proyectos'] as $proyecto) {
-                    if (isset($proyecto['id']) && $proyecto['id']) {
+                    if (isset($proyecto['id']) && !empty($proyecto['id'])) {
                         // Actualizar proyecto existente
                         $idProyecto = mysqli_real_escape_string($conexion, $proyecto['id']);
                         $nombre = mysqli_real_escape_string($conexion, $proyecto['nombre']);
@@ -132,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Eliminar experiencias no recibidas
+        // Eliminar experiencias faltantes
         $idsExperienciasRecibidasString = implode(',', $idsExperienciasRecibidas) ?: 'NULL';
         $queryEliminarExperiencias = "
             DELETE FROM experencia_laboral 
