@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $consultaTecnologiasDominadas = "
         SELECT 
             tecnologias_dominadas.Candidato_ID, 
+            tecnologias.ID AS id_tecnologia, 
             tecnologias.Tecnologia AS nombre_tecnologia, 
             tecnologias.Categoria AS categoria_tecnologia
         FROM 
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     while ($fila = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
         $listaDeTecnologiasDominadas[] = [
+            'id_tecnologia' => $fila['id_tecnologia'],
             'nombre_tecnologia' => $fila['nombre_tecnologia'],
             'categoria_tecnologia' => $fila['categoria_tecnologia']
         ];
