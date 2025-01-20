@@ -1,0 +1,47 @@
+
+
+.tecnologias-container{
+    width: 100%; 
+    padding-left: 1.5rem; 
+    padding-right: 1.5rem; 
+}
+
+.tecnologias-container h2{
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.tecnologias-container .titulos{
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.tecnologias-container .body{
+    padding: 1rem;
+}
+
+
+
+@media (max-width: 746px) { 
+    .tecnologias-container{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .tecnologias-container h2{
+        font-size: 1.3rem;
+    }
+
+    .tecnologias-container .titulos{
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .tecnologias-container button{
+        font-size: 0.5rem;
+    }
+    .tecnologias-container .btn-tecnologia{
+        font-size: 0.6rem;
+        padding: 5px;
+    }
+}

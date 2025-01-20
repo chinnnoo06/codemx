@@ -6,7 +6,6 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
   const [errors, setErrors] = useState({}); // Manejo de errores de validación
   const [showPassword, setShowPassword] = useState(false); 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
-  const [estados, setEstados] = useState([]); 
   const [tamanios, setTamanios] = useState([]);
   const [sectores, setSectores] = useState([]);
   const [isLoading, setIsLoading] = useState(false); 
@@ -19,9 +18,9 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
     password: '',
     confirmarPassword: '',
     fechaCreacion: '',
+    tamanio: '',
+    sector: '',
     telefono: '',
-    estado: '',
-    direccion: '',
     logo: null,
     rfc: '',
   });
@@ -30,12 +29,6 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
     // Función para obtener datos del backend
     const fetchData = async () => {
       try {
-        // Fetch para obtener estados
-        const estadosResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_estados.php');
-        if (!estadosResponse.ok) {
-          throw new Error('Error al obtener los estados');
-        }
-        const estadosData = await estadosResponse.json();
   
         // Fetch para obtener tamaños
         const tamaniosResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_tamanios.php');
@@ -52,7 +45,6 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
         const sectoresData = await sectoresResponse.json();
   
         // Actualizar estados
-        setEstados(estadosData);
         setTamanios(tamaniosData);
         setSectores(sectoresData);
       } catch (error) {
@@ -230,7 +222,7 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
       <h3 className="titulo-form text-center">Diseña tu perfil de Empresa</h3>
 
       {/* Render condicional basado en el paso */}
-      {step === 1 && <Paso1 errors={errors} formData={formData} manejarValorInput={manejarValorInput} visibilidadPassword={visibilidadPassword} visibilidadConfirmarPassword={visibilidadConfirmarPassword} showPassword={showPassword} showConfirmPassword={showConfirmPassword} estados={estados} tamanios={tamanios} sectores={sectores}/>}
+      {step === 1 && <Paso1 errors={errors} formData={formData} manejarValorInput={manejarValorInput} visibilidadPassword={visibilidadPassword} visibilidadConfirmarPassword={visibilidadConfirmarPassword} showPassword={showPassword} showConfirmPassword={showConfirmPassword} tamanios={tamanios} sectores={sectores}/>}
       {step === 2 && <Paso2 errors={errors} formData={formData} manejarValorInput={manejarValorInput}/>}
 
       {/* Botones de navegación */}
@@ -253,25 +245,25 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="nombre" className="form-label">Nombre <span className="text-danger">*</span></label>
-      <input type="text" id="nombre" name="nombre" className="form-control" value={formData.nombre} onChange={manejarValorInput} required/>
+      <input type="text" id="nombre" name="nombre" className="form-control"  maxLength={50} value={formData.nombre} onChange={manejarValorInput} required/>
       {errors.nombre && <small className="text-danger">{errors.nombre}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="descripcion" className="form-label">Descripcion <span className="text-danger">*</span></label>
-      <textarea id="descripcion" name="descripcion" className="form-control" value={formData.descripcion} onChange={manejarValorInput} required/>
+      <textarea id="descripcion" name="descripcion" className="form-control"  maxLength={250} value={formData.descripcion} onChange={manejarValorInput} required/>
       {errors.descripcion && <small className="text-danger">{errors.descripcion}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="email" className="form-label">Correo Electronico <span className="text-danger">*</span></label>
-      <input type="text" id="email" name="email" className="form-control" value={formData.email} onChange={manejarValorInput} required/>
+      <input type="text" id="email" name="email" className="form-control" maxLength={100} value={formData.email} onChange={manejarValorInput} required/>
       {errors.email && <small className="text-danger">{errors.email}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="password" className="form-label">Contraseña <span className="text-danger">*</span></label>
-      <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" value={formData.password} onChange={manejarValorInput} required/>
+      <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" maxLength={20} value={formData.password} onChange={manejarValorInput} required/>
       <span className="input-group-text" onClick={visibilidadPassword}>
         <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
       </span>
@@ -280,7 +272,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="confirmarPassword" className="form-label">Confirmar contraseña <span className="text-danger">*</span></label>
-      <input type={showConfirmPassword ? "text" : "password"} id="confirmarPassword" name="confirmarPassword" className="form-control" value={formData.confirmarPassword} onChange={manejarValorInput} required/>
+      <input type={showConfirmPassword ? "text" : "password"} id="confirmarPassword" name="confirmarPassword" className="form-control" maxLength={20} value={formData.confirmarPassword} onChange={manejarValorInput} required/>
       <span className="input-group-text" onClick={visibilidadConfirmarPassword}>
         <i className={showConfirmPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
       </span>
@@ -321,27 +313,8 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="telefono" className="form-label">Teléfono <span className="text-danger">*</span></label>
-      <input type="text" id="telefono" name="telefono" className="form-control" value={formData.telefono} onChange={manejarValorInput} required/>
+      <input type="text" id="telefono" name="telefono" className="form-control" maxLength={10} value={formData.telefono} onChange={manejarValorInput} required/>
       {errors.telefono && <small className="text-danger">{errors.telefono}</small>}
-    </div>
-
-    <div className="mb-3">
-      <label htmlFor="estado" className="form-label">Estado <span className="text-danger">*</span></label>
-      <select id="estado" name="estado" className="form-select form-select-lg custom-font-select" value={formData.estado} onChange={manejarValorInput} required>
-      <option value="">Seleccione un estado</option>
-          {estados.map((estado) => (
-            <option key={estado.id} value={estado.id}>
-              {estado.nombre}
-            </option>
-          ))}
-      </select>
-      {errors.estado && <small className="text-danger">{errors.estado}</small>}
-    </div>
-
-    <div className="mb-3">
-      <label htmlFor="direccion" className="form-label">Dirección <span className="text-danger">*</span></label>
-      <input type="tel" id="direccion" name="direccion" className="form-control" value={formData.direccion} onChange={manejarValorInput} required/>
-      {errors.direccion && <small className="text-danger">{errors.direccion}</small>}
     </div>
 
     <div className="mb-3">
@@ -377,7 +350,7 @@ const Paso2 = ({ errors, formData, manejarValorInput }) => (
 
     <div className="mb-3">
       <label htmlFor="rfc" className="form-label">RFC <span className="text-danger">*</span></label>
-      <input type="text" id="rfc" name="rfc" className="form-control" value={formData.rfc} onChange={manejarValorInput} required />
+      <input type="text" id="rfc" name="rfc" className="form-control" maxLength={12} value={formData.rfc} onChange={manejarValorInput} required />
       {errors.rfc && <small className="text-danger">{errors.rfc}</small>}
     </div>
   </form>

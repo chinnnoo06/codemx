@@ -35,7 +35,7 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
       </p>
 
       {Object.entries(tecnologiasPorCategoria).map(([categoria, tecnologiasCategoria]) => (
-        <div key={categoria} className="mb-4">
+        <div key={categoria} className="tecnologias mb-4">
           <h5 className="className='texto-color'">{categoria}</h5>
           <div className="d-flex flex-wrap gap-2">
             {tecnologiasCategoria.map((tecnologia) => (
@@ -44,8 +44,8 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
                 type="button"
                 className={`btn ${
                   tecnologiasSeleccionadas.includes(tecnologia.id)
-                    ? 'btn-warning'
-                    : 'btn-outline-warning'
+                    ? 'btn-tecnologia btn-warning'
+                    : 'btn-tecnologia btn-outline-warning'
                 }`}
                 onClick={() => manejarSeleccion(tecnologia.id)}
                 initial={{ opacity: 0, scale: 0.8 }}

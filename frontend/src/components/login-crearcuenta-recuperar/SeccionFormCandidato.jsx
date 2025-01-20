@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/login-crearcuenta-recuperar/form.css';
-import { SeccionTecnologiasDominadas } from '../reutilizables/SeccionTecnologiasDominadas';
+import { SeccionTecnologiasDominadas } from './SeccionTecnologiasDominadas';
 
 export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   
@@ -15,8 +15,6 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   const [universidades, setUniversidades] = useState([]); 
   const [isLoading, setIsLoading] = useState(false); 
 
-
-  
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
     nombre: '',
@@ -291,25 +289,25 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="nombre" className="form-label">Nombre <span className="text-danger">*</span></label>
-      <input type="text" id="nombre" name="nombre" className="form-control" value={formData.nombre} onChange={manejarValorInput} required/>
+      <input type="text" id="nombre" name="nombre" className="form-control" maxLength={50} value={formData.nombre} onChange={manejarValorInput} required/>
       {errors.nombre && <small className="text-danger">{errors.nombre}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="apellido" className="form-label">Apellido <span className="text-danger">*</span></label>
-      <input type="text" id="apellido" name="apellido" className="form-control" value={formData.apellido} onChange={manejarValorInput} required/>
+      <input type="text" id="apellido" name="apellido" className="form-control" maxLength={50} value={formData.apellido} onChange={manejarValorInput} required/>
       {errors.apellido && <small className="text-danger">{errors.apellido}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="email" className="form-label">Correo Electronico <span className="text-danger">*</span></label>
-      <input type="email" id="email" name="email" className="form-control" value={formData.email} onChange={manejarValorInput} required/>
+      <input type="email" id="email" name="email" className="form-control" maxLength={100} value={formData.email} onChange={manejarValorInput} required/>
       {errors.email && <small className="text-danger">{errors.email}</small>}
     </div>
 
     <div className="mb-3">
       <label htmlFor="password" className="form-label">Contraseña <span className="text-danger">*</span></label>
-      <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" value={formData.password} onChange={manejarValorInput} required/>
+      <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" maxLength={20} value={formData.password} onChange={manejarValorInput} required/>
       <span className="input-group-text" onClick={visibilidadPassword}>
         <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
       </span>
@@ -318,7 +316,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="confirmarPassword" className="form-label">Confirmar contraseña <span className="text-danger">*</span></label>
-      <input type={showConfirmPassword ? "text" : "password"} id="confirmarPassword" name="confirmarPassword" className="form-control" value={formData.confirmarPassword} onChange={manejarValorInput} required/>
+      <input type={showConfirmPassword ? "text" : "password"} id="confirmarPassword" name="confirmarPassword" className="form-control" maxLength={20} value={formData.confirmarPassword} onChange={manejarValorInput} required/>
       <span className="input-group-text" onClick={visibilidadConfirmarPassword}>
         <i className={showConfirmPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
       </span>
@@ -334,7 +332,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="telefono" className="form-label">Teléfono <span className="text-danger">*</span></label>
-      <input type="tel" id="telefono" name="telefono" className="form-control" value={formData.telefono} onChange={manejarValorInput} required/>
+      <input type="tel" id="telefono" name="telefono" className="form-control"  maxLength={10} value={formData.telefono} onChange={manejarValorInput} required/>
       {errors.telefono && <small className="text-danger">{errors.telefono}</small>}
     </div>
 
@@ -353,7 +351,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="direccion" className="form-label">Dirección <span className="text-danger">*</span></label>
-      <input type="text" id="direccion" name="direccion" className="form-control" value={formData.direccion} onChange={manejarValorInput} required/>
+      <input type="text" id="direccion" name="direccion" className="form-control"  maxLength={100} value={formData.direccion} onChange={manejarValorInput} required/>
       {errors.direccion && <small className="text-danger">{errors.direccion}</small>}
     </div>
 

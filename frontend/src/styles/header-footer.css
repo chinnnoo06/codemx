@@ -12,6 +12,12 @@
     margin: 0 auto;
 }
 
+.contenedor-header header .logo,
+.contenedor-header header .perfil{
+    width: 3rem;
+}
+
+
 .contenedor-header header .logo h1 {
     font-size: 2rem;
     color: #dde1e9;
@@ -25,6 +31,7 @@
 .txtspan{
     color: #F2A922;
 }
+
 
 .contenedor-header .perfil-img {
     width: 3rem; 
@@ -92,6 +99,7 @@
     color: #F2A922;
     font-size: 1.6rem; 
     padding-right: 0.2rem;
+    display: none;
 }
 
 .menu-responsive {
@@ -149,7 +157,7 @@ footer li {
 
 /* MEDIA QUERY PARA PANTALLAS PEQUEÑAS */
 
-@media (max-width: 768px) { 
+@media (max-width: 1280px) { 
     .menu-responsive {
         display: flex;
         flex-direction: column;
@@ -162,6 +170,7 @@ footer li {
         padding: 0.62rem; 
         gap: 0.62rem; 
         z-index: 1000;
+        width: 200px;
     }
 
     .menu-responsive a {
@@ -179,5 +188,11 @@ footer li {
         color: #0B1C26;
         border-radius: 0.3125rem; 
     }    
-    
+    .contenedor-header .nav,
+    .contenedor-header .perfil {
+        display: none !important;
+    }
+    .nav-responsive{
+        display: flex;
+    }
 }

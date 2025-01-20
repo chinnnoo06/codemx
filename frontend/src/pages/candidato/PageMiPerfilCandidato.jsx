@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Seccion1PageMiPerfil } from '../../components/candidato/Seccion1PageMiPerfil';
 import { Seccion2PageMiperfil } from '../../components/candidato/Seccion2PageMiperfil';
 import { Seccion3PageMiPerfil } from '../../components/candidato/Seccion3PageMiPerfil';
@@ -15,11 +15,11 @@ export const PageMiPerfilCandidato = ({ candidato, actualizarCandidato }) => {
             <div className='seccion container mt-4 d-flex justify-content-center'>
                 <Seccion1PageMiPerfil candidato={candidato}/>
             </div>
-            <div className='seccion container mt-4 py-5 d-flex justify-content-center'>
-                <Seccion2PageMiperfil/>
+            <div className='seccion container mt-4 py-3 d-flex justify-content-center'>
+                <Seccion2PageMiperfil candidato={candidato}/>
             </div>
-            <div className='seccion container mt-4 mb-4 py-5 d-flex justify-content-center'>
-                <Seccion3PageMiPerfil/>
+            <div className='seccion container mt-4 mb-4 py-3 d-flex justify-content-center'>
+                <Seccion3PageMiPerfil candidato={candidato}/>
             </div>
         </div>
 

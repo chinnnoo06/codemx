@@ -3,6 +3,7 @@ import img from '../../resources/fondo.png';
 import '../../styles/candidato/miperfil.css';
 import { ModalEditarPerfil } from './ModalEditarPerfil';
 import CryptoJS from "crypto-js";
+import { ModalSeguidos } from './ModalSeguidos';
 
 export const Seccion1PageMiPerfil = ({ candidato }) => {
     const [showModalSeguidos, setShowModalSeguidos] = useState(false);
@@ -10,38 +11,35 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
     const [numSeguidos, setNumSeguidos] = useState(0);
     const[empresas, setEmpresas]=useState(null);
 
+    // Función para obtener datos del backend
+    const fetchData = async () => {
+        try {
+            // Fetch para obtener las cuentas que sigue el candidato
+            const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({ idCandidato: candidato.id }), 
+            });
+            
 
+            if (!seguidosResponse.ok) {
+                throw new Error('Error al obtener los datos');
+            }
+            const seguidosData = await seguidosResponse.json();
+
+            // Actualizar estados
+            setNumSeguidos(seguidosData.cantidad);
+            setEmpresas(seguidosData.empresas);
+
+        } catch (error) {
+            console.error('Error al obtener los datos de seguidores:', error);
+        }
+    };
 
     useEffect(() => {
-        // Función para obtener datos del backend
-        const fetchData = async () => {
-            try {
-                // Fetch para obtener las cuentas que sigue el candidato
-                const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json', 
-                    },
-                    body: JSON.stringify({ idCandidato: candidato.id }), 
-                });
-                
-
-                if (!seguidosResponse.ok) {
-                    throw new Error('Error al obtener los datos');
-                }
-                const seguidosData = await seguidosResponse.json();
-                console.log('Datos del candidato:', seguidosData); 
-
-                // Actualizar estados
-                setNumSeguidos(seguidosData.cantidad);
-                setEmpresas(seguidosData.empresas);
-
-            } catch (error) {
-                console.error('Error al obtener los datos de seguidores:', error);
-            }
-            };
-            
-            fetchData();
+        fetchData();
     }, []);
 
     const manejarShowModalSeguidos = () => {
@@ -50,6 +48,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
     const manejarCloseModalSeguidos = async () => {
         setShowModalSeguidos(false);
+        fetchData();
     };
 
     const manejarShowModalForm = () => {
@@ -145,121 +144,129 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
   return (
     <div className="perfil-container">
-      {/* Fondo de encabezado */}
-      <div className="perfil-header">
-        <img src={img} alt="Fondo" className="img-fluid rounded-top" />
-      </div>
-
-      {/* Información del usuario */}
-      <div className="perfil-body d-flex flex-column align-items-center text-center py-4 px-4">
-        {/* Foto de perfil */}
-        <div className="foto-perfil-container">
-            {candidato.fotografia && (
-                <img
-                src={`${candidato.fotografia}?t=${new Date().getTime()}`}
-                alt="Perfil"
-                className="foto-perfil rounded-circle"
-                />
-            )}
-            <label htmlFor="photoInput" className="btn perfilfoto-edit-btn">
-                <i className="fa-solid fa-camera"></i>
-            </label>
-            <input type="file" id="photoInput" className="d-none"
-                accept=".jpg, .jpeg, .png" 
-                onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        manejarSubidaFoto(file);
-                    }
-                }}
-            />
+        {/* Fondo de encabezado */}
+        <div className="perfil-header">
+            <img src={img} alt="Fondo" className="img-fluid rounded-top" />
         </div>
 
-        {/* Detalles del usuario */}
-        <div className="detalles-perfil mt-4">
-            <h2>{`${candidato.nombre} ${candidato.apellido}`}</h2>
+        <div className="perfil-candidato">
+            {/* Información del usuario */}
+            <div className="perfil-body py-3 px-4">
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
+                    {/* Foto de perfil */}
+                    <div className="foto-perfil-container mb-3 mb-md-0">
+                        {candidato.fotografia && (
+                            <img
+                                src={`${candidato.fotografia}?t=${new Date().getTime()}`}
+                                alt="Perfil"
+                                className="foto-perfil rounded-circle"
+                            />
+                        )}
+                        <label htmlFor="photoInput" className="btn btn-tipodos perfilfoto-edit-btn">
+                            <i className="fa-solid fa-camera"></i>
+                        </label>
+                        <input
+                            type="file"
+                            id="photoInput"
+                            className="d-none"
+                            accept=".jpg, .jpeg, .png"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    manejarSubidaFoto(file);
+                                }
+                            }}
+                        />
+                    </div>
 
-            <p className="text-muted">{`Fecha de nacimiento: ${candidato.fecha_nacimiento}`}</p>
+                    {/* Botones */}
+                    <div className="botones-perfil d-flex flex-column gap-2 mt-3 mt-md-0">
+                        <button
+                            className="btn btn-tipodos btn-sm"
+                            onClick={manejarShowModalForm}
+                        >
+                            Actualizar información
+                        </button>
+                        <button
+                            className="btn btn-danger btn-sm"
+                            onClick={manejarCerrarSesion}
+                        >
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
 
-            {candidato.sexo !== "Prefiero No Decirlo" && (
-                <p className="text-muted">{`Género: ${candidato.sexo}`}</p>
-            )}
+                {/* Detalles del usuario */}
+                <div className="datos-container mt-4">
+                    <h2 >{`${candidato.nombre} ${candidato.apellido}`}</h2>
+                    {candidato.universidad !== "Otra" &&
+                        candidato.universidad !== "No estudio" && (
+                            <p className="text-muted">{`Estudiante de ${candidato.universidad}`}</p>
+                        )}
+                    <p
+                        className="text-highlight"
+                        onClick={() => manejarShowModalSeguidos()}
+                    >{`Siguiendo: ${numSeguidos}`}</p>
 
-            {candidato.universidad !== "Otra" && candidato.universidad !== "No estudio" && (
-                <p className="text-muted">{`Universidad: ${candidato.universidad}`}</p>
-            )}
-
-            <p className="text-muted">{`Tiempo estimado para graduarse: ${candidato.tiempo_restante}`}</p>
-    
-
-            <p className="text-muted">{`Modalidad de trabajo preferida: ${candidato.modalidad_trabajo}`}</p>
-
-
-            <p className="text-muted">{`Dirección: ${candidato.direccion}, ${candidato.estado}`}</p>
-    
-
-            <p className="text-muted">{`Teléfono: ${candidato.telefono}`}</p>
-
-            <p className="text-muted">{`Siguiendo: ${numSeguidos}`}</p>
-
-            <p className="text-muted">
-                {candidato.cv ? (
-                    <>
-                        CV: <a href={`${candidato.cv}?t=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer" className="cv-link">Ver PDF</a>
-                    </>
-                ) : (
-                    "Sube tu currículum"
-                )}
-                <label htmlFor="cvInput" className="btn">
-                    {candidato.cv ? (
-                        <i className="fa-solid fa-pen"></i>
-                    ) : (
-                        <i className="fa-solid fa-upload"></i>
-                    )}
-                </label>
-                <input 
-                    type="file" 
-                    id="cvInput" 
-                    className="d-none" 
-                    accept=".pdf"
-                    onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            manejarSubidaCv(file);
-                        }
-                    }}
-                />
-            </p>
-                
-        </div>
-
-        {/* Botones */}
-        <div className="botones-perfil mt-4 d-flex justify-content-center gap-3">
-          <button className="btn btn-tipodos" onClick={manejarShowModalForm}>Actualizar información</button>
-          <button className="btn btn-danger" onClick={manejarCerrarSesion}>Cerrar Sesión</button>
-        </div>
-      </div>
-
-    {/* Modal Seguidos */}
-    {showModalSeguidos && (
-        <div className="modal-overlay">
-            <div className="modal-content">
-        
+                    <p className="text-muted">
+                        {candidato.cv ? (
+                            <>
+                                <a href={`${candidato.cv}?t=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer" >
+                                    <button className='btn btn-cv'>
+                                        Ver CV
+                                    </button>
+                                </a>
+                            </>
+                        ) : (
+                            "Sube tu currículum"
+                        )}
+                        <label htmlFor="cvInput" className="btn">
+                            {candidato.cv ? (
+                                <i className="fa-solid fa-pen"></i>
+                            ) : (
+                                <i className="fa-solid fa-upload"></i>
+                            )}
+                        </label>
+                        <input 
+                            type="file" 
+                            id="cvInput" 
+                            className="d-none" 
+                            accept=".pdf"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    manejarSubidaCv(file);
+                                }
+                            }}
+                        />
+                    </p>
+                </div>
             </div>
         </div>
-    )}
 
-    {/* Modal Seguidos */}
-    {showModalForm && (
-        <div className="modal-overlay">
-            <div className="modal-content ">
-                <button className="close-button btn" onClick={() => manejarCloseModalForm()}>
-                    <i class="fa-solid fa-x"></i>
-                </button>
-                <ModalEditarPerfil candidato={candidato} manejarCloseModalForm={manejarCloseModalForm}/>
+        {/* Modal Seguidos */}
+        {showModalSeguidos && (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <button className="close-button btn" onClick={() => manejarCloseModalSeguidos()}>
+                            <i className="fa-solid fa-x"></i>
+                    </button>
+                    <ModalSeguidos empresas={empresas} idCandidato={candidato.id} actualizarNumSeguidos={setNumSeguidos}/>
+                </div>
             </div>
-        </div>
-    )}
+        )}
+
+        {/* Modal Seguidos */}
+        {showModalForm && (
+            <div className="modal-overlay">
+                <div className="modal-content ">
+                    <button className="close-button btn" onClick={() => manejarCloseModalForm()}>
+                        <i className="fa-solid fa-x"></i>
+                    </button>
+                    <ModalEditarPerfil candidato={candidato} manejarCloseModalForm={manejarCloseModalForm}/>
+                </div>
+            </div>
+        )}
 
 
     </div>

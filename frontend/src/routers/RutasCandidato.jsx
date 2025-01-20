@@ -65,7 +65,7 @@ export const RutasCandidato = () => {
                     <div className="logo">
                         <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
-                    <nav className="nav d-none d-md-flex gap-4">
+                    <nav className="nav d-md-flex gap-5">
                         <NavLink to="/usuario-candidato/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-house"></i>
                             Inicio
@@ -96,7 +96,7 @@ export const RutasCandidato = () => {
                         </NavLink>
                     </nav>
                     {/* perfil*/}
-                    <div className="perfil d-none d-md-flex">
+                    <div className="perfil d-md-flex">
                         {fotoPerfil && (
                             <Link to="/usuario-candidato/miperfil-candidato">
                                 <img src={`${fotoPerfil}?t=${new Date().getTime()}`} alt="Perfil" className="perfil-img" />
@@ -104,7 +104,7 @@ export const RutasCandidato = () => {
                         )}
                     </div>
                     {/* Menú responsive */}
-                    <div className="nav-responsive d-md-none" onClick={toggleMenu}>
+                    <div className="nav-responsive " onClick={toggleMenu}>
                         <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
