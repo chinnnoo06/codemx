@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
                 $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
+                $fechaActual = date('Y-m-d H:i:s');
 
                 // Insertar sesión en la tabla
                 $tipo = $fila['tipo'];
@@ -81,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Limpiar sesiones vencidas
-                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$expira_en'";
+                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$$fechaActual'";
 
                 if (!mysqli_query($conexion, $consultaEliminar)) {
                     echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
@@ -160,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Limpiar sesiones vencidas
-                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$expira_en'";
+                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$$fechaActual'";
 
                 if (!mysqli_query($conexion, $consultaEliminar)) {
                     echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
