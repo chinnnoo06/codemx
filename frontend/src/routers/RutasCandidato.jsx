@@ -62,7 +62,7 @@ export const RutasCandidato = () => {
             {/* Header */}
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
-                    <div className="logo">
+                    <div className="logo" translate="no">
                         <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-md-flex gap-5">

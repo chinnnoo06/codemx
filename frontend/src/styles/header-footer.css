@@ -18,13 +18,15 @@
 }
 
 
-.contenedor-header header .logo h1 {
+.contenedor-header header .logo h1,
+.contenedor-header header .logoo h1 {
     font-size: 2rem;
     color: #dde1e9;
     font-weight: 600;
 }
 
-.contenedor-header header .logo a {
+.contenedor-header header .logo a,
+.contenedor-header header .logoo a {
     text-decoration: none;
 }
 

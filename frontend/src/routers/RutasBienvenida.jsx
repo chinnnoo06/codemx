@@ -17,7 +17,7 @@ export const RutasBienvenida = () => {
             {/* Header */}
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
-                    <div className="logo">
+                    <div className="logoo" translate="no">
                         <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
                     </div>
                     {/* Opciones de botones grandes */}
