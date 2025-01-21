@@ -92,6 +92,10 @@
         font-weight: 600;
         font-size: 0.9rem;
     }
+    .experencias-container .num-proyecto{
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
     .experencias-container input,
     .experencias-container textarea {
         font-size: 0.6rem; 
