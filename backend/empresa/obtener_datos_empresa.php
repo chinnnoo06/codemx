@@ -46,7 +46,7 @@ try {
             empresa.Nombre AS Empresa_Nombre,
             empresa.Descripcion,
             sector.Sector AS Sector_Nombre,
-            tamanio.Tamanio AS Tamanio_Nombre
+            tamanio.Tamanio AS Tamanio_Nombre,
             empresa.Telefono,
             empresa.Email,
             empresa.Logo,
