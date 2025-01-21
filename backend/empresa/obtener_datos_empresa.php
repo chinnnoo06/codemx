@@ -51,10 +51,10 @@ try {
             empresa.Email,
             empresa.Logo,
             empresa.Fecha_Creacion,
-            empresa.RFC,
+            empresa.RFC
         FROM empresa
-        INNER JOIN sector ON empresa.Sector = Sector.ID
-        INNER JOIN tamanio ON empresa.Tamanio = Tamanaio.ID
+        INNER JOIN sector ON empresa.Sector = sector.ID
+        INNER JOIN tamanio ON empresa.Tamanio = tamanaio.ID
         WHERE empresa.ID = $empresaId
         LIMIT 1
     ";
