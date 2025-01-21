@@ -54,7 +54,7 @@ try {
             empresa.RFC
         FROM empresa
         INNER JOIN sector ON empresa.Sector = sector.ID
-        INNER JOIN tamanio ON empresa.Tamanio = tamanaio.ID
+        INNER JOIN tamanio ON empresa.Tamanio = tamanio.ID
         WHERE empresa.ID = $empresaId
         LIMIT 1
     ";
@@ -73,7 +73,7 @@ try {
         echo json_encode([
             'success' => true,
             'id' => $fila['ID'],
-            'nombre' => $fila[' Empresa_Nombre'],
+            'nombre' => $fila['Empresa_Nombre'],
             'descripcion' => $fila['Descripcion'],
             'sector' => $fila['Sector_Nombre'],
             'tamanio' => $fila['Tamanio_Nombre'],
@@ -81,7 +81,7 @@ try {
             'email' => $fila['Email'],
             'logo' => $fila['Logo'],
             'fecha_creacion' => $fila['Fecha_Creacion'],
-            'rfc' => $fila['rfc'],
+            'rfc' => $fila['RFC'],
         ]);
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró a la empresa.']);
