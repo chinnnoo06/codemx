@@ -1,35 +1,64 @@
 <?php
 require_once '../config/conexion.php';
 
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-    echo json_encode(['success' => false, 'error' => 'Usuario no autenticado.']);
-    exit();
-}
-
-$email = $_SESSION['usuario'];
-
-
+header("Content-Type: application/json");
 
 try {
-    // Consultar el ID y la foto del candidato asociado al email
-   $consulta = "
-        SELECT 
-            ID,
-            Logo 
-        FROM empresa 
-        WHERE Email = '$email'
+    // Obtén el cuerpo de la solicitud
+    $fechaActual = date('Y-m-d H:i:s');
+    $input = json_decode(file_get_contents("php://input"), true);
+
+    if (!isset($input['session_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Session ID no proporcionado.']);
+        exit();
+    }
+
+    $session_id = $input['session_id'];
+
+    // Busca el ID del candidato en la tabla sesiones usando el session_id
+    $consultaSesion = "
+        SELECT Empresa_ID
+        FROM sesiones
+        WHERE Session_ID = '$session_id' AND Expira_en > '$fechaActual'
         LIMIT 1
     ";
-    /*$consulta = "
+
+    $resultadoSesion = mysqli_query($conexion, $consultaSesion);
+
+    if (!$resultadoSesion) {
+        echo json_encode(['success' => false, 'error' => 'Error al buscar la sesión: ' . mysqli_error($conexion)]);
+        exit();
+    }
+
+    $filaSesion = mysqli_fetch_assoc($resultadoSesion);
+
+    if (!$filaSesion || !$filaSesion['Candidato_ID']) {
+        echo json_encode(['success' => false, 'error' => 'Sesión inválida o expirada.']);
+        exit();
+    }
+
+    $empresaId = $filaSesion['Empresa_ID'];
+
+    // Consulta para obtener los datos del candidato
+    $consulta = "
         SELECT 
-            ID,
-            Logo 
-        FROM empresa 
-        WHERE ID = 1
+            empresa.ID,
+            empresa.Nombre AS Empresa_Nombre,
+            empresa.Descripcion,
+            sector.Sector AS Sector_Nombre,
+            tamanio.Tamanio AS Tamanio_Nombre
+            empresa.Telefono,
+            empresa.Email,
+            empresa.Logo,
+            empresa.Fecha_Creacion,
+            empresa.RFC,
+        FROM empresa
+        INNER JOIN sector ON empresa.Sector = Sector.ID
+        INNER JOIN tamanio ON empresa.Tamanio = Tamanaio.ID
+        WHERE empresa.ID = $empresaId
         LIMIT 1
-    ";*/
+    ";
+
 
     $resultado = mysqli_query($conexion, $consulta);
 
@@ -44,7 +73,15 @@ try {
         echo json_encode([
             'success' => true,
             'id' => $fila['ID'],
-            'logo' => $fila['Logo']
+            'nombre' => $fila[' Empresa_Nombre'],
+            'descripcion' => $fila['Descripcion'],
+            'sector' => $fila['Sector_Nombre'],
+            'tamanio' => $fila['Tamanio_Nombre'],
+            'telefono' => $fila['Telefono'],
+            'email' => $fila['Email'],
+            'logo' => $fila['Logo'],
+            'fecha_creacion' => $fila['Fecha_Creacion'],
+            'rfc' => $fila['rfc'],
         ]);
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró a la empresa.']);
