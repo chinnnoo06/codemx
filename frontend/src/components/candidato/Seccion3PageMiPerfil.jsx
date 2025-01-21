@@ -94,7 +94,7 @@ export const Seccion3PageMiPerfil = ({ candidato }) => {
 
           <div className="card mb-4 shadow-sm">
             {Object.entries(tecnologiasPorCategoria).map(([categoria, tecnologiasCategoria]) => (
-              <div key={categoria} className="mb-4 body">
+              <div key={categoria} className="mb-2 body">
                 <h5 className="titulos">{categoria}</h5>
                 <div className="d-flex flex-wrap gap-2">
                   {tecnologiasCategoria.map((tecnologia) => (

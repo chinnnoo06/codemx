@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/login-crearcuenta-recuperar/form.css';
+import '../../styles/candidato/miperfiltecnologiasdominadas.css';
 import { motion } from 'framer-motion';
 
 export const SeccionActualizarTecnologiasDominadas = ({ candidato, tecnologias, seleccionadas = [],  actualizarTecnologiasDominadas, manejarMostrarSeccion, }) => {
@@ -61,16 +61,16 @@ export const SeccionActualizarTecnologiasDominadas = ({ candidato, tecnologias, 
 
   return (
     <div>
-      <h4 className="texto-color">Agrega las tecnologías que dominas</h4>
-      <p className="texto-color">
-        Haz clic en las tecnologías para seleccionarlas. Las seleccionadas cambiarán de estilo.{' '}
-        <span className="text-danger">*</span>
-      </p>
 
-      <div>
+      <div className="d-flex justify-content-between align-items-center">
+        <h2 className="text-center mb-2">Tecnologías Dominadas</h2>
+      </div>
+
+
+      <div  className="card mb-4 shadow-sm">
         {Object.entries(tecnologiasPorCategoria).map(([categoria, tecnologiasCategoria]) => (
-          <div key={categoria} className="tecnologias mb-4">
-            <h5 className="texto-color">{categoria}</h5>
+          <div key={categoria} className="mb-2 body">
+            <h5 className="titulos">{categoria}</h5>
             <div className="d-flex flex-wrap gap-2">
               {tecnologiasCategoria.map((tecnologia) => (
                 <motion.button
@@ -92,10 +92,10 @@ export const SeccionActualizarTecnologiasDominadas = ({ candidato, tecnologias, 
             </div>
           </div>
         ))}
-        <button type="button" className="btn btn-tipodos btn-sm" onClick={() => manejarGuardar()}>
+      </div>
+      <button type="button" className="btn btn-tipodos btn-sm" onClick={() => manejarGuardar()}>
           Actualizar Tecnologias
         </button>
-      </div>
     </div>
   );
 };
