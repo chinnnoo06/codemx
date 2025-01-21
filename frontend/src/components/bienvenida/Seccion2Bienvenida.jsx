@@ -6,7 +6,7 @@ export const Seccion2Bienvenida = () => {
     <section className="beneficios py-7">
       <div className="fondo-beneficios">
         <div className="contenedor-limitado text-center">
-          <h2 className="display-3 fw-bold mb-5">Beneficios de Usar CODEMX</h2>
+          <h2 className="display-3 fw-bold mb-5" translate="no">Beneficios de Usar CODEMX</h2>
           <div className="row">
             <div className="col-md-4">
               <i className="fas fa-briefcase fa-3x mb-3"></i>

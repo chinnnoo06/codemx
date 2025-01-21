@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import img from '../../resources/fondo.png';
 import '../../styles/candidato/miperfil.css';
 import { ModalEditarPerfil } from './ModalEditarPerfil';
@@ -12,17 +12,15 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
     const[empresas, setEmpresas]=useState(null);
 
     // Función para obtener datos del backend
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
-            // Fetch para obtener las cuentas que sigue el candidato
             const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', 
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ idCandidato: candidato.id }), 
+                body: JSON.stringify({ idCandidato: candidato.id }),
             });
-            
 
             if (!seguidosResponse.ok) {
                 throw new Error('Error al obtener los datos');
@@ -32,15 +30,14 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             // Actualizar estados
             setNumSeguidos(seguidosData.cantidad);
             setEmpresas(seguidosData.empresas);
-
         } catch (error) {
             console.error('Error al obtener los datos de seguidores:', error);
         }
-    };
+    }, [candidato.id]); // Dependencia: candidato.id
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     const manejarShowModalSeguidos = () => {
         setShowModalSeguidos(true);
@@ -151,7 +148,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
         <div className="perfil-candidato">
             {/* Información del usuario */}
-            <div className="perfil-body py-3 px-4">
+            <div className="perfil-body py-3 px-2">
                 <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
                     {/* Foto de perfil */}
                     <div className="foto-perfil-container mb-3 mb-md-0">

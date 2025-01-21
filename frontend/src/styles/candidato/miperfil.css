@@ -265,8 +265,8 @@
 
 @media (max-width: 746px) { 
     .contenedor-todo{
-        padding-left: 0.7rem;
-        padding-right: 0.7rem;
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
     }
     .foto-perfil-container .btn{
         font-size: 0.80rem;

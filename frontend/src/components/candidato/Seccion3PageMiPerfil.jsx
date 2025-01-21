@@ -28,8 +28,6 @@ export const Seccion3PageMiPerfil = ({ candidato }) => {
         );
         const tecnologiasData = await tecnologiasResponse.json();
   
-        console.log('Tecnologías dominadas:', tecnologiasDominadasData.tecnologias_dominadas); // Verificar estructura
-  
         setTecnologiasDominadas(tecnologiasDominadasData.tecnologias_dominadas || []);
         setTecnologias(tecnologiasData);
       } catch (error) {
@@ -79,7 +77,7 @@ export const Seccion3PageMiPerfil = ({ candidato }) => {
   }, {});
 
   return (
-    <div className="tecnologias-container">
+    <div className="tecnologias-container px-2">
       {mostrarSeccion === 'Ver-Tecnologias' ? (
         <>
           <div className="d-flex justify-content-between align-items-center">
@@ -92,7 +90,7 @@ export const Seccion3PageMiPerfil = ({ candidato }) => {
             </button>
           </div>
 
-          <div className="card mb-4 shadow-sm">
+          <div className="card mb-2 shadow-sm">
             {Object.entries(tecnologiasPorCategoria).map(([categoria, tecnologiasCategoria]) => (
               <div key={categoria} className="mb-2 body">
                 <h5 className="titulos">{categoria}</h5>

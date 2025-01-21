@@ -35,7 +35,6 @@ export const RutasCandidato = () => {
                 const result = await response.json();
     
                 if (result.success) {
-                    console.log("Datos del candidato:", result);
                     // Actualiza el estado con los datos recibidos
                     setCandidato(result);
                     setFotoPerfil(result.fotografia || "");
@@ -63,7 +62,7 @@ export const RutasCandidato = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo" translate="no">
-                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
+                        <Link to="/usuario-candidato/inicio-candidato"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-md-flex gap-5">
                         <NavLink to="/usuario-candidato/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>

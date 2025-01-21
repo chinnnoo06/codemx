@@ -3,30 +3,46 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
 import '../styles/header-footer.css';
 import '../styles/bienvenida/Bienvenida.css';
+import CryptoJS from "crypto-js";
 
 export const RutasEmpresa = () => {
-    const [fotoPerfil, setFotoPerfil] = useState('');
+    const [empresa, setEmpresa] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
 
-    useEffect(() => {
-        // Función para obtener datos del backend
+  useEffect(() => {
         const fetchData = async () => {
-        try {
-            // Fetch para obtener datos del usuario candidato
-            const empresaResponse = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_datos_empresa.php');
-            if (!empresaResponse.ok) {
-                throw new Error('Error al obtener los datos del usuario');
+            const secretKey = process.env.REACT_APP_SECRET_KEY; // Clave secreta definida en tu archivo .env
+            const encryptedSessionId = localStorage.getItem("session_id"); // Obtén el session_id cifrado
+    
+            if (!encryptedSessionId) {
+                console.error("No se encontró el session_id en el localStorage.");
+                return;
             }
-            const empresaData = await empresaResponse.json();
-            console.log('Datos de la empresa:', empresaData); 
-
-            // Actualizar estados
-            setFotoPerfil(empresaData.logo || '');
-        } catch (error) {
-            console.error('Error al obtener los datos:', error);
-        }
+    
+            // Desencripta el session_id
+            const sessionId = CryptoJS.AES.decrypt(encryptedSessionId, secretKey).toString(CryptoJS.enc.Utf8);
+    
+            try {
+                // Realiza la solicitud al backend enviando el session_id desencriptado
+                const response = await fetch("https://www.codemx.net/codemx/backend/empresa/obtener_datos_empresa.php", {
+                    method: "POST",
+                    body: JSON.stringify({ session_id: sessionId }), 
+                });
+    
+                const result = await response.json();
+    
+                if (result.success) {
+                    // Actualiza el estado con los datos recibidos
+                    setEmpresa(result);
+                } else if (result.error) {
+                    alert("Necesitas iniciar sesión")
+                    window.location.href = `/codemx/frontend/build/iniciar-sesion`;
+                }
+            } catch (error) {
+                console.error("Error al obtener los datos de la empresa:", error);
+            }
         };
-
+    
         fetchData();
     }, []);
 
@@ -42,9 +58,9 @@ export const RutasEmpresa = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
+                        <Link to="//usuario-empresa/inicio-empresa"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
-                    <nav className="nav d-none d-md-flex gap-4">
+                    <nav className="nav d-none d-md-flex gap-5">
                         <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-house"></i>
                             Inicio
@@ -70,14 +86,6 @@ export const RutasEmpresa = () => {
                             Buscar
                         </NavLink>
                     </nav>
-                    {/* perfil*/}
-                    <div className="perfil d-none d-md-flex">
-                        {fotoPerfil && (
-                            <Link to="/perfil-empresa">
-                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
-                            </Link>
-                        )}
-                    </div>
                     {/* Menú responsive */}
                     <div className="nav-responsive d-md-none" onClick={toggleMenu}>
                         <i className="fa-solid fa-bars"></i>
@@ -86,11 +94,6 @@ export const RutasEmpresa = () => {
                 {/* Menú desplegable para pantallas pequeñas */}
                 {menuVisible && (
                     <div className="menu-responsive">
-                        {fotoPerfil && (
-                            <Link to="/perfil-empresa">
-                                <img src={fotoPerfil} alt="Perfil" className="perfil-img" />
-                            </Link>
-                        )}
                         <NavLink to="/usuario-empresa/inicio-empresa"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-empresa/vacantes-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
                         <NavLink to="/usuario-empresa/chats-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
@@ -104,8 +107,8 @@ export const RutasEmpresa = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
-                    <Route path="/" element={<PageInicioEmpresa />} />
-                    <Route path="/inicio-empresa" element={<PageInicioEmpresa />} />
+                    <Route path="/" element={<PageInicioEmpresa empresa={empresa}  />} />
+                    <Route path="/inicio-empresa" element={<PageInicioEmpresa  empresa={empresa}  />} />
                 </Routes>
             </section>
 
