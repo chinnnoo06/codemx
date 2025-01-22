@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE ID = '$idEmpresa'
         ";
 
-        if (mysqli_query($conexion, $consultaCandidato)) {
+        if (mysqli_query($conexion, $consultaEmpresa)) {
             echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamente.']);
         } else {
             echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
