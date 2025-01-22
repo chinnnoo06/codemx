@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost'; // Dirección del servidor MySQL
-$username = "u499414612_prueba"; // Usuario de tu base de datos
+$username = "u499414612_codemx_user"; // Usuario de tu base de datos
 $password = 'Mandarino254'; // Contraseña del usuario
-$dbname = "u499414612_prueba"; // Nombre de tu base de datos
+$dbname = "u499414612_codemx"; // Nombre de tu base de datos
 
 // Conexión a la base de datos con mysqli
 $conexion = mysqli_connect($host, $username, $password, $dbname);
