@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ";
 
         if (mysqli_query($conexion, $consultaEmpresa)) {
-            echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamente.']);
+            echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamentee.']);
         } else {
             echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
         }
