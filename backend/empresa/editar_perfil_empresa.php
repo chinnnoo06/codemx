@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Sector = '$sector',
                 Tamanio = '$tamanio',
                 Telefono = '$telefono',
-                Fecha_Creacion = '$fechaCreacion',
+                Fecha_Creacion = '$fechaCreacion'
 
             WHERE ID = '$idEmpresa'
         ";
