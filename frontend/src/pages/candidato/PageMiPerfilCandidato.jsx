@@ -4,7 +4,7 @@ import { Seccion2PageMiperfil } from '../../components/candidato/Seccion2PageMip
 import { Seccion3PageMiPerfil } from '../../components/candidato/Seccion3PageMiPerfil';
 import '../../styles/candidato/miperfil.css';
 
-export const PageMiPerfilCandidato = ({ candidato, actualizarCandidato }) => {
+export const PageMiPerfilCandidato = ({candidato}) => {
     if (!candidato) {
         return <p>Cargando datos del perfil...</p>;
     }

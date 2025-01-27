@@ -62,7 +62,7 @@
 }
 
 
-@media (max-width: 746px) { 
+@media (max-width: 767px) { 
   .contenedor_todo {
     padding: 1rem; 
   }

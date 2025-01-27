@@ -10,6 +10,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
     const [showModalForm, setShowModalForm] = useState(false);
     const [numSeguidos, setNumSeguidos] = useState(0);
     const[empresas, setEmpresas]=useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -137,13 +138,27 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
         }
     };
     
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible);
+    };
 
 
   return (
     <div className="perfil-container">
         {/* Fondo de encabezado */}
-        <div className="perfil-header">
+        <div className="perfil-header position-relative">
             <img src={img} alt="Fondo" className="img-fluid rounded-top" />
+            {/* Boton-repsonsive */}
+            <div className="boton-responsive-perfil " onClick={toggleMenu}>
+                <i className="fa-solid fa-gear"></i>
+            </div>
+            {/* Menú desplegable para pantallas pequeñas */}
+            {menuVisible && (
+                <div className="opciones-responsive align-items-center">
+                    <p onClick={() => manejarShowModalForm()}>Actualizar Información</p>
+                    <p onClick={() => manejarCerrarSesion()}>Cerrar Sesión</p>
+                </div>
+            )}
         </div>
 
         <div className="perfil-candidato">
@@ -180,13 +195,13 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                     <div className="botones-perfil d-flex flex-column gap-2 mt-3 mt-md-0">
                         <button
                             className="btn btn-tipodos btn-sm"
-                            onClick={manejarShowModalForm}
+                            onClick={() => manejarShowModalForm()}
                         >
                             Actualizar información
                         </button>
                         <button
                             className="btn btn-danger btn-sm"
-                            onClick={manejarCerrarSesion}
+                            onClick={() => manejarCerrarSesion()}
                         >
                             Cerrar Sesión
                         </button>
@@ -194,18 +209,18 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                 </div>
 
                 {/* Detalles del usuario */}
-                <div className="datos-container mt-4">
-                    <h2 >{`${candidato.nombre} ${candidato.apellido}`}</h2>
+                <div className="datos-container mt-2">
+                    <h2 className='mt-2 mb-2'>{`${candidato.nombre} ${candidato.apellido}`}</h2>
                     {candidato.universidad !== "Otra" &&
                         candidato.universidad !== "No estudio" && (
                             <p className="text-muted">{`Estudiante de ${candidato.universidad}`}</p>
                         )}
                     <p
-                        className="text-highlight"
+                        className="text-highlight mt-2 mb-2"
                         onClick={() => manejarShowModalSeguidos()}
                     >{`Siguiendo: ${numSeguidos}`}</p>
 
-                    <p className="text-muted">
+                    <p className="text-muted mt-2 mb-2">
                         {candidato.cv ? (
                             <>
                                 <a href={`${candidato.cv}?t=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer" >
@@ -248,12 +263,12 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                     <button className="close-button btn" onClick={() => manejarCloseModalSeguidos()}>
                             <i className="fa-solid fa-x"></i>
                     </button>
-                    <ModalSeguidos empresas={empresas} idCandidato={candidato.id} actualizarNumSeguidos={setNumSeguidos}/>
+                    <ModalSeguidos empresas={empresas} idCandidato={candidato.id} />
                 </div>
             </div>
         )}
 
-        {/* Modal Seguidos */}
+        {/* Modal Form */}
         {showModalForm && (
             <div className="modal-overlay">
                 <div className="modal-content ">

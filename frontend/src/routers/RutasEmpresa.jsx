@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
 import '../styles/header-footer.css';
-import '../styles/bienvenida/Bienvenida.css';
 import CryptoJS from "crypto-js";
 
 export const RutasEmpresa = () => {
@@ -34,6 +33,7 @@ export const RutasEmpresa = () => {
                 if (result.success) {
                     // Actualiza el estado con los datos recibidos
                     setEmpresa(result);
+                    console.log(result)
                 } else if (result.error) {
                     alert("Necesitas iniciar sesión")
                     window.location.href = `/codemx/frontend/build/iniciar-sesion`;
@@ -51,6 +51,9 @@ export const RutasEmpresa = () => {
         setMenuVisible(!menuVisible);
     };
 
+    if (!empresa) {
+        return <div>Cargando datos de la empresa...</div>;
+    }
 
     return (
         <>
@@ -58,7 +61,7 @@ export const RutasEmpresa = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logo">
-                        <Link to="//usuario-empresa/inicio-empresa"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
+                        <Link to="/usuario-empresa/inicio-empresa"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-none d-md-flex gap-5">
                         <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
@@ -107,6 +110,7 @@ export const RutasEmpresa = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
+
                     <Route path="/" element={<PageInicioEmpresa empresa={empresa}  />} />
                     <Route path="/inicio-empresa" element={<PageInicioEmpresa  empresa={empresa}  />} />
                 </Routes>

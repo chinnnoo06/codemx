@@ -1,0 +1,248 @@
+/* Línea separadora entre secciones */
+.linea-separadora {
+  width: 100%;
+  height: 2px;
+  background-color: #ddd; /* Color de la línea */
+  margin: 20px 0;
+  position: relative;
+}
+
+.contenedor-publicaciones {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Siempre 3 columnas */
+  gap: 0.2rem; 
+  width: 100%;
+}
+
+.item-publicacion {
+  width: 100%;
+  aspect-ratio: 1; /* Mantiene el aspecto cuadrado */
+  overflow: hidden;
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  background-color: #f9f9f9; /* Fondo para diferenciar los espacios vacíos */
+}
+
+.img-publicacion {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ajusta la imagen al contenedor sin recortar */
+  object-position: center; /* Centra la imagen */
+  transition: transform 0.3s ease;
+}
+
+.img-publicacion:hover {
+  transform: scale(1.05);
+}
+
+.contenedor-sin-publicaciones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 300px;
+}
+
+.sin-publicaciones {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.icono-camara {
+  font-size: 5rem; 
+  color: #ccc; 
+}
+
+.texto-no-publicaciones {
+  font-size: 1.5rem; 
+  color: #555; 
+  font-weight: 600; 
+  margin-top: 1rem;
+}
+
+.botones-seccion .btn {
+  border: none;
+  background: none;
+  color: #0B1C26;
+  font-size: 1rem;
+  padding: 10px 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.botones-seccion .btn.activo {
+  font-weight: 600;
+}
+
+.botones-seccion .btn.activo::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #0B1C26;
+  transition: width 0.3s ease;
+}
+
+
+/* Contenedor principal */
+.contenedor-agregar-publicaciones {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  margin: 0 auto; 
+  padding: 10px; 
+  border-radius: 8px; 
+  gap: 10px; 
+}
+
+/* Contenedor de imagen */
+.seccion-inputimg {
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  width: 100%; 
+  height: 500px; 
+  background-color: #f9f9f9;
+  overflow: hidden; 
+}
+
+.seccion-inputimg .upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #888;
+}
+
+.seccion-inputimg .upload-placeholder .icono-upload {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Imagen previsualizada */
+.seccion-inputimg .img-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center; 
+  border-radius: 8px;
+}
+/* Input de descripción */
+.seccion-inputdescripcion {
+  width: 100%; 
+}
+
+.seccion-inputdescripcion textarea {
+  width: 100%; 
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.seccion-inputdescripcion textarea:focus {
+  border-color: #0b74de;
+  outline: none;
+}
+
+/* Sección de configuración avanzada */
+.seccion-configuracion {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  width: 100%;
+}
+
+.titulo-configuracion {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.opcion-configuracion {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.opcion-configuracion:last-child {
+  border-bottom: none;
+}
+
+.texto-configuracion {
+  font-size: 0.9rem;
+  color: #777;
+  margin: 5px 0 10px 0;
+}
+
+/* Estilo para el switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #0b74de;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.btn[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.contenedor-agregar-publicaciones input,
+.contenedor-agregar-publicaciones textarea {
+    font-size: 0.8rem; 
+}
+
+
+@media (max-width: 767px) {
+  .texto-boton {
+    display: none;
+  }
+  .titulo-configuracion {
+    font-size: 0.8rem;
+  }
+  
+}

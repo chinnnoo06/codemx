@@ -1,19 +1,13 @@
-.seccion {
+.seccionn {
     max-width: 900px;
-    background: #eff0f3;
     border-radius: 15px;
     width: 100%;
     padding: 0; 
 }
 
-.contenedor-todo{
-    padding-left: 0.3rem;
-    padding-right: 0.3rem;
-}
-
-.seccion h2,
-.seccion h5,
-.seccion h6{
+.seccionn h2,
+.seccionn h5,
+.seccionn h6{
     color: #0B1C26; 
 }
 .perfil-container {
@@ -92,19 +86,18 @@
 }
 
 .text-highlight {
+
     font-weight: 600;
     color: #0b1c26;
     margin-top: 0.5rem;
     cursor: pointer;
 }
-
 .text-highlight:hover {
     color: #504e4efe
 }
 
 
-/* Datos del candidato */
-
+/* Datos de empresa */
 .text-muted {
     font-size: 1rem;
     color: #777;
@@ -120,18 +113,15 @@
     margin: 0;
 }
 
-.btn-cv{
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-    font-size: 0.7rem;
-    padding: 3px;
+
+.text-highlight {
+    font-weight: 600;
+    color: #0b1c26;
+    cursor: pointer;
 }
 
-.btn-cv:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #0B1C26;
-    border: 1px solid #0B1C26; 
+.text-highlight:hover {
+    color: #504e4efe
 }
 
 
@@ -161,6 +151,28 @@
     overflow-y: auto;
  }
 
+ .modal-overlay-confirmacion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+  
+/* Modal Content */
+.modal-content-confirmacion {
+    background: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 250px;
+ }
+
+
 .form-group {
     margin-bottom: 1rem;
 }
@@ -179,31 +191,31 @@
     border-radius: 8px;
   }
   
-.empresa-item {
+.candidato-item {
     padding: 10px;
     display: flex;
     align-items: center;
     transition: transform 0.2s ease-in-out;
 }
 
-.empresa-item:hover {
+.candidato-item:hover {
     transform: scale(1.01);
 }
 
-.empresa-logo {
+.candidato-foto {
     width: 50px;
     height: 50px;
     object-fit: cover;
     border: 1px solid #ddd;
 }
 
-.empresa-nombre {
+.candidato-nombre {
     font-size: 1rem;
     font-weight: 600;
     color: #333;
 }
 
-.btn-dejarseguir{
+.btn-eliminar-seguidor{
     background-color: #0B1C26; 
     color: #dde1e9; 
     transition: all 0.3s ease; 
@@ -212,22 +224,7 @@
     padding-bottom: 5px;
 }
 
-.btn-dejarseguir:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-}
-
-.btn-seguir{
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-    font-size: 0.8rem;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.btn-seguir:hover{
+.btn-eliminar-seguidor:hover{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     color: #0B1C26; 
     border: 1px solid #0B1C26; 
@@ -239,7 +236,6 @@
     color: #6c757d;
     font-size: 1rem; 
 }
-
 
 .position-absolute {
     display: flex;
@@ -270,7 +266,7 @@
 .opciones-responsive p {
     cursor: pointer;
   }
-
+  
 .perfil-header {
     position: relative; 
 }
@@ -325,14 +321,13 @@
         padding-left: 0.5rem;
         padding-right: 0.5rem;
      }
-     .btn-dejarseguir,
-     .btn-seguir{
+     .btn-eliminar-seguidor{
         font-size: 0.5rem;
     }
-    .empresa-nombre{
+    .candidato-nombre{
         font-size: 0.8rem;
     }
-    .empresa-logo {
+    .candidato-foto {
         width: 2rem;
         height: 2rem;
     }
@@ -381,6 +376,4 @@
     .boton-responsive-perfil{
         display: flex;
     }
-    
-
 }
