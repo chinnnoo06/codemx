@@ -23,12 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
-    $consultaSeguidores = "
+    $consultaLikes = "
         SELECT candidato.ID, candidato.Nombre, candidato.Apellido, candidato.Fotografia
         FROM seguidores
-        INNER JOIN candidato ON seguidores.Candidato_ID = candidato.ID
         WHERE seguidores.Empresa_ID = '$idEmpresa'
     ";
 
@@ -52,30 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(500); 
         exit();
     }
-
-    // Obtener lista de seguidores
-    $listaDeCandidatos = [];
-    while ($fila = mysqli_fetch_assoc($resultadoSeguidores)) {
-        $listaDeCandidatos[] = $fila;
-    }
-
-    // Obtener lista de vacantes
-    $listaDeVacantes = [];
-    while ($filaVacante = mysqli_fetch_assoc($resultadoVacantes)) {
-        $listaDeVacantes[] = $filaVacante;
-    }
-
-    // Contar seguidores y vacantes usando count()
-    $cantidadDeSeguidores = count($listaDeCandidatos);
-    $cantidadDeVacantes = count($listaDeVacantes);
-
-    // Respuesta JSON con la cantidad y lista de vacantes + seguidores
-    echo json_encode([
-        'cantidadSeguidores' => $cantidadDeSeguidores,
-        'cantidadVacantes' => $cantidadDeVacantes,
-        'seguidores' => $listaDeCandidatos,
-        'vacantes' => $listaDeVacantes
-    ]);
 } else {
     http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
