@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['idPublicacion'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa.']);
+        echo json_encode(['error' => 'Falta el ID de la publicación.']);
         http_response_code(400); 
         exit();
     }
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     $consultaLikes = "
-        SELECT candidato.Nombre, candidato.Apellido, Fecha_Reaccion.reacciones FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'like' AND Publicacion_ID = '$idPublicacion'
     ";
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $consultaDislikes = "
-        SELECT candidato.Nombre, candidato.Apellido, Fecha_Reaccion.reacciones FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'dislike' AND Publicacion_ID = '$idPublicacion'
     ";
