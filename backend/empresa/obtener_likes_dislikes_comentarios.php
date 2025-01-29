@@ -26,31 +26,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     $consultaLikes = "
-        SELECT candidato.ID, candidato.Nombre, candidato.Apellido, candidato.Fotografia
-        FROM seguidores
-        WHERE seguidores.Empresa_ID = '$idEmpresa'
+        SELECT * FROM reacciones
+        WHERE Reaccion = 'like' AND Publicacion_ID = '$idPublicacion'
     ";
 
-    $resultadoSeguidores = mysqli_query($conexion, $consultaSeguidores);
+    $resultadoLikes = mysqli_query($conexion, $consultaLikes);
 
-    if (!$resultadoSeguidores) {
-        echo json_encode(['error' => 'Error en la consulta SQL de seguidores: ' . mysqli_error($conexion)]);
+    if (!$resultadoLikes) {
+        echo json_encode(['error' => 'Error en la consulta SQL de likes: ' . mysqli_error($conexion)]);
         http_response_code(500); 
         exit();
     }
 
-    $consultaVacantes = "
-        SELECT * FROM vacante
-        WHERE Empresa_ID = '$idEmpresa'
+    $consultaDislikes = "
+        SELECT * FROM reacciones
+        WHERE Reaccion = 'dislike' AND Publicacion_ID = '$idPublicacion'
     ";
 
-    $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
+    $resultadoDislikes = mysqli_query($conexion, $consultaDislikes);
 
-    if (!$resultadoVacantes) {
-        echo json_encode(['error' => 'Error en la consulta SQL de vacantes: ' . mysqli_error($conexion)]);
+    if (!$resultadoDislikes) {
+        echo json_encode(['error' => 'Error en la consulta SQL de dislikes: ' . mysqli_error($conexion)]);
         http_response_code(500); 
         exit();
     }
+
+    $consultaComentarios = "
+    SELECT * FROM comentarios
+    WHERE Publicacion_ID = '$idPublicacion'
+    ";
+
+    $resultadoComentarios = mysqli_query($conexion, $consultaComentarios);
+
+    if (!$resultadoComentarios) {
+        echo json_encode(['error' => 'Error en la consulta SQL de comentarios: ' . mysqli_error($conexion)]);
+        http_response_code(500); 
+        exit();
+    }
+
+     // Obtener lista de likes
+     $listaDeLikes = [];
+     while ($fila = mysqli_fetch_assoc($resultadoLikes)) {
+         $listaDeLikes[] = $fila;
+     }
+
+    // Obtener lista de dislikes
+    $listaDeDislikes = [];
+    while ($fila = mysqli_fetch_assoc($resultadoDislikes)) {
+        $listaDeDislikes[] = $fila;
+    }
+
+    // Obtener lista de comentarios
+     $listaDeComentarios = [];
+     while ($fila = mysqli_fetch_assoc($resultadoComentarios)) {
+         $listaDeComentarios [] = $fila;
+     }
+
+    $cantidadDeLikes = count($listaDeLikes);
+    $cantidadDeDislikes = count($listaDeDislikes);
+    $cantidadDeComentarios = count($listaDeComentarios);
+
+    echo json_encode([
+        'likes' => $listaDeLikes,
+        'cantidadLikes' => $cantidadDeLikes,
+        'dislikes' => $listaDeDislikes,
+        'CantidadDislikes' => $cantidadDeDislikes,
+        'comentarios' => $listaDeDislikes,
+        'CantidadComentarios' => $cantidadDeComentarios
+    ]);
+
+ 
+
 } else {
     http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
