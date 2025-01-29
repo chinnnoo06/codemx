@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'cantidadLikes' => $cantidadDeLikes,
         'dislikes' => $listaDeDislikes,
         'cantidadDislikes' => $cantidadDeDislikes,
-        'comentarios' => $listaDeDislikes,
+        'comentarios' => $listaDeComentarios,
         'cantidadComentarios' => $cantidadDeComentarios
     ]);
 
