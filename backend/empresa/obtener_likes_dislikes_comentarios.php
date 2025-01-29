@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa'])) {
+    if (!isset($data['idPublicacion'])) {
         echo json_encode(['error' => 'Falta el ID de la empresa.']);
         http_response_code(400); 
         exit();
