@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion']);
     $ocultarMeGusta = mysqli_real_escape_string($conexion, $_POST['ocultar_me_gusta']);
     $sinComentarios = mysqli_real_escape_string($conexion, $_POST['sin_comentarios']);
+    $fechaActual = date('Y-m-d H:i:s');
 
     // Dominio del servidor
     $serverUrl = 'https://codemx.net/codemx/public';
@@ -28,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die(json_encode(['error' => 'Falta la imagen']));
     }
   
-    $consulta = "INSERT INTO publicacion (Empresa_ID, Img, Contenido, Ocultar_MeGusta, Sin_Comentarios)
-        VALUES ('$idEmpresa', '$imgRutaCompleta', '$descripcion', '$ocultarMeGusta', '$sinComentarios')";
+    $consulta = "INSERT INTO publicacion (Empresa_ID, Img, Contenido, Ocultar_MeGusta, Sin_Comentarios, Fecha_Publicacion)
+        VALUES ('$idEmpresa', '$imgRutaCompleta', '$descripcion', '$ocultarMeGusta', '$sinComentarios', '$fechaActual')";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => 'Publicacion subida corrctamente']);

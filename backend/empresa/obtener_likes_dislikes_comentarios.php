@@ -26,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     $consultaLikes = "
-        SELECT * FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, Fecha_Reaccion.reacciones FROM reacciones
+        INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'like' AND Publicacion_ID = '$idPublicacion'
     ";
 
@@ -39,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $consultaDislikes = "
-        SELECT * FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, Fecha_Reaccion.reacciones FROM reacciones
+        INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'dislike' AND Publicacion_ID = '$idPublicacion'
     ";
 
@@ -52,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $consultaComentarios = "
-    SELECT * FROM comentarios
-    WHERE Publicacion_ID = '$idPublicacion'
+        SELECT * FROM comentarios
+        WHERE Publicacion_ID = '$idPublicacion'
     ";
 
     $resultadoComentarios = mysqli_query($conexion, $consultaComentarios);
