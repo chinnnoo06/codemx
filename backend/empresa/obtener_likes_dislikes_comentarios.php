@@ -54,8 +54,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $consultaComentarios = "
-        SELECT * FROM comentarios
-        WHERE Publicacion_ID = '$idPublicacion'
+        SELECT 
+            comentarios.ID,
+            comentarios.Publicacion_ID,
+            comentarios.Comentario,
+            comentarios.Fecha_Comentario,
+            comentarios.Respuesta_a,
+            candidato.ID AS CandidatoID,
+            candidato.Nombre AS CandidatoNombre,
+            candidato.Apellido AS CandidatoApellido,
+            candidato.Fotografia AS CandidatoFotografia,
+            empresa.ID AS EmpresaID,
+            empresa.Nombre AS EmpresaNombre,
+            empresa.Logo AS EmpresaLogo,
+            CASE 
+                WHEN comentarios.Candidato_ID IS NOT NULL THEN 'candidato'
+                WHEN comentarios.Empresa_ID IS NOT NULL THEN 'empresa'
+                ELSE NULL 
+            END AS tipo_usuario
+        FROM comentarios
+        LEFT JOIN candidato ON comentarios.Candidato_ID = candidato.ID
+        LEFT JOIN empresa ON comentarios.Empresa_ID = empresa.ID
+        WHERE comentarios.Publicacion_ID = '$idPublicacion'
+        ORDER BY comentarios.Fecha_Comentario ASC
     ";
 
     $resultadoComentarios = mysqli_query($conexion, $consultaComentarios);
