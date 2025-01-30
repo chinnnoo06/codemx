@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     $consultaLikes = "
-        SELECT candidato.Nombre, candidato.Apellido, reacciones.Fecha_Reaccion FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, candidato.Fotografia, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'like' AND Publicacion_ID = '$idPublicacion'
     ";
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $consultaDislikes = "
-        SELECT candidato.Nombre, candidato.Apellido, reacciones.Fecha_Reaccion FROM reacciones
+        SELECT candidato.Nombre, candidato.Apellido, candidato.Fotografia, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'dislike' AND Publicacion_ID = '$idPublicacion'
     ";
