@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             empresa.ID AS EmpresaID,
             empresa.Nombre AS EmpresaNombre,
             empresa.Logo AS EmpresaLogo,
+            COUNT(reacciones_comentarios.ID) AS NumLikes,  -- Contar los likes en reacciones_comentarios
             CASE 
                 WHEN comentarios.Candidato_ID IS NOT NULL THEN 'candidato'
                 WHEN comentarios.Empresa_ID IS NOT NULL THEN 'empresa'
@@ -77,9 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM comentarios
         LEFT JOIN candidato ON comentarios.Candidato_ID = candidato.ID
         LEFT JOIN empresa ON comentarios.Empresa_ID = empresa.ID
+        LEFT JOIN reacciones_comentarios 
+            ON comentarios.ID = reacciones_comentarios.Comentario_ID
+            AND reacciones_comentarios.Candidato_ID IS NOT NULL -- Solo contar likes, no dislikes
         WHERE comentarios.Publicacion_ID = '$idPublicacion'
-        ORDER BY comentarios.Fecha_Comentario ASC
+        GROUP BY comentarios.ID  -- Agrupar por cada comentario
+        ORDER BY NumLikes DESC, comentarios.Fecha_Comentario DESC  -- Ordenar por likes y luego por fecha
     ";
+
 
     $resultadoComentarios = mysqli_query($conexion, $consultaComentarios);
 
