@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT candidato.Nombre, candidato.Apellido, candidato.Fotografia, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'like' AND Publicacion_ID = '$idPublicacion'
+        ORDER BY reacciones.Fecha_Reaccion DESC
     ";
 
     $resultadoLikes = mysqli_query($conexion, $consultaLikes);
@@ -43,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT candidato.Nombre, candidato.Apellido, candidato.Fotografia, reacciones.Fecha_Reaccion FROM reacciones
         INNER JOIN candidato ON reacciones.Candidato_ID = candidato.ID
         WHERE Reaccion = 'dislike' AND Publicacion_ID = '$idPublicacion'
+        ORDER BY reacciones.Fecha_Reaccion DESC
     ";
 
     $resultadoDislikes = mysqli_query($conexion, $consultaDislikes);

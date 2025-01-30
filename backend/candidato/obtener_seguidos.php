@@ -26,10 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
     $consultaSiguiendo = "
-        SELECT empresa.ID, empresa.Nombre, empresa.Logo
+        SELECT empresa.ID, empresa.Nombre, empresa.Logo, seguidores.Fecha_Seguimiento
         FROM seguidores
         INNER JOIN empresa ON seguidores.Empresa_ID = empresa.ID
         WHERE seguidores.Candidato_ID = '$idCandidato'
+        ORDER BY seguidores.Fecha_Seguimiento DESC
     ";
 
     $resultado = mysqli_query($conexion, $consultaSiguiendo);
