@@ -69,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             empresa.ID AS EmpresaID,
             empresa.Nombre AS EmpresaNombre,
             empresa.Logo AS EmpresaLogo,
-            COUNT(reacciones_comentarios.ID) AS NumLikes,  -- Contar los likes
+            COUNT(reacciones_comentarios.ID) AS NumLikes, 
             MAX(CASE 
-                WHEN reacciones_comentarios.Candidato_ID = '$idUsuario' THEN 1
+                WHEN reacciones_comentarios.Candidato_ID = '$idUsuario' OR reacciones_comentarios.Empresa_ID = '$idUsuario' THEN 1
                 ELSE 0 
-            END) AS UsuarioDioLike, -- Verificar si el usuario ya dio like
+            END) AS UsuarioDioLike, 
             CASE 
                 WHEN comentarios.Candidato_ID IS NOT NULL THEN 'candidato'
                 WHEN comentarios.Empresa_ID IS NOT NULL THEN 'empresa'
@@ -84,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         LEFT JOIN empresa ON comentarios.Empresa_ID = empresa.ID
         LEFT JOIN reacciones_comentarios 
             ON comentarios.ID = reacciones_comentarios.Comentario_ID
-            AND reacciones_comentarios.Candidato_ID IS NOT NULL
         WHERE comentarios.Publicacion_ID = '$idPublicacion'
         GROUP BY comentarios.ID  
         ORDER BY NumLikes DESC, comentarios.Fecha_Comentario DESC
