@@ -19,8 +19,13 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     $fechaActual = date('Y-m-d H:i:s');
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idEmpresa'])) {
+        echo json_encode(['error' => 'Falta el ID de la empresa.']);
+        http_response_code(400);
+        exit();
+    }
+    if (!isset($data['idComentario'])) {
+        echo json_encode(['error' => 'Falta el ID del comentario.']);
         http_response_code(400);
         exit();
     }
