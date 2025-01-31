@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['idEmpresa'])) {
-        echo json_encode(['error' => 'Faltan parámetros idEmpresa o idUsuario.']);
+        echo json_encode(['error' => 'Falta el parámetro idEmpresa.']);
         http_response_code(400); 
         exit();
     }
