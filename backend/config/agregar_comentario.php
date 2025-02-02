@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-// Encabezados para habilitar CORS
+// Configuración de CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
@@ -20,7 +20,7 @@ try {
     $fechaActual = date('Y-m-d H:i:s');
 
     if (!isset($data['idEmpresa']) || !isset($data['idPublicacion']) || !isset($data['comentario'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa o ID del comentario o ID de la publicacion.']);
+        echo json_encode(['error' => 'Falta el ID de la empresa, ID del comentario o ID de la publicación.']);
         http_response_code(400);
         exit();
     }
@@ -28,16 +28,20 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
     $comentario = mysqli_real_escape_string($conexion, $data['comentario']);
+    $respuestaA = isset($data['respuestaA']) ? mysqli_real_escape_string($conexion, $data['respuestaA']) : null;
 
-    $consulta = " INSERT INTO comentarios (Publicacion_ID, Empresa_ID, Comentario, Fecha_Comentario)
-    VALUES ('$idPublicacion', '$idEmpresa', '$comentario', '$fechaActual')";
+    // Consulta para insertar el nuevo comentario
+    $consulta = "INSERT INTO comentarios (Publicacion_ID, Empresa_ID, Comentario, Fecha_Comentario, Respuesta_a)
+                 VALUES ('$idPublicacion', '$idEmpresa', '$comentario', '$fechaActual', " . ($respuestaA ? "'$respuestaA'" : "NULL") . ")";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Comentario agregado.']);
     } else {
-        echo json_encode(['error' => false, 'error' => 'Error al agregar: ' . mysqli_error($conexion)]);
+        echo json_encode(['success' => false, 'error' => 'Error al agregar: ' . mysqli_error($conexion)]);
+        http_response_code(500);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
+    http_response_code(500);
 }
 ?>
