@@ -43,7 +43,7 @@ try {
 
     // Consulta para insertar el nuevo comentario
     $consulta = "INSERT INTO comentarios (Publicacion_ID, Candidato_ID, Empresa_ID, Comentario, Fecha_Comentario, Respuesta_a)
-    VALUES ('$idPublicacion', '$idCandidato', '$idEmpresa', '$comentario', '$fechaActual', '$respuestaA')";
+    VALUES ('$idPublicacion', $idCandidato, $idEmpresa, '$comentario', '$fechaActual', $respuestaA)";
 
     
 
