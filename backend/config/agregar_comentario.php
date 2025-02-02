@@ -20,7 +20,7 @@ try {
     $fechaActual = date('Y-m-d H:i:s');
 
     if (!isset($data['idEmpresa']) || !isset($data['idPublicacion']) || !isset($data['comentario'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa, ID del comentario o ID de la publicación.']);
+        echo json_encode(['success' => false, 'error' => 'Falta el ID de la empresa, ID del comentario o ID de la publicación.']);
         http_response_code(400);
         exit();
     }
@@ -28,11 +28,11 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
     $comentario = mysqli_real_escape_string($conexion, $data['comentario']);
-    $respuestaA = isset($data['respuestaA']) ? mysqli_real_escape_string($conexion, $data['respuestaA']) : null;
+    $respuestaA = isset($data['respuestaA']) && !empty($data['respuestaA']) ? mysqli_real_escape_string($conexion, $data['respuestaA']) : "NULL";
 
     // Consulta para insertar el nuevo comentario
     $consulta = "INSERT INTO comentarios (Publicacion_ID, Empresa_ID, Comentario, Fecha_Comentario, Respuesta_a)
-                 VALUES ('$idPublicacion', '$idEmpresa', '$comentario', '$fechaActual', " . ($respuestaA ? "'$respuestaA'" : "NULL") . ")";
+                 VALUES ('$idPublicacion', '$idEmpresa', '$comentario', '$fechaActual', $respuestaA)";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Comentario agregado.']);

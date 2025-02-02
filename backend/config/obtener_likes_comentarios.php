@@ -18,13 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa']) || !isset($data['idPublicacion'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa o ID de la publicacion.']);
+    if (!isset($data['idPublicacion']) || (!isset($data['idEmpresa']) && !isset($data['idCandidato']))) {
+        echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o el ID de la publicación.']);
         http_response_code(400);
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    // Determinar qué tipo de usuario está realizando la petición
+    $idEmpresa = isset($data['idEmpresa']) && !empty($data['idEmpresa']) 
+    ? "'" . mysqli_real_escape_string($conexion, $data['idEmpresa']) . "'" 
+    : "NULL";
+
+    $idCandidato = isset($data['idCandidato']) && !empty($data['idCandidato']) 
+    ? "'" . mysqli_real_escape_string($conexion, $data['idCandidato']) . "'" 
+    : "NULL";
+    
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     // Consulta para obtener los comentarios a los que el usuario ha dado like
@@ -33,9 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM reacciones_comentarios 
         INNER JOIN comentarios 
         ON reacciones_comentarios.Comentario_ID = comentarios.ID
-        WHERE reacciones_comentarios.Empresa_ID = '$idEmpresa' 
-        AND comentarios.Publicacion_ID = '$idPublicacion'
+        WHERE comentarios.Publicacion_ID = '$idPublicacion'
+        AND (
+            (reacciones_comentarios.Empresa_ID = $idEmpresa AND $idEmpresa IS NOT NULL) OR 
+            (reacciones_comentarios.Candidato_ID = $idCandidato AND $idCandidato IS NOT NULL)
+        )
     ";
+
     $resultadoLikes = mysqli_query($conexion, $consultaLikes);
 
     if (!$resultadoLikes) {
