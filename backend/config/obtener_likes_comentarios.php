@@ -18,17 +18,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa'])) {
-        echo json_encode(['error' => 'Falta el parámetro idEmpresa.']);
-        http_response_code(400); 
+    if (!isset($data['idEmpresa']) || !isset($data['idPublicacion'])) {
+        echo json_encode(['error' => 'Falta el ID de la empresa o ID de la publicacion.']);
+        http_response_code(400);
         exit();
     }
 
-    // Escapar valores para seguridad
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     // Consulta para obtener los comentarios a los que el usuario ha dado like
-    $consultaLikes = "SELECT Comentario_ID FROM reacciones_comentarios WHERE Empresa_ID = '$idEmpresa'";
+    $consultaLikes = "SELECT Comentario_ID FROM reacciones_comentarios WHERE Empresa_ID = '$idEmpresa' AND Publicacion_ID = '$idPublicacion'";
     $resultadoLikes = mysqli_query($conexion, $consultaLikes);
 
     if (!$resultadoLikes) {
