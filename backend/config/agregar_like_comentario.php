@@ -21,17 +21,17 @@ try {
 
     if (!isset($data['idEmpresa']) || !isset($data['idComentario'])) {
         echo json_encode(['error' => 'Falta el ID de la empresa o ID del comentario.']);
-        http_response_code(400);
+        http_response_code(400); 
         exit();
     }
 
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $idComentario = mysqli_real_escape_string($conexion, $data['idComentario']);
 
-    $consulta = " INSERT INTO reacciones_comentarios (Comentario_ID, Empresa_ID, Fecha_Reaccion)
+    $consultaLikes = " INSERT INTO reacciones_comentarios (Comentario_ID, Empresa_ID, Fecha_Reaccion)
     VALUES ('$idComentario', '$idEmpresa', '$fechaActual')";
 
-    if (mysqli_query($conexion, $consulta)) {
+    if (mysqli_query($conexion, $consultaLikes)) {
         echo json_encode(['success' => true, 'message' => 'Like agregado.']);
     } else {
         echo json_encode(['error' => false, 'error' => 'Error al agregar: ' . mysqli_error($conexion)]);
