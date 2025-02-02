@@ -14,10 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Solo aceptamos solicitudes POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-
+    
     if (!isset($data['idPublicacion']) || (!isset($data['idEmpresa']) && !isset($data['idCandidato']))) {
         echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o el ID de la publicación.']);
         http_response_code(400);
@@ -32,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = isset($data['idCandidato']) && !empty($data['idCandidato']) 
     ? "'" . mysqli_real_escape_string($conexion, $data['idCandidato']) . "'" 
     : "NULL";
-    
+
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     // Consulta para obtener los comentarios a los que el usuario ha dado like
