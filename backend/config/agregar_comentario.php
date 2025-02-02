@@ -20,7 +20,7 @@ try {
     $fechaActual = date('Y-m-d H:i:s');
 
     if (!isset($data['idEmpresa']) || !isset($data['idPublicacion']) || !isset($data['comentario'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa o ID del comentario.']);
+        echo json_encode(['error' => 'Falta el ID de la empresa o ID del comentario o ID de la publicacion.']);
         http_response_code(400);
         exit();
     }
@@ -29,7 +29,7 @@ try {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
     $comentario = mysqli_real_escape_string($conexion, $data['comentario']);
 
-    $consulta = " INSERT INTO comentarios (Publicacion_ID, Empresa_ID, Comentario, Fecha_Reaccion)
+    $consulta = " INSERT INTO comentarios (Publicacion_ID, Empresa_ID, Comentario, Fecha_Comentario)
     VALUES ('$idPublicacion', '$idEmpresa', '$comentario', '$fechaActual')";
 
     if (mysqli_query($conexion, $consulta)) {
