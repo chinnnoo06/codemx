@@ -28,7 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
     // Consulta para obtener los comentarios a los que el usuario ha dado like
-    $consultaLikes = "SELECT Comentario_ID FROM reacciones_comentarios WHERE Empresa_ID = '$idEmpresa' AND Publicacion_ID = '$idPublicacion'";
+    $consultaLikes = "
+        SELECT reacciones_comentarios.Comentario_ID 
+        FROM reacciones_comentarios 
+        INNER JOIN comentarios 
+        ON reacciones_comentarios.Comentario_ID = comentarios.ID
+        WHERE reacciones_comentarios.Empresa_ID = '$idEmpresa' 
+        AND comentarios.Publicacion_ID = '$idPublicacion'
+    ";
     $resultadoLikes = mysqli_query($conexion, $consultaLikes);
 
     if (!$resultadoLikes) {
