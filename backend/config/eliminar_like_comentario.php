@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if ((!isset($data['idEmpresa']) && !isset($data['idCandidato'])) || !isset($data['idComentario'])) {
+    if (!isset($data['idEmpresa']) && !isset($data['idCandidato']) || !isset($data['idComentario'])) {
         echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o ID del comentario.']);
-        http_response_code(400);
+        http_response_code(400); 
         exit();
     }
 
@@ -32,9 +32,8 @@ try {
         ? mysqli_real_escape_string($conexion, $data['idCandidato']) 
         : null;
 
-    $idComentario = "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'";
+    $idComentario = mysqli_real_escape_string($conexion, $data['idComentario']);
 
-    // Verificar si eliminar un like de empresa o de candidato
     if ($idEmpresa) {
         $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = $idComentario AND Empresa_ID = '$idEmpresa'";
     } elseif ($idCandidato) {
@@ -45,7 +44,7 @@ try {
         exit();
     }
 
-    // Ejecutar la consulta
+
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Like eliminado.']);
     } else {
