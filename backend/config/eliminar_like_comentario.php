@@ -26,17 +26,17 @@ try {
     // Determinar qué tipo de usuario está realizando la petición
     $idEmpresa = isset($data['idEmpresa']) && !empty($data['idEmpresa']) 
     ? "'" . mysqli_real_escape_string($conexion, $data['idEmpresa']) . "'" 
-    : "NULL";
+    : null;
 
     $idCandidato = isset($data['idCandidato']) && !empty($data['idCandidato']) 
         ? "'" . mysqli_real_escape_string($conexion, $data['idCandidato']) . "'" 
-        : "NULL";
+        : null;
 
     $idComentario = mysqli_real_escape_string($conexion, $data['idComentario']);
 
-    if($idEmpresa != "NULL"){
+    if($idEmpresa != null){
         $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = '$idComentario' AND Empresa_ID = '$idEmpresa'";
-    } elseif ($idCandidato != "NULL"){
+    } elseif ($idCandidato != null){
         $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = '$idComentario' AND Candidato_ID = '$idCandidato'";
     }
 
