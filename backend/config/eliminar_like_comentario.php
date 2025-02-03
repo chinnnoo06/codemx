@@ -17,16 +17,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa']) || !isset($data['idComentario'])) {
-        echo json_encode(['error' => 'Faltan parámetros.']);
-        http_response_code(400);
+    if (!isset($data['idEmpresa']) && !isset($data['idCandidato']) || !isset($data['idComentario'])) {
+        echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o ID del comentario.']);
+        http_response_code(400); 
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    // Determinar qué tipo de usuario está realizando la petición
+    $idEmpresa = isset($data['idEmpresa']) && !empty($data['idEmpresa']) 
+    ? "'" . mysqli_real_escape_string($conexion, $data['idEmpresa']) . "'" 
+    : "NULL";
+
+    $idCandidato = isset($data['idCandidato']) && !empty($data['idCandidato']) 
+        ? "'" . mysqli_real_escape_string($conexion, $data['idCandidato']) . "'" 
+        : "NULL";
+
     $idComentario = mysqli_real_escape_string($conexion, $data['idComentario']);
 
-    $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = '$idComentario' AND Empresa_ID = '$idEmpresa'";
+    if($idEmpresa != "NULL"){
+        $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = '$idComentario' AND Empresa_ID = '$idEmpresa'";
+    } elseif ($idCandidato != "NULL"){
+        $consulta = "DELETE FROM reacciones_comentarios WHERE Comentario_ID = '$idComentario' AND Candidato_ID = '$idCandidato'";
+    }
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Like eliminado.']);
