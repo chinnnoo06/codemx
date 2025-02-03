@@ -19,17 +19,25 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     $fechaActual = date('Y-m-d H:i:s');
 
-    if (!isset($data['idEmpresa']) || !isset($data['idComentario'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa o ID del comentario.']);
+    if (!isset($data['idEmpresa']) && !isset($data['idCandidato']) || !isset($data['idComentario'])) {
+        echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o ID del comentario.']);
         http_response_code(400); 
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    // Determinar qué tipo de usuario está realizando la petición
+    $idEmpresa = isset($data['idEmpresa']) && !empty($data['idEmpresa']) 
+    ? "'" . mysqli_real_escape_string($conexion, $data['idEmpresa']) . "'" 
+    : "NULL";
+
+    $idCandidato = isset($data['idCandidato']) && !empty($data['idCandidato']) 
+        ? "'" . mysqli_real_escape_string($conexion, $data['idCandidato']) . "'" 
+        : "NULL";
+    
     $idComentario = mysqli_real_escape_string($conexion, $data['idComentario']);
 
-    $consultaLikes = " INSERT INTO reacciones_comentarios (Comentario_ID, Empresa_ID, Fecha_Reaccion)
-    VALUES ('$idComentario', '$idEmpresa', '$fechaActual')";
+    $consultaLikes = " INSERT INTO reacciones_comentarios (Comentario_ID, Candidato_ID, Empresa_ID, Fecha_Reaccion)
+    VALUES ('$idComentario', $idCandidato, $idEmpresa, '$fechaActual')";
 
     if (mysqli_query($conexion, $consultaLikes)) {
         echo json_encode(['success' => true, 'message' => 'Like agregado.']);
