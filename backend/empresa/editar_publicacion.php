@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ocultarMeGusta = mysqli_real_escape_string($conexion, $_POST['ocultar_me_gusta']);
     $sinComentarios = mysqli_real_escape_string($conexion, $_POST['sin_comentarios']);
   
-    $consulta = "UPDATE TABLE publicacion SET Contenido = '$descripcion', Ocultar_MeGusta = '$ocultarMeGusta', Sin_Comentarios = '$sinComentarios'";
+    $consulta = "UPDATE TABLE publicacion SET Contenido = '$descripcion', Ocultar_MeGusta = '$ocultarMeGusta', Sin_Comentarios = '$sinComentarios' WHERE ID = '$idPublicacion'";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => 'Publicacion editada corrctamente']);
