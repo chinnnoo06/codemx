@@ -53,12 +53,8 @@ try {
         if (!unlink($imgPath)) {
             echo json_encode(['success' => false, 'error' => 'Error' ]);
             exit();
-        } else {
-            echo json_encode(['success' => true]);
         }
     }
-
-    
 
     // Eliminar la publicación de la base de datos
     $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
