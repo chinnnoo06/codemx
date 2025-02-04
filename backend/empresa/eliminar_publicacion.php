@@ -26,29 +26,20 @@ try {
 
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
-    // 1️⃣ Obtener la ruta de la imagen desde la base de datos
+    $serverUrl = 'https://codemx.net/codemx/public';
+
     $consultaImg = "SELECT Img FROM publicacion WHERE ID = '$idPublicacion'";
     $resultadoImg = mysqli_query($conexion, $consultaImg);
 
+    $fila = mysqli_fetch_assoc($resultado);
+    $img = $fila['Img'];
+
     if ($resultadoImg && mysqli_num_rows($resultadoImg) > 0) {
-        $row = mysqli_fetch_assoc($resultadoImg);
-        $URLImagen = $row['Img'];  
-
-        // 2️⃣ Obtener el nombre del archivo
-        $nombreImagen = basename($URLImagen);
-
-        // 3️⃣ Definir la ruta absoluta del archivo en el servidor
-        $rutaImagen = realpath(__DIR__ . "/../public/resources/publicaciones/" . $nombreImagen);
-
-        if ($rutaImagen && file_exists($rutaImagen)) {
-            if (unlink($rutaImagen)) {
-                $mensajeImagen = "Imagen eliminada correctamente.";
-            } else {
-                $mensajeImagen = "No se pudo eliminar la imagen. Revisa permisos.";
-            }
-        } else {
-            $mensajeImagen = "La imagen no existe en el servidor.";
-        }
+         // Eliminar la foto
+         $imgPath = str_replace($serverUrl, __DIR__ . '/../../public', $img);
+         if (file_exists($imgPath)) {
+             unlink($imgPath);
+         }
 
         // 4️⃣ Eliminar la publicación de la base de datos
         $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
@@ -56,7 +47,6 @@ try {
             echo json_encode([
                 'success' => true, 
                 'message' => 'Publicación eliminada correctamente.',
-                'image_message' => $mensajeImagen
             ]);
         } else {
             echo json_encode([
