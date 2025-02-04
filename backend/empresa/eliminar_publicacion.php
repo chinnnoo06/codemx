@@ -19,19 +19,18 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     // Verificar que el idCandidato esté presente
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idPublicacion'])) {
+        echo json_encode(['error' => 'Falta el ID de la Publicacion.']);
         http_response_code(400); // Bad Request
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
-    
-    $consulta = " DELETE FROM seguidores WHERE Empresa_ID = '$idEmpresa' AND Candidato_ID = '$idCandidato' ";
+    $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
+
+    $consulta = " DELETE FROM publicacion WHERE ID = '$idPublicacion'";
 
     if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => true, 'message' => 'Siguimiento eliminado.']);
+        echo json_encode(['success' => true, 'message' => 'Publicacion eliminada.']);
     } else {
         echo json_encode(['error' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
     }
