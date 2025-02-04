@@ -33,7 +33,6 @@ export const RutasEmpresa = () => {
                 if (result.success) {
                     // Actualiza el estado con los datos recibidos
                     setEmpresa(result);
-                    console.log(result)
                 } else if (result.error) {
                     alert("Necesitas iniciar sesión")
                     window.location.href = `/codemx/frontend/build/iniciar-sesion`;
@@ -90,7 +89,7 @@ export const RutasEmpresa = () => {
                         </NavLink>
                     </nav>
                     {/* Menú responsive */}
-                    <div className="nav-responsive d-md-none" onClick={toggleMenu}>
+                    <div className="nav-responsive" onClick={toggleMenu}>
                         <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
@@ -110,7 +109,6 @@ export const RutasEmpresa = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
-
                     <Route path="/" element={<PageInicioEmpresa empresa={empresa}  />} />
                     <Route path="/inicio-empresa" element={<PageInicioEmpresa  empresa={empresa}  />} />
                 </Routes>

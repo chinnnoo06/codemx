@@ -19,9 +19,9 @@
   aspect-ratio: 1; /* Mantiene el aspecto cuadrado */
   overflow: hidden;
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center; /* Centra verticalmente */
-  background-color: #f9f9f9; /* Fondo para diferenciar los espacios vacíos */
+  justify-content: center; 
+  align-items: center; 
+  background-color: #f9f9f9; 
 }
 
 .img-publicacion {
@@ -94,10 +94,10 @@
 .contenedor-agregar-publicaciones {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
+  max-width: 450px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
   margin: 0 auto; 
-  padding: 10px; 
+  padding: 5px; 
   border-radius: 8px; 
   gap: 10px; 
 }
@@ -107,7 +107,10 @@
   border: 1px dashed #ccc;
   border-radius: 8px;
   width: 100%; 
-  height: 500px; 
+  height: auto; 
+  max-width: 450px;
+  min-height: 300px;
+  max-height: 500px;
   background-color: #f9f9f9;
   overflow: hidden; 
 }
@@ -244,5 +247,11 @@ input:checked + .slider:before {
   .titulo-configuracion {
     font-size: 0.8rem;
   }
-  
+  .contenedor-todo{
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
+  .seccion-inputimg {
+    max-height: 400px;
+  }
 }

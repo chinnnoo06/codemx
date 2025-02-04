@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/empresa/miperfil.css';
 
 export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
   const [query, setQuery] = useState('');
@@ -46,6 +47,7 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
 
   return (
     <div className="container">
+      <h5 className="mb-3 text-center titulo-modal">Seguidores</h5>
       {/* Barra de búsqueda */}
       <div className="input-group mb-4 position-relative">
         <span className="search-icon position-absolute top-50 start-0 translate-middle-y ms-2 text-muted">
@@ -62,7 +64,7 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
       </div>
 
       {/* Lista de seguidores */}
-      <div className="candidatos-list">
+      <div className="seguidores-list">
         {seguidoresFiltrados && seguidoresFiltrados.length > 0 ? (
           seguidoresFiltrados.map((candidato) => {
             const nombreCompleto = `${candidato.Nombre} ${candidato.Apellido}`;
@@ -74,15 +76,15 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
             return (
               <div
                 key={candidato.ID}
-                className="candidato-item d-flex align-items-center mb-3"
+                className="seguidor-item d-flex align-items-center mb-3"
               >
                 <img
                   src={candidato.Fotografia}
                   alt={candidato.Nombre}
-                  className="candidato-foto rounded-circle me-3"
+                  className="seguidor-foto rounded-circle me-3"
                 />
 
-                <span className="candidato-nombre">{nombreTruncado}</span>
+                <span className="seguidor-nombre">{nombreTruncado}</span>
 
                 {candidato.ID && (
                   <button

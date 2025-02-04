@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/empresa/miperfilpublicaciones.css';
 
-export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
+export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarMostrarSeccion }) => {
   const [seccionActiva, setSeccionActiva] = useState('ver-publicaciones');
   const [imagenPreview, setImagenPreview] = useState(null);
   const [descripcion, setDescripcion] = useState(""); 
@@ -9,6 +9,9 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
   const [sinComentarios, setSinComentarios] = useState(0); 
   const [errorImagen, setErrorImagen] = useState(""); // Para mostrar mensajes de error
 
+  useEffect(() => {
+    fetchData();
+}, [fetchData]);
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
@@ -19,7 +22,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
         img.src = e.target.result;
         img.onload = () => {
           // Verificar ancho mínimo
-          if (img.width < 500) {
+          if (img.width < 400) {
             setErrorImagen('La imagen debe tener un ancho mínimo de 500px.');
             return;
           }
@@ -39,8 +42,8 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
 
       formData.append("empresa_id", empresa.id); 
       formData.append("descripcion", descripcion); 
-      formData.append("ocultar_me_gusta", ocultarMeGusta ? 1 : 0); 
-      formData.append("sin_comentarios", sinComentarios ? 1 : 0); 
+      formData.append("ocultar_me_gusta", ocultarMeGusta); 
+      formData.append("sin_comentarios", sinComentarios); 
 
       // Convertir imagen base64 a archivo Blob
       const blob = await fetch(imagenPreview).then(res => res.blob());
@@ -72,8 +75,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
   };
 
   return (
-    <div className='container-fluid'>
-
+    <div className="contenedor"> 
       <div className="linea-separadora"></div>
       
       {/* Botones de navegación */}
@@ -98,7 +100,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
           {publicaciones && publicaciones.length > 0 ? (
             <div className='contenedor-publicaciones'>
               {publicaciones.map((publicacion, index) => (
-                <div key={index} className='item-publicacion'>
+                <div key={index} className='item-publicacion' onClick={() => manejarMostrarSeccion(publicacion)}>
                   <img
                     src={`${publicacion.Img}?t=${new Date().getTime()}`}
                     alt={`Foto de la publicación ${index + 1}`}
@@ -162,15 +164,21 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData }) => {
               <div className="opcion-configuracion d-flex justify-content-between align-items-center">
                 <span>Ocultar recuentos de Me gusta</span>
                 <label className="switch">
-                  <input type="checkbox" />
-                  <span className="slider round"></span>
+                <input 
+                    type="checkbox" 
+                    checked={ocultarMeGusta === 1} 
+                    onChange={(e) => setOcultarMeGusta(e.target.checked ? 1 : 0)}/>
+                <span className="slider round"></span>
                 </label>
               </div>
 
               <div className="opcion-configuracion d-flex justify-content-between align-items-center">
                 <span>Desactivar comentarios</span>
                 <label className="switch">
-                  <input type="checkbox" />
+                  <input 
+                  type="checkbox"
+                  checked={sinComentarios === 1}
+                  onChange={(e) => setSinComentarios(e.target.checked ? 1 : 0)} />
                   <span className="slider round"></span>
                 </label>
               </div>

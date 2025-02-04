@@ -1,0 +1,347 @@
+.contenedor-todo{
+  min-height: 60vh;
+}
+.contenedor-publicacion  {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    margin: 0 auto; 
+    padding: 5px; 
+    border-radius: 8px; 
+    gap: 10px; 
+    
+  }
+
+.seccion-usuario .img-perfil{
+  width: 3rem; 
+  height: 3rem; 
+  border-radius: 50%; 
+  object-fit: cover; 
+  overflow: hidden;
+}
+
+.seccion-img {
+  width: 100%; 
+  height: auto; 
+  max-width: 450px;
+  min-height: 250px;
+  max-height: 500px;
+  overflow: hidden; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.seccion-img .img-detalle{
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center; 
+  border-radius: 8px;
+}
+
+.seccion-usuario i,
+.seccion-reacciones i,
+.comentario-header i{
+  color: #0B1C26;
+}
+
+.seccion-usuario i:hover, 
+.seccion-reacciones i:hover,
+.comentario-header i:hover {
+  color: #504e4efe;
+}
+
+.usuario-nombre{
+  font-weight: 600;
+}
+.descripcion{
+  font-weight: 300;
+}
+
+.comentario-tiempo {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: -3px; 
+  align-self: flex-start;
+}
+
+.btn-volver {
+  background: none;
+  border: none;
+  color: #0B1C26; 
+  font-size: 1rem;
+  font-weight: 600;
+  transition: color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-volver i {
+  font-size: 1.2rem;
+}
+
+.btn-volver:hover {
+  color: #0056b3; /* Azul Bootstrap */
+  transform: translateX(-2px);
+}
+
+.usuario-reaccion-item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.usuario-reaccion:hover {
+  transform: scale(1.01);
+}
+
+.usuario-reaccion-foto {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.usuario-reaccion-nombre {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/*Comentarios*/
+.lista-comentarios {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.comentario-item {
+  margin-top: 1rem; 
+}
+
+.comentario-header {
+  gap: 10px;
+}
+
+.comentario-foto {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comentario-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0B1C26;
+}
+
+.comentario-tiempo {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.comentario-texto {
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.comentario-footer {
+  font-size: 0.85rem;
+}
+
+/* Reacciones del comentario */
+.comentario-reacciones i {
+  cursor: "pointer" ;
+  margin-right: 5px;
+}
+
+/* Responder */
+.comentario-responder {
+  color: #0B1C26;
+  cursor: pointer;
+}
+
+.comentario-reacciones i:hover,
+.comentario-responder:hover{
+  color: #504e4efe;
+}
+
+/* Botón para mostrar/ocultar respuestas */
+.btn-ver-respuestas {
+  background: none;
+  border: none;
+  color: #0B1C26;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  text-align: left;
+  padding: 0;
+}
+
+.btn-ver-respuestas:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor de la barra de comentarios */
+.barra-comentario {
+  gap: 10px;
+}
+
+.input-comentario {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 5px;
+  font-size: 0.87rem;
+  outline: none;
+}
+
+.btn-enviar-comentario {
+  background: none;
+  border: none;
+  color: #0B1C26;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-enviar-comentario:hover {
+  color: #504e4efe;
+}
+
+.autor{
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #333;
+}
+
+.lista-comentarios {
+  max-height: 55vh; /* Limita la altura del contenedor */
+  overflow-y: auto; /* Habilita el desplazamiento */
+  -ms-overflow-style: none; /* Oculta la barra de desplazamiento en IE y Edge */
+  scrollbar-width: none; /* Oculta la barra en Firefox */
+}
+
+/* Ocultar la barra de desplazamiento en Chrome, Safari y Edge */
+.lista-comentarios::-webkit-scrollbar {
+  display: none;
+}
+
+/*Modal-opciones*/
+.btn-opciones{
+  width: 100%;
+  height: 2rem;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background-color: #fdfdfd;
+}
+
+.btn-opciones:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ccc;
+}
+
+.btn-reportar,
+.btn-eliminar,
+.btn-cancelar{
+  font-weight: 600;
+  color: #d41313;
+}
+
+.btn-reportar:hover,
+.btn-eliminar:hover,
+.btn-cancelar:hover{
+  color: #d41313;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+
+}
+
+.modal-header-reportar {
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+
+}
+
+.modal-title-reportar {
+  flex-grow: 1;
+  text-align: center;
+}
+
+
+.close-button-reportar {
+  cursor: pointer;
+  font-size: 12px; 
+  color: #0B1C26;
+}
+
+.modal-question-reportar {
+  font-size: 0.9rem;
+  padding: 1rem;
+  font-weight: 600;
+}
+
+.modal-body-reportar textarea{
+  font-size: 0.8rem;
+
+  height: 7rem;
+}
+
+
+@media (max-width: 767px) {
+
+  .contenedor-todo{
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
+  .usuario-reaccion-nombre{
+    font-size: 0.8rem;
+  }
+  .usuario-reaccion-foto {
+      width: 2rem;
+      height: 2rem;
+  }
+  .comentario-nombre {
+    font-size: 0.8rem;
+  }
+  .comentario-tiempo {
+    font-size: 0.65rem;
+
+  }
+  .comentario-texto {
+    font-size: 0.7rem;
+  }
+  
+  .comentario-foto {
+    width: 2rem;
+    height: 2rem;
+  }
+  .comentario-footer {
+    font-size: 0.75rem;
+  }
+  .btn-ver-respuestas {
+    font-size: 0.7rem;
+  }
+
+  .btn-opciones{
+    font-size: 0.7rem;
+  }
+  .modal-header-reportar {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+  .modal-question-reportar,
+  .motivo {
+    font-size: 0.8rem;
+    padding: 0.7rem;
+  }
+
+}

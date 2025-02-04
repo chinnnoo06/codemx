@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Seccion1PageInicio } from '../../components/empresa/Seccion1PageInicio'
 import { Seccion2PageInicio } from '../../components/empresa/Seccion2PageInicio'
+import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
 
 export const PageInicioEmpresa = ({empresa}) => {
     const [numPublicaciones, setNumPublicaciones] = useState(0);
     const [publicaciones, setPublicaciones] = useState(0);
+    const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
+    const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
         try {
-            const Response = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_publicaciones.php', {
+            const Response = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_publicaciones_empresa.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,18 +36,46 @@ export const PageInicioEmpresa = ({empresa}) => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    const manejarMostrarSeccion = (publicacion) =>{
+        setPublicacionSeleccionada(publicacion);
+        setSeccionActiva("publicacion");
+
+        window.scrollTo({
+            top: 100,
+            behavior: "smooth" 
+        });
+    }
+
+    const manejarOcultarSeccion = (publicacion) => {
+        setSeccionActiva("perfil-publicaciones");
+        setTimeout(() => {
+            fetchData(); // 🔹 Asegura que se recargan los datos de publicaciones
+        }, 500);
+    };
       
   return (
       <>
-      <div className='contenedor-todo'>
-          <div className='seccionn container mt-4 d-flex justify-content-center'>
-              <Seccion1PageInicio empresa={empresa} numPublicaciones={numPublicaciones}/>
-          </div>
+      
+        {seccionActiva === "perfil-publicaciones" && (
+            <div className='contenedor-todo'>
+                <div className='seccionn container mt-4 d-flex justify-content-center'>
+                    <Seccion1PageInicio empresa={empresa} numPublicaciones={numPublicaciones}/>
+                </div>
 
-          <div className='seccionn container mt-4 mb-4 py-3 d-flex justify-content-center'>
-              <Seccion2PageInicio empresa={empresa} publicaciones={publicaciones} fetchData={fetchData}/>
-          </div>
-      </div>
+                <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
+                    <Seccion2PageInicio empresa={empresa} publicaciones={publicaciones} fetchData={fetchData} manejarMostrarSeccion={manejarMostrarSeccion}/>
+                </div>
+            </div>
+        )}
+
+        {seccionActiva === "publicacion" && (
+            <div className='contenedor-todo'>
+                <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
+                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} actualizarFetch={fetchData} setPublicacionSeleccionada={setPublicacionSeleccionada}/>
+                </div>
+            </div>
+        )}
 
       </>
   )
