@@ -51,7 +51,7 @@ try {
     
     if (file_exists($imgPath)) {
         if (!unlink($imgPath)) {
-            echo json_encode(['success' => false, 'img' => $img]);
+            echo json_encode(['success' => false, 'error' => 'Error' ]);
             exit();
         }
     }
