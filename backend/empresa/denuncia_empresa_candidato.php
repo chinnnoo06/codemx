@@ -25,11 +25,11 @@ try {
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idPublicacion']);
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['comentario']);
+    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $idMotivo = mysqli_real_escape_string($conexion, $data['motivo']);
     $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
-    $estado = mysqli_real_escape_string($conexion, $data['estado']);
+    $estado = 1;
 
     $idComentario = isset($data['idComentario']) && !empty($data['idComentario']) 
         ? "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'" 
