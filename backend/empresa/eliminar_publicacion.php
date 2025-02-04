@@ -50,31 +50,30 @@ try {
     $imgPath = str_replace($serverUrl, __DIR__ . '/../../public', $img);
     
     if (file_exists($imgPath)) {
-        if (unlink($imgPath)) {
-            echo json_encode(['success' => true, 'message' => 'Publicación eliminada', 'deleted_img' => $img]);
-        } else {
+        if (!unlink($imgPath)) {
             echo json_encode(['success' => false, 'error' => 'No se pudo eliminar la imagen']);
             exit();
         }
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Imagen no encontrada en el servidor']);
-        exit();
-    }
+    } 
 
     // Eliminar la publicación de la base de datos
     $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
     if (mysqli_query($conexion, $consultaDelete)) {
         echo json_encode([
             'success' => true, 
-            'message' => 'Publicación eliminada correctamente.'
+            'message' => 'Publicación eliminada correctamente.',
+            'deleted_img' => $img
         ]);
+        exit();
     } else {
         echo json_encode([
             'success' => false, 
             'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
         ]);
+        exit();
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
+    exit();
 }
 ?>
