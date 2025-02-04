@@ -50,13 +50,15 @@ try {
     $imgPath = str_replace($serverUrl, __DIR__ . '/../../public', $img);
     
     if (file_exists($imgPath)) {
-        if (unlink($imgPath)) {
-            echo json_encode(['success' => true, 'message' => 'Publicación eliminada', 'deleted_img' => $img]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'No se pudo eliminar la imagen']);
+        if (!unlink($imgPath)) {
+            echo json_encode(['success' => false, 'error' => 'Error' ]);
             exit();
+        } else {
+            echo json_encode(['success' => true]);
         }
     }
+
+    
 
     // Eliminar la publicación de la base de datos
     $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
