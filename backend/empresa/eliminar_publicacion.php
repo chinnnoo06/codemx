@@ -18,15 +18,16 @@ try {
     // Obtén el cuerpo de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Verificar que el idCandidato esté presente
+    // Verificar que el idPublicacion esté presente
     if (!isset($data['idPublicacion'])) {
-        echo json_encode(['error' => 'Falta el ID de la Publicacion.']);
+        echo json_encode(['success' => false, 'error' => 'Falta el ID de la Publicacion.']);
         http_response_code(400); // Bad Request
         exit();
     }
 
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
+    // 1️⃣ Obtener la ruta de la imagen antes de eliminar la publicación
     $consultaImg = "SELECT Img FROM publicacion WHERE ID = '$idPublicacion'";
     $resultadoImg = mysqli_query($conexion, $consultaImg);
 
@@ -36,21 +37,26 @@ try {
 
         // 2️⃣ Eliminar la imagen del servidor
         if ($imgRutaCompleta) {
-            // Convertir URL a ruta en el servidor
-            $imgRutaServidor = realpath(__DIR__ . '/../../public' . parse_url($imgRutaCompleta, PHP_URL_PATH));
+            // Convertir la URL en una ruta del servidor de forma manual
+            $imgRutaServidor = str_replace("https://codemx.net/codemx/public", "/var/www/codemx/public", $imgRutaCompleta);
 
-            if ($imgRutaServidor && file_exists($imgRutaServidor)) {
+            // Verificar si el archivo existe antes de eliminarlo
+            if (file_exists($imgRutaServidor)) {
                 unlink($imgRutaServidor);
+                echo json_encode(['success' => true, 'message' => 'Imagen eliminada correctamente.']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'La imagen no existe en el servidor.']);
             }
         }
     }
 
-    $consulta = " DELETE FROM publicacion WHERE ID = '$idPublicacion'";
+    // 3️⃣ Eliminar la publicación de la base de datos
+    $consulta = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
 
     if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => true, 'message' => 'Publicacion eliminada.']);
+        echo json_encode(['success' => true, 'message' => 'Publicación eliminada correctamente.']);
     } else {
-        echo json_encode(['error' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
+        echo json_encode(['success' => false, 'error' => 'Error al eliminar: ' . mysqli_error($conexion)]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
