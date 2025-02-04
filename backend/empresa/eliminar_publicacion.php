@@ -28,34 +28,46 @@ try {
 
     $serverUrl = 'https://codemx.net/codemx/public';
 
+    // Verificar conexión con la base de datos
+    if (!$conexion) {
+        echo json_encode(['success' => false, 'error' => 'Error de conexión a la base de datos.']);
+        exit();
+    }
+
+    // Consultar imagen de la publicación
     $consultaImg = "SELECT Img FROM publicacion WHERE ID = '$idPublicacion'";
     $resultadoImg = mysqli_query($conexion, $consultaImg);
 
-    $fila = mysqli_fetch_assoc($resultado);
+    if (!$resultadoImg || mysqli_num_rows($resultadoImg) == 0) {
+        echo json_encode(['success' => false, 'error' => 'No se encontró la publicación en la base de datos.']);
+        exit();
+    }
+
+    $fila = mysqli_fetch_assoc($resultadoImg);
     $img = $fila['Img'];
 
-    if ($resultadoImg && mysqli_num_rows($resultadoImg) > 0) {
-         // Eliminar la foto
-         $imgPath = str_replace($serverUrl, __DIR__ . '/../../public', $img);
-         if (file_exists($imgPath)) {
-             unlink($imgPath);
-         }
-
-        // 4️⃣ Eliminar la publicación de la base de datos
-        $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
-        if (mysqli_query($conexion, $consultaDelete)) {
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Publicación eliminada correctamente.',
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false, 
-                'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
-            ]);
+    // Eliminar la imagen
+    $imgPath = str_replace($serverUrl, __DIR__ . '/../../public', $img);
+    
+    if (file_exists($imgPath)) {
+        if (!unlink($imgPath)) {
+            echo json_encode(['success' => false, 'img' => $img]);
+            exit();
         }
+    }
+
+    // Eliminar la publicación de la base de datos
+    $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
+    if (mysqli_query($conexion, $consultaDelete)) {
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Publicación eliminada correctamente.'
+        ]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'No se encontró la imagen en la base de datos.']);
+        echo json_encode([
+            'success' => false, 
+            'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
+        ]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
