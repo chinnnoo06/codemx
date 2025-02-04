@@ -32,28 +32,40 @@ try {
 
     if ($resultadoImg && mysqli_num_rows($resultadoImg) > 0) {
         $row = mysqli_fetch_assoc($resultadoImg);
-        $URLImagen = $row['Img'];  // URL completa: https://codemx.net/codemx/public/resources/publicaciones/publi1.jpg
+        $URLImagen = $row['Img'];  
 
-        $nombreImagen = basename($URLImagen);  
+        // 2️⃣ Obtener el nombre del archivo
+        $nombreImagen = basename($URLImagen);
 
-        $rutaImagen = "../public/resources/publicaciones/" . $nombreImagen;  
+        // 3️⃣ Definir la ruta absoluta del archivo en el servidor
+        $rutaImagen = realpath(__DIR__ . "/../public/resources/publicaciones/" . $nombreImagen);
 
-        if (file_exists($rutaImagen)) {
-            unlink($rutaImagen);  
+        if ($rutaImagen && file_exists($rutaImagen)) {
+            if (unlink($rutaImagen)) {
+                $mensajeImagen = "Imagen eliminada correctamente.";
+            } else {
+                $mensajeImagen = "No se pudo eliminar la imagen. Revisa permisos.";
+            }
+        } else {
+            $mensajeImagen = "La imagen no existe en el servidor.";
+        }
+
+        // 4️⃣ Eliminar la publicación de la base de datos
+        $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
+        if (mysqli_query($conexion, $consultaDelete)) {
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Publicación eliminada correctamente.',
+                'image_message' => $mensajeImagen
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false, 
+                'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
+            ]);
         }
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró la imagen en la base de datos.']);
-    }
-
-    // 5️⃣ Eliminar la publicación de la base de datos
-    $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
-    if (mysqli_query($conexion, $consultaDelete)) {
-        echo json_encode(['success' => 'Publicacion eliminada corrctamente']);
-    } else {
-        echo json_encode([
-            'success' => false, 
-            'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
-        ]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
