@@ -56,9 +56,6 @@ try {
             echo json_encode(['success' => false, 'error' => 'No se pudo eliminar la imagen']);
             exit();
         }
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Imagen no encontrada en el servidor']);
-        exit();
     }
 
     // Eliminar la publicación de la base de datos
