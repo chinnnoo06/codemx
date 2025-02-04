@@ -27,6 +27,24 @@ try {
 
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
+    $consultaImg = "SELECT Img FROM publicacion WHERE ID = '$idPublicacion'";
+    $resultadoImg = mysqli_query($conexion, $consultaImg);
+
+    if ($resultadoImg && mysqli_num_rows($resultadoImg) > 0) {
+        $fila = mysqli_fetch_assoc($resultadoImg);
+        $imgRutaCompleta = $fila['Img'];
+
+        // 2️⃣ Eliminar la imagen del servidor
+        if ($imgRutaCompleta) {
+            // Convertir URL a ruta en el servidor
+            $imgRutaServidor = realpath(__DIR__ . '/../../public' . parse_url($imgRutaCompleta, PHP_URL_PATH));
+
+            if ($imgRutaServidor && file_exists($imgRutaServidor)) {
+                unlink($imgRutaServidor);
+            }
+        }
+    }
+
     $consulta = " DELETE FROM publicacion WHERE ID = '$idPublicacion'";
 
     if (mysqli_query($conexion, $consulta)) {
