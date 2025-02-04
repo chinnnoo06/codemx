@@ -1,20 +1,21 @@
 <?php
 require_once '../config/conexion.php';
 
-// Encabezados para habilitar CORS
+// Configuración de CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+// Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit();
 }
 
 try {
-    // Obtener datos de la solicitud
+    // Obtener los datos de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['idPublicacion'])) {
@@ -25,43 +26,47 @@ try {
 
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
 
-    // 1️⃣ Obtener la ruta de la imagen desde la BD
+    // 1️⃣ Obtener la ruta de la imagen desde la base de datos
     $consultaImg = "SELECT Img FROM publicacion WHERE ID = '$idPublicacion'";
     $resultadoImg = mysqli_query($conexion, $consultaImg);
 
     if ($resultadoImg && mysqli_num_rows($resultadoImg) > 0) {
-        $fila = mysqli_fetch_assoc($resultadoImg);
-        $imgRutaCompleta = $fila['Img'];
+        $row = mysqli_fetch_assoc($resultadoImg);
+        $URLImagen = $row['Img'];  // URL completa: https://codemx.net/codemx/public/resources/publicaciones/publi1.jpg
 
-        if ($imgRutaCompleta) {
-            // 2️⃣ Obtener el nombre del archivo sin la URL
-            $imgNombre = basename($imgRutaCompleta);
-            
-            // 3️⃣ Construir la ruta absoluta correcta en el servidor
-            $imgRutaServidor = $_SERVER['DOCUMENT_ROOT'] . "/codemx/public/resources/publicaciones/" . $imgNombre;
+        // 2️⃣ Extraer solo el nombre del archivo
+        $nombreImagen = basename($URLImagen);  // Esto obtiene 'publi1.jpg'
 
-            // 4️⃣ Verificar si el archivo existe antes de eliminarlo
-            if (file_exists($imgRutaServidor)) {
-                if (unlink($imgRutaServidor)) {
-                    echo json_encode(['success' => true, 'message' => 'Imagen eliminada correctamente.']);
-                } else {
-                    echo json_encode(['success' => false, 'error' => 'No se pudo eliminar la imagen.']);
-                }
+        // 3️⃣ Definir la ruta correcta donde está la imagen en el servidor
+        $rutaImagen = "../public/resources/publicaciones/" . $nombreImagen;  
+
+        // 4️⃣ Verificar si el archivo existe y eliminarlo
+        if (file_exists($rutaImagen)) {
+            if (unlink($rutaImagen)) {
+                $mensajeImagen = "Imagen eliminada correctamente.";
             } else {
-                echo json_encode(['success' => false, 'error' => 'La imagen no existe en el servidor. Ruta: ' . $imgRutaServidor]);
+                $mensajeImagen = "No se pudo eliminar la imagen.";
             }
+        } else {
+            $mensajeImagen = "La imagen no existe en el servidor.";
+        }
+
+        // 5️⃣ Eliminar la publicación de la base de datos
+        $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
+        if (mysqli_query($conexion, $consultaDelete)) {
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Publicación eliminada correctamente.',
+                'image_message' => $mensajeImagen
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false, 
+                'error' => 'Error al eliminar la publicación: ' . mysqli_error($conexion)
+            ]);
         }
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró la imagen en la base de datos.']);
-    }
-
-    // 5️⃣ Eliminar la publicación de la base de datos
-    $consulta = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
-
-    if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => true, 'message' => 'Publicación eliminada correctamente.']);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Error al eliminar publicación: ' . mysqli_error($conexion)]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
