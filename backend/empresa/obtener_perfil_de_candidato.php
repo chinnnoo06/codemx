@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN sexo ON candidato.Sexo = sexo.ID
         INNER JOIN universidad ON candidato.Universidad = universidad.ID
         INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
-        WHERE candidato.ID = $candidatoId
+        WHERE candidato.ID = $idCandidato
         LIMIT 1
     ";
 
