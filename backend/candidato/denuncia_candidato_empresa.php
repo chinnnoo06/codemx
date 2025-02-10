@@ -52,7 +52,7 @@ try {
     : "NULL";
 
     // Consulta para insertar el nuevo comentario
-    $consulta = "INSERT INTO denuncia_candidato_candidato (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Chat_ID, Mensaje_ID, Publicacion_ID, Vacante_ID)
+    $consulta = "INSERT INTO denuncia_candidato_empresa (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Chat_ID, Mensaje_ID, Publicacion_ID, Vacante_ID)
                 VALUES ('$idDenunciante', '$idDenunciado', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idChat, $idMensaje, $idPublicacion, $idVacante)";
 
     if (mysqli_query($conexion, $consulta)) {
