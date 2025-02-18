@@ -19,14 +19,14 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     $fechaActual = date('Y-m-d H:i:s');
 
-    if ((!isset($data['idEmpresa'])) || !isset($data['idCandidato']) || !isset($data['motivo']) || !isset($data['descripcion'])) {
+    if ((!isset($data['idDenunciante'])) || !isset($data['idDenunciado']) || !isset($data['motivo']) || !isset($data['descripcion'])) {
         echo json_encode(['success' => false, 'error' => 'Falta datos importantes para realizar la denuncia.']);
         http_response_code(400);
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $idDenunciante = mysqli_real_escape_string($conexion, $data['idDenunciante']);
+    $idDenunciado= mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $idMotivo = mysqli_real_escape_string($conexion, $data['motivo']);
     $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
     $estado = 1;
