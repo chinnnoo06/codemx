@@ -45,7 +45,7 @@ try {
 
     // Consulta para insertar el nuevo comentario
     $consulta = "INSERT INTO denuncia_empresa_candidato (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Chat_ID, Mensaje_ID)
-                VALUES ('$idEmpresa', '$idCandidato', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idChat, $idMensaje)";
+                VALUES ('$idDenunciante', '$idDenunciado', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idChat, $idMensaje)";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Denuncia agregada.']);
