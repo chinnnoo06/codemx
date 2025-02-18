@@ -48,7 +48,7 @@ try {
                 VALUES ('$idDenunciante', '$idDenunciado', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idChat, $idMensaje)";
 
     if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => true, 'message' => 'Denuncia agregada.']);
+        echo json_encode(['success' => true, 'message' => 'Denuncia agregadaaa.']);
     } else {
         echo json_encode(['success' => false, 'error' => 'Error al agregar: ' . mysqli_error($conexion)]);
         http_response_code(500);
