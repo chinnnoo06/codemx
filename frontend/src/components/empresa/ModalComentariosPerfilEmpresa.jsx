@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../../styles/empresa/publicacion.css";
 
-export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData, irAlPerfil, irAlPerfilEmpresa, irAMiPerfilEmpresa }) => {
+export const ModalComentariosPerfilEmpresa = ({ empresa, comentarios, publicacion, fetchData, irAlPerfil, irAlPerfilEmpresa, irAMiPerfilEmpresa, empresaActiva }) => {
     // Estado para manejar los likes por cada comentario
     const [likesEstado, setLikesEstado] = useState(
         comentarios.reduce((acc, comentario) => {
@@ -39,7 +39,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    idEmpresa: empresa.id,
+                    idEmpresa: empresaActiva,
                     idPublicacion: publicacion.ID
                 }),
             });
@@ -61,18 +61,22 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
         } catch (error) {
             console.error("Error al obtener likes:", error);
         }
-    }, [empresa.id, publicacion.ID]); // 🔹 Dependencias correctas
+    }, [empresaActiva, publicacion.ID]); // Dependencias
+    
+    useEffect(() => {
+        obtenerLikesUsuario();
+    }, [obtenerLikesUsuario]); // Ahora no habrá advertencias
+    
     
     useEffect(() => {
         obtenerLikesUsuario();
     }, [obtenerLikesUsuario]); 
     
-
     const manejarLike = async (idComentario) => {
         if (isLiking) return; 
 
-        setIsLiking(true); 
-        
+        setIsLiking(true);
+
         const estaDandoLike = !likesEstado[idComentario];
         const url = estaDandoLike
             ? "https://www.codemx.net/codemx/backend/config/agregar_like_comentario.php"
@@ -82,7 +86,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idEmpresa: empresa.id, idComentario }),
+                body: JSON.stringify({ idEmpresa: empresaActiva, idComentario }),
             });
     
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
@@ -140,10 +144,10 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     };
 
     const manejarModalOpciones = (comentario) => {
-        const usuarioEsEmpresa = empresa.id !== undefined && empresa.id !== null;
+        const usuarioEsEmpresa = empresaActiva !== undefined && empresaActiva !== null;
         const esAutor = usuarioEsEmpresa 
-            ? comentario.EmpresaID === empresa.id 
-            : comentario.CandidatoID === empresa.id;
+            ? comentario.EmpresaID === empresaActiva 
+            : comentario.CandidatoID === empresaActiva;
     
         setopcionAutor(esAutor);
         setModalOpciones(true);
@@ -165,7 +169,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idEmpresa: empresa.id }),
+                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idEmpresa: empresaActiva }),
             });
     
             const result = await response.json();
@@ -219,7 +223,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                 body: JSON.stringify({
                     motivo: motivoSeleccionado,
                     descripcion: descripcionReporte,
-                    idComentario: comentarioIdSeleccionado, 
+                    idComentario: comentarioIdSeleccionado,
                     idDenunciante: empresa.id, 
                     idDenunciado: candidatoIdSeleccionado
                 }),
@@ -250,7 +254,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    idEmpresa: empresa.id,
+                    idEmpresa: empresaActiva,
                     idPublicacion: publicacion.ID,
                     comentario: comentarioLimpio, 
                     respuestaA: respuestaA, 
@@ -326,9 +330,9 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                                 if (comentario.CandidatoID) {
                                     irAlPerfil(comentario.CandidatoID);
                                 } else if (comentario.EmpresaID) {
-                                    if (comentario.EmpresaID == empresa.id){
+                                    if (comentario.EmpresaID === empresaActiva) {
                                         irAMiPerfilEmpresa();
-                                    } else if (comentario.EmpresaID != empresa.id){
+                                    } else {
                                         irAlPerfilEmpresa(comentario.EmpresaID);
                                     }
                                 }
@@ -338,13 +342,13 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                          <div className="d-flex justify-content-between align-items-center w-100">
                             <div className="comentario-usuario d-flex flex-column">
                                 <span className="comentario-nombre"
-                                    onClick={() => {
+                                      onClick={() => {
                                         if (comentario.CandidatoID) {
                                             irAlPerfil(comentario.CandidatoID);
                                         } else if (comentario.EmpresaID) {
-                                            if (comentario.EmpresaID == empresa.id){
+                                            if (comentario.EmpresaID === empresaActiva) {
                                                 irAMiPerfilEmpresa();
-                                            } else if (comentario.EmpresaID != empresa.id){
+                                            } else {
                                                 irAlPerfilEmpresa(comentario.EmpresaID);
                                             }
                                         }
@@ -362,7 +366,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                                 </span>
                                 
                             </div>
-                            {(comentario.tipo_usuario === "candidato" || comentario.EmpresaID === empresa.id) && (
+                            {(comentario.tipo_usuario === "candidato" || comentario.EmpresaID === empresaActiva) && (
                                 <i onClick={() => manejarModalOpciones(comentario)} className="fa-solid fa-ellipsis ms-auto"></i>
                             )}
 

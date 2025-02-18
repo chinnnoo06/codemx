@@ -111,32 +111,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
         }
     };
 
-    const manejarSubidaCv = async (file) => {
-        const formData = new FormData();
-        formData.append('idCandidato', candidato.id);
-        formData.append('cv', file);
-    
-        try {
-            const response = await fetch(
-                'https://www.codemx.net/codemx/backend/candidato/actualizar_cv_candidato.php',
-                {
-                    method: 'POST',
-                    body: formData,
-                }
-            );
-    
-            const result = await response.json();
-            if (result.success) {
-                alert('CV subido exitosamente');
-                window.location.reload(); 
-;
-            } else {
-                alert('Error al actualizar el cv:', result.error);
-            }
-        } catch (error) {
-            alert('Error al enviar la solicitud:', error);
-        }
-    };
+
     
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
@@ -144,37 +119,47 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
 
   return (
-    <div className="perfil-container">
+    <div className="perfil-container-candidato">
         {/* Fondo de encabezado */}
-        <div className="perfil-header position-relative">
+        <div className="perfil-header-candidato position-relative">
             <img src={img} alt="Fondo" className="img-fluid rounded-top" />
             {/* Boton-repsonsive */}
-            <div className="boton-responsive-perfil " onClick={toggleMenu}>
-                <i className="fa-solid fa-gear"></i>
+            <div className="boton-perfil-candidato" onClick={toggleMenu}>
+                <i className="fa-solid fa-ellipsis ms-auto"></i>
             </div>
-            {/* Menú desplegable para pantallas pequeñas */}
             {menuVisible && (
-                <div className="opciones-responsive align-items-center">
-                    <p onClick={() => manejarShowModalForm()}>Actualizar Información</p>
-                    <p onClick={() => manejarCerrarSesion()}>Cerrar Sesión</p>
+                <div className="modal-overlay-opciones-perfil" onClick={toggleMenu}>
+                    <div className="modal-content-opciones-perfil" onClick={(e) => e.stopPropagation()}>
+                        <button className="btn-opciones" onClick={() => manejarShowModalForm()}>
+                            Actualizar Información
+                        </button>
+                        <div className="divider"></div>
+                        <button className="btn-opciones" onClick={() => manejarCerrarSesion()}>
+                            Cerrar Sesión
+                        </button>
+                        <div className="divider"></div>
+                        <button className="btn-opciones btn-cancelar"  onClick={toggleMenu}>
+                            Cancelar    
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
 
         <div className="perfil-candidato">
             {/* Información del usuario */}
-            <div className="perfil-body py-3 px-2">
-                <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
+            <div className="perfil-body-candidato py-3 px-2">
+                <div className="d-flex flex-column flex-md-row justify-content-between ">
                     {/* Foto de perfil */}
-                    <div className="foto-perfil-container mb-3 mb-md-0">
+                    <div className="foto-perfil-container-candidato mb-3 mb-md-0">
                         {candidato.fotografia && (
                             <img
                                 src={`${candidato.fotografia}?t=${new Date().getTime()}`}
                                 alt="Perfil"
-                                className="foto-perfil rounded-circle"
+                                className="foto-perfil-candidato rounded-circle"
                             />
                         )}
-                        <label htmlFor="photoInput" className="btn btn-tipodos perfilfoto-edit-btn">
+                        <label htmlFor="photoInput" className="btn btn-tipodos perfilfoto-edit-btn-candidato">
                             <i className="fa-solid fa-camera"></i>
                         </label>
                         <input
@@ -190,26 +175,10 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                             }}
                         />
                     </div>
-
-                    {/* Botones */}
-                    <div className="botones-perfil d-flex flex-column gap-2 mt-3 mt-md-0">
-                        <button
-                            className="btn btn-tipodos btn-sm"
-                            onClick={() => manejarShowModalForm()}
-                        >
-                            Actualizar información
-                        </button>
-                        <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => manejarCerrarSesion()}
-                        >
-                            Cerrar Sesión
-                        </button>
-                    </div>
                 </div>
 
                 {/* Detalles del usuario */}
-                <div className="datos-container mt-2">
+                <div className="datos-container-candidato ">
                     <h2 className='mt-2 mb-2'>{`${candidato.nombre} ${candidato.apellido}`}</h2>
                     {candidato.universidad !== "Otra" &&
                         candidato.universidad !== "No estudio" && (
@@ -220,46 +189,28 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
                         onClick={() => manejarShowModalSeguidos()}
                     >{`Siguiendo: ${numSeguidos}`}</p>
 
-                    <p className="text-muted mt-2 mb-2">
-                        {candidato.cv ? (
+                    
+                    {/* Botones */}
+                    <div className="botones-perfil-candidato d-flex gap-2 mt-2">
+                        {candidato.cv && (
                             <>
                                 <a href={`${candidato.cv}?t=${new Date().getTime()}`} target="_blank" rel="noopener noreferrer" >
-                                    <button className='btn btn-cv'>
+                                    <button className='btn btn-tipodos btn-sm'>
                                         Ver CV
                                     </button>
                                 </a>
                             </>
-                        ) : (
-                            "Sube tu currículum"
                         )}
-                        <label htmlFor="cvInput" className="btn">
-                            {candidato.cv ? (
-                                <i className="fa-solid fa-pen"></i>
-                            ) : (
-                                <i className="fa-solid fa-upload"></i>
-                            )}
-                        </label>
-                        <input 
-                            type="file" 
-                            id="cvInput" 
-                            className="d-none" 
-                            accept=".pdf"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    manejarSubidaCv(file);
-                                }
-                            }}
-                        />
-                    </p>
+                    </div>
                 </div>
+
             </div>
         </div>
 
         {/* Modal Seguidos */}
         {showModalSeguidos && (
-            <div className="modal-overlay">
-                <div className="modal-content">
+            <div className="modal-overlay" onClick={() => manejarCloseModalForm()}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button btn" onClick={() => manejarCloseModalSeguidos()}>
                             <i className="fa-solid fa-x"></i>
                     </button>
@@ -270,8 +221,8 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
         {/* Modal Form */}
         {showModalForm && (
-            <div className="modal-overlay">
-                <div className="modal-content ">
+            <div className="modal-overlay" onClick={() => manejarCloseModalForm()}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button btn" onClick={() => manejarCloseModalForm()}>
                         <i className="fa-solid fa-x"></i>
                     </button>

@@ -3,6 +3,8 @@ import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
 import '../styles/header-footer.css';
 import CryptoJS from "crypto-js";
+import { PagePerfilCandidato } from '../pages/empresa/PagePerfilCandidato';
+import { PagePerfilEmpresa } from '../pages/empresa/PagePerfilEmpresa';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
@@ -93,17 +95,27 @@ export const RutasEmpresa = () => {
                         <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
-                {/* Menú desplegable para pantallas pequeñas */}
-                {menuVisible && (
-                    <div className="menu-responsive">
+
+                {/* Menú lateral */}
+                <div className={`menu-lateral flex-column ${menuVisible ? "activo" : ""}`}>
+                    <div className="menu-header ">
+                        <button className="cerrar-menu" onClick={toggleMenu}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+      
+                    </div>
+                    <nav className="menu-links d-flex flex-column">
                         <NavLink to="/usuario-empresa/inicio-empresa"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
                         <NavLink to="/usuario-empresa/vacantes-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
                         <NavLink to="/usuario-empresa/chats-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
                         <NavLink to="/usuario-empresa/notificaciones-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Notificaciones</NavLink>
                         <NavLink to="/usuario-empresa/informacion-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Información</NavLink>
                         <NavLink to="/usuario-empresa/busqueda-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Buscar</NavLink>
-                    </div>
-                )}
+                    </nav>
+                </div>
+
+                {/* Fondo oscuro cuando el menú está activo */}
+                {menuVisible && <div className="overlay" onClick={toggleMenu}></div>}
             </div>
 
             {/* Contenido Principal */}
@@ -111,6 +123,8 @@ export const RutasEmpresa = () => {
                 <Routes>
                     <Route path="/" element={<PageInicioEmpresa empresa={empresa}  />} />
                     <Route path="/inicio-empresa" element={<PageInicioEmpresa  empresa={empresa}  />} />
+                    <Route path="/perfil-candidato/" element={<PagePerfilCandidato empresa={empresa}/>} />
+                    <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  empresaActiva={empresa.id}/>} />
                 </Routes>
             </section>
 
@@ -118,16 +132,6 @@ export const RutasEmpresa = () => {
             <footer className="footer text-white py-4">
                 <div className="container">
                     <div className="row text-center">
-                        {/* Sobre Nosotros */}
-                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
-                            <p>
-                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
-                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
-                                a los programadores y empresas a encontrar la combinación perfecta.
-                            </p>
-                        </div>
-
                         {/* Enlaces Rápidos */}
                         <div className="col-lg-2 col-md-6 mb-4 mx-auto">
                             <h4 className="text-uppercase mb-3">Enlaces</h4>
@@ -174,6 +178,17 @@ export const RutasEmpresa = () => {
                                 <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
                             </ul>
                         </div>
+
+                        {/* Sobre Nosotros */}
+                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
+                            <p>
+                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
+                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
+                                a los programadores y empresas a encontrar la combinación perfecta.
+                            </p>
+                        </div>
+
 
                         {/* Redes Sociales */}
                         <div className="col-lg-3 col-md-6 mb-4 mx-auto">

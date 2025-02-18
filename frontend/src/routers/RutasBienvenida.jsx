@@ -18,7 +18,7 @@ export const RutasBienvenida = () => {
             <div className="contenedor-header container-fluid w-100">
                 <header className="d-flex justify-content-between align-items-center">
                     <div className="logoo" translate="no">
-                        <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
+                        <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     {/* Opciones de botones grandes */}
                     <div className="botones d-none d-md-flex gap-3">
@@ -30,13 +30,23 @@ export const RutasBienvenida = () => {
                         <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
-                {/* Menú desplegable para pantallas pequeñas */}
-                {menuVisible && (
-                    <div className="menu-responsive">
+                
+                {/* Menú lateral */}
+                <div className={`menu-lateral flex-column ${menuVisible ? "activo" : ""}`}>
+                    <div className="menu-header ">
+                        <button className="cerrar-menu" onClick={toggleMenu}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+        
+                    </div>
+                    <nav className="menu-links d-flex flex-column">
                         <Link to="/iniciar-sesion" onClick={() => setMenuVisible(false)}>Iniciar Sesión</Link>
                         <Link to="/crear-cuenta" onClick={() => setMenuVisible(false)}>Crear Cuenta</Link>
-                    </div>
-                )}
+                    </nav>
+                </div>
+
+                {/* Fondo oscuro cuando el menú está activo */}
+                {menuVisible && <div className="overlay" onClick={toggleMenu}></div>}
             </div>
 
             {/* Contenido Principal */}
@@ -51,15 +61,7 @@ export const RutasBienvenida = () => {
             <footer className="footer text-white py-4">
                 <div className="footer-container mx-auto">
                     <div className="row text-center">
-                        {/* Sobre Nosotros */}
-                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
-                            <p>
-                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
-                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
-                                a los programadores y empresas a encontrar la combinación perfecta.
-                            </p>
-                        </div>
+     
 
                         {/* Enlaces Rápidos */}
                         <div className="col-lg-2 col-md-6 mb-4 mx-auto">
@@ -72,7 +74,7 @@ export const RutasBienvenida = () => {
                                 </li>
                                 <li>
                                     <NavLink to="/crear-cuenta" className="footer-link">
-                                        <i class="fa-solid fa-plus"></i> &nbsp; Crear Cuenta
+                                        <i className="fa-solid fa-plus"></i> &nbsp; Crear Cuenta
                                     </NavLink>
                                 </li>
                             </ul>
@@ -88,6 +90,16 @@ export const RutasBienvenida = () => {
                             </ul>
                         </div>
 
+                        {/* Sobre Nosotros */}
+                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
+                            <p>
+                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
+                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
+                                a los programadores y empresas a encontrar la combinación perfecta.
+                            </p>
+                        </div>
+
                         {/* Redes Sociales */}
                         <div className="col-lg-3 col-md-6 mb-4 mx-auto">
                             <h4 className="text-uppercase mb-3">Síguenos en redes</h4>
@@ -100,9 +112,6 @@ export const RutasBienvenida = () => {
                                 </a>
                                 <a href="https://instagram.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://linkedin.com" className="social-icon" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-linkedin-in"></i>
                                 </a>
                             </div>
                         </div>

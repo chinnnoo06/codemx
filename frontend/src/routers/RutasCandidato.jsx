@@ -5,6 +5,8 @@ import '../styles/header-footer.css';
 import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
 import { PageMiPerfilCandidato } from '../pages/candidato/PageMiPerfilCandidato';
 import CryptoJS from "crypto-js";
+import { PagePerfilCandidato } from '../pages/candidato/PagePerfilCandidato';
+import { PagePerfilEmpresa } from '../pages/candidato/PagePerfilEmpresa';
 
 
 export const RutasCandidato = () => {
@@ -83,7 +85,7 @@ export const RutasCandidato = () => {
                         </NavLink>
                         <NavLink to="/usuario-candidato/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-bell"></i>
-                            Notificaciones
+                            Notificaciones 
                         </NavLink>
                         <NavLink to="/usuario-candidato/informacion-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-chart-simple"></i>
@@ -107,23 +109,32 @@ export const RutasCandidato = () => {
                         <i className="fa-solid fa-bars"></i>
                     </div>
                 </header>
-                {/* Menú desplegable para pantallas pequeñas */}
-                {menuVisible && (
-                    <div className="menu-responsive">
+
+                {/* Menú lateral */}
+                <div className={`menu-lateral flex-column ${menuVisible ? "activo" : ""}`}>
+                    <div className="menu-header d-flex justify-content-between align-items-center">
+                        <button className="cerrar-menu" onClick={toggleMenu}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
                         {fotoPerfil && (
                             <Link to="/usuario-candidato/miperfil-candidato" onClick={() => setMenuVisible(false)}>
-                                <img src={`${fotoPerfil}?t=${new Date().getTime()}`}alt="Perfil" className="perfil-img" />
+                                <img src={`${fotoPerfil}?t=${new Date().getTime()}`} alt="Perfil" className="perfil-img" />
                             </Link>
                         )}
-                        <NavLink to="/usuario-candidato/inicio-candidato"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
-                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Recomendaciones</NavLink>
-                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
-                        <NavLink to="/usuario-candidato/chats-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
-                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Notificaciones</NavLink>
-                        <NavLink to="/usuario-candidato/informacion-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Información</NavLink>
-                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Buscar</NavLink>
                     </div>
-                )}
+                    <nav className="menu-links d-flex flex-column">
+                        <NavLink to="/usuario-candidato/inicio-candidato" onClick={toggleMenu}>Inicio</NavLink>
+                        <NavLink to="/usuario-candidato/recomendaciones-candidato" onClick={toggleMenu}>Recomendaciones</NavLink>
+                        <NavLink to="/usuario-candidato/vacantes-candidato" onClick={toggleMenu}>Vacantes</NavLink>
+                        <NavLink to="/usuario-candidato/chats-candidato" onClick={toggleMenu}>Chats</NavLink>
+                        <NavLink to="/usuario-candidato/notificaciones-candidato" onClick={toggleMenu}>Notificaciones</NavLink>
+                        <NavLink to="/usuario-candidato/informacion-candidato" onClick={toggleMenu}>Información</NavLink>
+                        <NavLink to="/usuario-candidato/busqueda-candidato" onClick={toggleMenu}>Buscar</NavLink>
+                    </nav>
+                </div>
+
+                {/* Fondo oscuro cuando el menú está activo */}
+                {menuVisible && <div className="overlay" onClick={toggleMenu}></div>}
             </div>
 
 
@@ -134,22 +145,15 @@ export const RutasCandidato = () => {
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
                     <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
                     <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} />} />
-                </Routes>
+                    <Route path="/perfil-candidato/" element={<PagePerfilCandidato  candidatoActivo={candidato}/>} />
+                    <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  candidato={candidato}/>} />
+                </Routes> 
             </section>
 
             {/* Footer */}
             <footer className="footer text-white py-4">
                 <div className="footer-container mx-auto">
                     <div className="row text-center">
-                        {/* Sobre Nosotros */}
-                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
-                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
-                            <p>
-                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
-                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
-                                a los programadores y empresas a encontrar la combinación perfecta.
-                            </p>
-                        </div>
 
                         {/* Enlaces Rápidos */}
                         <div className="col-lg-2 col-md-6 mb-4 mx-auto">
@@ -201,6 +205,16 @@ export const RutasCandidato = () => {
                                 <li>Teléfono: <a href="tel:+523318237277" className="footer-link">3318237277</a></li>
                                 <li>Email: <a href="mailto:contacto@codemx.com" className="footer-link">support@codemx.net</a></li>
                             </ul>
+                        </div>
+
+                        {/* Sobre Nosotros */}
+                        <div className="col-lg-4 col-md-6 mb-4 mx-auto">
+                            <h4 className="text-uppercase mb-3">Sobre Nosotros</h4>
+                            <p>
+                                Somos una plataforma web que conecta a programadores con empresas a nivel nacional dentro de México. 
+                                Nuestro objetivo es hacer los procesos de búsqueda de trabajo y contratación más sencillos, ayudando 
+                                a los programadores y empresas a encontrar la combinación perfecta.
+                            </p>
                         </div>
 
                         {/* Redes Sociales */}

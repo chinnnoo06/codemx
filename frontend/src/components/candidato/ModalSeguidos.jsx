@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 
 export const ModalSeguidos = ({ empresas, idCandidato }) => {
     // Asegurar que todas las empresas tienen isFollowing: true inicialmente
@@ -6,6 +7,7 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
         empresas.map((empresa) => ({ ...empresa, isFollowing: true }))
     );
     const [query, setQuery] = useState('');
+    const navigate = useNavigate(); // Hook para redirigir a otra página
 
     const toggleSeguir = async (idEmpresa) => {
         try {
@@ -56,6 +58,13 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
         );
     };
 
+    // Función para redirigir al perfil de empresa
+    const irAlPerfil = (idEmpresa) => {
+        navigate(`/usuario-candidato/perfil-empresa`, { 
+            state: { idEmpresa: idEmpresa }
+        });
+    };
+
     return (
         <div className="container">
              <h5 className="mb-3 text-center titulo-modal">Seguidos</h5>
@@ -83,6 +92,7 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
                     empresasState.map((empresa) => (
                         <div
                             key={empresa.ID}
+                            onClick={() => irAlPerfil(empresa.ID)}
                             className="empresa-item d-flex align-items-center mb-3"
                         >
                             <img src={empresa.Logo} alt={empresa.Nombre} className="empresa-logo rounded-circle me-3"/>

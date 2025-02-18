@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../../styles/empresa/publicacion.css";
 
-export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData, irAlPerfil, irAlPerfilEmpresa, irAMiPerfilEmpresa }) => {
+export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerfilCandidato, irAlPerfilEmpresa, irAMiPerfil, idCandidato }) => {
     // Estado para manejar los likes por cada comentario
     const [likesEstado, setLikesEstado] = useState(
         comentarios.reduce((acc, comentario) => {
@@ -28,7 +28,8 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     const [opcionAutor, setopcionAutor] = useState(null);
     const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
     const [comentarioIdSeleccionado, setComentarioIdSeleccionado] = useState(null);
-    const [candidatoIdSeleccionado, setCandidatoIdSeleccionado] = useState(null);
+    const [denunciadoId, setDenunciadoId] = useState(null);
+    const [denunciadoTipo, setDenunciadoTipo] = useState(""); // "candidato" o "empresa"
     const [isLiking, setIsLiking] = useState(false); 
 
     const obtenerLikesUsuario = useCallback(async () => {
@@ -39,7 +40,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    idEmpresa: empresa.id,
+                    idCandidato: idCandidato,
                     idPublicacion: publicacion.ID
                 }),
             });
@@ -61,18 +62,17 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
         } catch (error) {
             console.error("Error al obtener likes:", error);
         }
-    }, [empresa.id, publicacion.ID]); // 🔹 Dependencias correctas
+    }, [idCandidato, publicacion.ID]); // 🔹 Dependencias correctas
     
     useEffect(() => {
         obtenerLikesUsuario();
     }, [obtenerLikesUsuario]); 
-    
 
     const manejarLike = async (idComentario) => {
         if (isLiking) return; 
 
         setIsLiking(true); 
-        
+
         const estaDandoLike = !likesEstado[idComentario];
         const url = estaDandoLike
             ? "https://www.codemx.net/codemx/backend/config/agregar_like_comentario.php"
@@ -82,7 +82,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idEmpresa: empresa.id, idComentario }),
+                body: JSON.stringify({ idCandidato: idCandidato, idComentario }),
             });
     
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
@@ -140,15 +140,17 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     };
 
     const manejarModalOpciones = (comentario) => {
-        const usuarioEsEmpresa = empresa.id !== undefined && empresa.id !== null;
-        const esAutor = usuarioEsEmpresa 
-            ? comentario.EmpresaID === empresa.id 
-            : comentario.CandidatoID === empresa.id;
+        const usuarioEsCandidato = idCandidato !== undefined && idCandidato !== null;
+        const esAutor = usuarioEsCandidato 
+            ? comentario.CandidatoID === idCandidato  
+            : comentario.EmpresaID === idCandidato; 
     
         setopcionAutor(esAutor);
         setModalOpciones(true);
         setComentarioSeleccionado(comentario);
         setComentarioIdSeleccionado(comentario.ID);
+        setDenunciadoId(comentario.CandidatoID ? comentario.CandidatoID : comentario.EmpresaID);
+        setDenunciadoTipo(comentario.CandidatoID ? "candidato" : "empresa");
     };
 
     const cerrarModalOpciones = () => {
@@ -165,7 +167,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idEmpresa: empresa.id }),
+                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idCandidato: idCandidato }),
             });
     
             const result = await response.json();
@@ -200,28 +202,23 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
         setMotivoSeleccionado(motivo);
         setPasoReporte(2);
 
-    
-        // Si el comentario es nulo, usa el último comentario seleccionado
-        setComentarioIdSeleccionado(comentario.ID);
-        setCandidatoIdSeleccionado(comentario ? comentario.CandidatoID : candidatoIdSeleccionado);
-
-
     };
 
     const enviarReporte = async () => {
-    
         try {
-            const response = await fetch("https://www.codemx.net/codemx/backend/empresa/denuncia_empresa_candidato.php", {
+            const url = denunciadoTipo === "candidato"
+                ? "https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_candidato.php"
+                : "https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_empresa.php";
+
+            const response = await fetch(url, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     motivo: motivoSeleccionado,
                     descripcion: descripcionReporte,
-                    idComentario: comentarioIdSeleccionado, 
-                    idDenunciante: empresa.id, 
-                    idDenunciado: candidatoIdSeleccionado
+                    idComentario: comentarioIdSeleccionado,
+                    idDenunciante: idCandidato, 
+                    idDenunciado: denunciadoId,
                 }),
             });
 
@@ -230,7 +227,8 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                 alert("Reporte enviado correctamente.");
                 cerrarModalReportar();
             } else {
-                console.error("Error al enviar reporte:", result.message);
+                console.error("Error al enviar reporte:", result.error);
+                alert(`Error al enviar reporte: ${result.error || "Error desconocido"}`);
             }
         } catch (error) {
             console.error("Error al enviar reporte:", error);
@@ -250,7 +248,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    idEmpresa: empresa.id,
+                    idCandidato: idCandidato,
                     idPublicacion: publicacion.ID,
                     comentario: comentarioLimpio, 
                     respuestaA: respuestaA, 
@@ -323,13 +321,13 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                             }
                             alt="perfil"
                             onClick={() => {
-                                if (comentario.CandidatoID) {
-                                    irAlPerfil(comentario.CandidatoID);
-                                } else if (comentario.EmpresaID) {
-                                    if (comentario.EmpresaID == empresa.id){
-                                        irAMiPerfilEmpresa();
-                                    } else if (comentario.EmpresaID != empresa.id){
-                                        irAlPerfilEmpresa(comentario.EmpresaID);
+                                if (comentario.EmpresaID) {
+                                    irAlPerfilEmpresa(comentario.EmpresaID)
+                                } else if (comentario.CandidatoID) {
+                                    if (comentario.CandidatoID === idCandidato) {
+                                        irAMiPerfil()
+                                    } else {
+                                        irAlPerfilCandidato(comentario.CandidatoID)
                                     }
                                 }
                             }}
@@ -339,13 +337,13 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                             <div className="comentario-usuario d-flex flex-column">
                                 <span className="comentario-nombre"
                                     onClick={() => {
-                                        if (comentario.CandidatoID) {
-                                            irAlPerfil(comentario.CandidatoID);
-                                        } else if (comentario.EmpresaID) {
-                                            if (comentario.EmpresaID == empresa.id){
-                                                irAMiPerfilEmpresa();
-                                            } else if (comentario.EmpresaID != empresa.id){
-                                                irAlPerfilEmpresa(comentario.EmpresaID);
+                                        if (comentario.EmpresaID) {
+                                            irAlPerfilEmpresa(comentario.EmpresaID)
+                                        } else if (comentario.CandidatoID) {
+                                            if (comentario.CandidatoID === idCandidato) {
+                                                irAMiPerfil()
+                                            } else {
+                                                irAlPerfilCandidato(comentario.CandidatoID)
                                             }
                                         }
                                     }}>
@@ -362,10 +360,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                                 </span>
                                 
                             </div>
-                            {(comentario.tipo_usuario === "candidato" || comentario.EmpresaID === empresa.id) && (
                                 <i onClick={() => manejarModalOpciones(comentario)} className="fa-solid fa-ellipsis ms-auto"></i>
-                            )}
-
                         </div>
                     </div>
 
@@ -485,32 +480,75 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
 
                                     <div className="divider"></div>
 
-                                    {/* Opciones de reporte */}
-                                    <div className="modal-body-reportar">
-                                        <button className="btn-opciones" onClick={() => manejarSeleccionReporte(1, comentarioSeleccionado)}>
-                                            Información Falsa o Engañosa
-                                        </button>
-                                        <div className="divider"></div>
+                                    {denunciadoTipo === "candidato" ? (
+                                        <>
+                                            {/* Opciones de reporte a candidato*/}
+                                            <div className="modal-body-reportar">
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(1, comentarioSeleccionado)}>
+                                                    Información Falsa o Engañosa
+                                                </button>
+                                                <div className="divider"></div>
 
-                                        <button className="btn-opciones" onClick={() => manejarSeleccionReporte(4, comentarioSeleccionado)}>
-                                            Conducta Inapropiada u Ofensiva
-                                        </button>
-                                        <div className="divider"></div>
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(4, comentarioSeleccionado)}>
+                                                    Conducta Inapropiada u Ofensiva
+                                                </button>
+                                                <div className="divider"></div>
 
-                                        <button className="btn-opciones" onClick={() => manejarSeleccionReporte(6, comentarioSeleccionado)}>
-                                            Spam o Mensajes No Deseados
-                                        </button>
-                                        <div className="divider"></div>
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(6, comentarioSeleccionado)}>
+                                                    Spam o Mensajes No Deseados
+                                                </button>
+                                                <div className="divider"></div>
 
-                                        <button className="btn-opciones" onClick={() => manejarSeleccionReporte(7, comentarioSeleccionado)}>
-                                            Acoso o Discriminación 
-                                        </button>
-                                        <div className="divider"></div>
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(7, comentarioSeleccionado)}>
+                                                    Acoso o Discriminación 
+                                                </button>
+                                                <div className="divider"></div>
 
-                                        <button className="btn-opciones btn-cancelar" onClick={cerrarModalReportar}>
-                                            Cancelar
-                                        </button>
-                                    </div>
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(9, comentarioSeleccionado)}>
+                                                    Discriminación o Discurso de Odio
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones btn-cancelar" onClick={cerrarModalReportar}>
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* Opciones de reporte a empresa*/}
+                                            <div className="modal-body-reportar">
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(1, comentarioSeleccionado)}>
+                                                    Información Falsa o Engañosa
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(2, comentarioSeleccionado)}>
+                                                    Comportamiento Inapropiado
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(3, comentarioSeleccionado)}>
+                                                    Publicación de Contenido Irrelevante o Spam
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(4, comentarioSeleccionado)}>
+                                                    Discriminación o Discurso de Odio
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones" onClick={() => manejarSeleccionReporte(5, comentarioSeleccionado)}>
+                                                    Uso Fraudulento de la Plataforma
+                                                </button>
+                                                <div className="divider"></div>
+
+                                                <button className="btn-opciones btn-cancelar" onClick={cerrarModalReportar}>
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
                                 </>
                             )}
 

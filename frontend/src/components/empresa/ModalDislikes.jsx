@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/empresa/publicacion.css';
 
-export const ModalDislikes = ({dislikes}) => {
+export const ModalDislikes = ({dislikes, irAlPerfil}) => {
     const [query, setQuery] = useState('');
 
     // Función para filtrar seguidores
@@ -40,6 +40,7 @@ export const ModalDislikes = ({dislikes}) => {
                 return (
                     <div
                     key={candidato.ID}
+                    onClick={() => irAlPerfil(candidato.ID)}
                     className="usuario-reaccion-item d-flex align-items-center mb-3"
                     >
                     <img

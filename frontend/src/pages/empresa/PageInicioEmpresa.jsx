@@ -31,7 +31,7 @@ export const PageInicioEmpresa = ({empresa}) => {
         } catch (error) {
             console.error('Error al obtener los datos de publicaciones:', error);
         }
-    }, [empresa.id]); // Dependencia: candidato.id
+    }, [empresa.id]); 
 
     useEffect(() => {
         fetchData();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/empresa/publicacion.css';
 
-export const ModalLikes = ({likes, irAlPerfil}) => {
+export const ModalDislikes = ({dislikes, irAlPerfilCandidato, irAMiPerfil, idCandidato}) => {
     const [query, setQuery] = useState('');
 
     // Función para filtrar seguidores
@@ -9,13 +9,13 @@ export const ModalLikes = ({likes, irAlPerfil}) => {
         setQuery(searchQuery);
     };
 
-    const usuariosFiltrados = likes.filter((candidato) =>
+    const usuariosFiltrados = dislikes.filter((candidato) =>
         `${candidato.Nombre} ${candidato.Apellido}`.toLowerCase().includes(query.toLowerCase())
     );
 
     return (
         <div className="container">
-             <h5 className="mb-3 text-center titulo-modal">Likes</h5>
+             <h5 className="mb-3 text-center titulo-modal">Dislikes</h5>
             {/* Barra de búsqueda */}
             <div className="input-group mb-4 position-relative">
             <span className="search-icon position-absolute top-50 start-0 translate-middle-y ms-2 text-muted">
@@ -36,11 +36,18 @@ export const ModalLikes = ({likes, irAlPerfil}) => {
             {usuariosFiltrados && usuariosFiltrados.length > 0 ? (
                 usuariosFiltrados.map((candidato) => {
                 const nombreCompleto = `${candidato.Nombre} ${candidato.Apellido}`;;
-                
+    
                 return (
                     <div
                     key={candidato.ID}
-                    onClick={() => irAlPerfil(candidato.ID)}
+                    onClick={() => {
+                        if (candidato.ID == idCandidato) {
+                            irAMiPerfil();
+                        } 
+                        if (candidato.ID != idCandidato) {
+                          irAlPerfilCandidato(candidato.ID);
+                        }
+                      }}
                     className="usuario-reaccion-item d-flex align-items-center mb-3"
                     >
                     <img
@@ -49,12 +56,12 @@ export const ModalLikes = ({likes, irAlPerfil}) => {
                         className="usuario-reaccion-foto rounded-circle me-3"
                     />
     
-                    <span className="usuario-reaccion-nombre">{nombreCompleto} {candidato.id}</span>
+                    <span className="usuario-reaccion-nombre">{nombreCompleto}</span>
                     </div>
                 );
                 })
             ) : (
-                <p>La publicacación no tiene likes</p>
+                <p>La publicacación no tiene dislikes</p>
             )}
             </div>
         </div>

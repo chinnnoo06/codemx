@@ -44,7 +44,7 @@ export const PageCrearCuenta = () => {
       <div className="contenedor-header container-fluid w-100">
         <header className="d-flex justify-content-center align-items-center">
           <div className="logoo" translate="no">
-            <Link to="/"> <h1>CODE<span class="txtspan">MX</span></h1> </Link> 
+            <Link to="/"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
           </div>
         </header>
       </div>

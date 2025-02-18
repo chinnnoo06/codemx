@@ -1,0 +1,81 @@
+import React, { useState, useEffect } from 'react';
+import '../../styles/candidato/miperfil.css';
+import '../../styles/candidato/miperfilexperencias.css';
+
+export const Seccion2PagePerfilCandidato = ({candidato}) => {
+  const [experencias, setExperencias] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const experenciasResponse = await fetch(
+          'https://www.codemx.net/codemx/backend/candidato/obtener_experencias_proyectos.php',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idCandidato: candidato.id }),
+          }
+        );
+
+        if (!experenciasResponse.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+
+        const experenciasData = await experenciasResponse.json();
+        setExperencias(experenciasData.experiencias || []);
+      } catch (error) {
+        console.error('Error al obtener los datos de experiencias:', error);
+      }
+    };
+
+    fetchData();
+  }, [candidato.id]);
+
+
+  return (
+    <div className="experencias-container px-2">
+        <div className='d-flex justify-content-between align-items-center'>
+          <h2 className="text-center mb-2">Experiencia Laboral</h2>
+        </div>
+
+        {experencias.length > 0 ? (
+        experencias.map((exp, expIndex) => (
+          <div key={expIndex} className="card mb-2 shadow-sm">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <h5 className="experencia-titulo">Experiencia #{expIndex + 1}</h5>
+              <span className="badge duracion">Duración: {exp.experiencia.Duracion} meses</span>
+            </div>
+            <div className="card-body ">
+              <div className="mb-2">
+                <h5 className="titulos">Empresa</h5>
+                <p className="text-muted">{exp.experiencia.Empresa}</p>
+              </div>
+
+              <h5 className="titulos">Proyectos</h5>
+              {exp.proyectos.length > 0 ? (
+                exp.proyectos.map((proj, projIndex) => (
+                  <div key={projIndex} className="card mb-3 seccion-proyecto">
+                    <div className="card-body ">
+                      <h6 className="num-proyecto">
+                        Proyecto #{projIndex + 1}: {proj.Nombre}
+                      </h6>
+                      <p className="card-text text-muted descripcion">{proj.Descripcion}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted">No hay proyectos disponibles.</p>
+              )}
+            </div>
+          </div>
+        ))
+        ) : (
+        <div className="d-flex flex-column justify-content-center align-items-center mt-2">
+          <p>No hay experiencias laborales registradas.</p>
+        </div>
+        )}
+    </div>
+  )
+}

@@ -25,6 +25,7 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
         universidad: '',
         tiempoRestante: candidato.tiempo_restante,
         modalidadTrabajo: '',
+        curriculum: null
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -105,6 +106,15 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
         }));
     };
 
+    const manejarCambioArchivo = (e) => {
+        const file = e.target.files[0] || null;
+        setFormData((prev) => ({
+            ...prev,
+            curriculum: file, 
+        }));
+    };
+    
+
     const validarCampos = () => {
         const stepErrors = {};
     
@@ -178,33 +188,37 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
         e.preventDefault();
         if (isLoading) return;
 
-        if (seccionActiva === 'editarPerfil'){
-                
+        if (seccionActiva === 'editarPerfil') {
             const isValid = validarCampos();
             if (!isValid) {
                 setIsLoading(false);
-                return; 
+                return;
             }
-        
+    
             setIsLoading(true);
-
+    
             try {
                 const formDataToSend = new FormData();
-      
-                // Añadir cada campo del formulario a FormData
+    
                 Object.keys(formData).forEach((key) => {
-                    formDataToSend.append(key, formData[key]);
+                    if (key === "curriculum") {
+                        if (formData[key]) { // ✅ Solo añadir si hay archivo
+                            formDataToSend.append(key, formData[key]);
+                        }
+                    } else {
+                        formDataToSend.append(key, formData[key]);
+                    }
                 });
-          
+    
                 const response = await fetch('https://www.codemx.net/codemx/backend/candidato/editar_perfil_candidato.php', {
-                  method: 'POST',
-                  body: formDataToSend,
+                    method: 'POST',
+                    body: formDataToSend,
                 });
     
                 if (!response.ok) {
                     throw new Error('Error al enviar los datos al servidor');
-                  }
-            
+                }
+    
                 const result = await response.json();
     
                 if (result.success) {
@@ -219,7 +233,6 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
             } finally {
                 setIsLoading(false);
             }
-
         } else if (seccionActiva === "cambiarPassword"){ 
             
             const isValid = validarPassword();
@@ -368,6 +381,15 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                             ))}
                         </select>
                         {errors.modalidadTrabajo && <small className="text-danger">{errors.modalidadTrabajo}</small>}
+                    </div>
+                    <div className="mb-3">
+                    <label htmlFor="curriculum" className="form-label">Subir Currículum</label>
+                        <input type="file" id="curriculum" name="curriculum" className="form-control" accept=".pdf"  onChange={manejarCambioArchivo} />
+                        {formData.curriculum && (
+                            <small className="text-muted">
+                            Archivo seleccionado: {formData.curriculum.name}
+                            </small>
+                        )}
                     </div>
                                 
                     <button type="submit" className="btn btn-tipodos" disabled={isLoading}>

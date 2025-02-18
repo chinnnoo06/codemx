@@ -55,20 +55,6 @@
     font-size: 0.8rem;
 }
 
-.btn-actualizar{
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-    font-size: 0.7rem;
-    padding: 3px;
-}
-
-.btn-actualizar:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-}
-
 
 .experencias-container input,
 .experencias-container textarea {
@@ -104,9 +90,7 @@
         width: 100%; 
         height: auto; 
     }
-    .experencias-container button{
-        font-size: 0.5rem;
-    }
+
     .experencias-container span{
         font-size: 0.7rem;
     }

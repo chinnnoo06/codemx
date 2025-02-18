@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/empresa/publicacion.css';
 
-export const ModalLikes = ({likes, irAlPerfil}) => {
+export const ModalLikes = ({likes, irAlPerfilCandidato, irAMiPerfil, idCandidato}) => {
     const [query, setQuery] = useState('');
 
     // Función para filtrar seguidores
@@ -40,7 +40,14 @@ export const ModalLikes = ({likes, irAlPerfil}) => {
                 return (
                     <div
                     key={candidato.ID}
-                    onClick={() => irAlPerfil(candidato.ID)}
+                    onClick={() => {
+                      if (candidato.ID == idCandidato) {
+                          irAMiPerfil();
+                      } 
+                      if (candidato.ID != idCandidato) {
+                        irAlPerfilCandidato(candidato.ID);
+                      }
+                    }}
                     className="usuario-reaccion-item d-flex align-items-center mb-3"
                     >
                     <img

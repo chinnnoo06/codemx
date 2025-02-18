@@ -10,7 +10,7 @@
 .seccionn h6{
     color: #0B1C26; 
 }
-.perfil-container {
+.perfil-container-empresa {
     width: 100%; 
     padding: 0; 
     margin: 0; 
@@ -21,20 +21,20 @@
 }
 
 /* Fondo del encabezado */
-.perfil-header img {
+.perfil-header-empresa img {
     width: 100%;
     height: 12rem;
     object-fit: cover;
 }
 
 /* Contenedor de la foto de perfil */
-.foto-perfil-container {
+.foto-perfil-container-empresa {
     position: relative;
     margin-top: -5rem;
 }
 
 /* Foto de perfil */
-.foto-perfil {
+.foto-perfil-empresa {
     width: 10rem;
     height: 10rem;
     border: 3px solid #fff;
@@ -44,25 +44,25 @@
 }
 
 /* Botón de editar foto */
-.perfilfoto-edit-btn {
+.perfilfoto-edit-btn-empresa {
     position: absolute;
     bottom: 0.2rem;
     left: 7rem;
     border-radius: 50%;
 }
 
-.perfilfoto-edit-btn:hover {
+.perfilfoto-edit-btn-empresa:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     background-color: rgba(255, 255, 255, 0.9);
 }
 
 /* Botones */
 
-.botones-perfil .btn {
+.botones-perfil-empresa .btn {
     width: 12rem;
 }
 
-.foto-perfil-container .btn {
+.foto-perfil-container-empresa .btn {
     font-size: 0.9rem;
     padding: 0.5rem 0.8rem;
 }
@@ -103,13 +103,13 @@
     color: #777;
 }
 
-.perfil-container h2 {
+.perfil-container-empresa h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
 }
 
-.perfil-container p {
+.perfil-container-empresa p {
     margin: 0;
 }
 
@@ -123,6 +123,11 @@
 .text-highlight:hover {
     color: #504e4efe
 }
+
+.estadisticas-perfil-empresa{
+    gap: 1.5rem;
+}
+
 
 
 /* Modal Overlay */
@@ -163,6 +168,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1; 
 }
   
 .modal-content-confirmacion {
@@ -196,6 +202,7 @@
     display: flex;
     align-items: center;
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .seguidor-item:hover {
@@ -276,53 +283,73 @@
 .perfil-header {
     position: relative; 
 }
-.boton-responsive-perfil{
-    display: none;
+.boton-perfil-empresa{
     position: absolute; 
     top: 5px; 
     left: 5px; 
-    background-color: rgba(0, 0, 0, 0.7); 
-    color: white; 
+    color: #444; 
     border-radius: 50%; 
     padding: 5px;
     cursor: pointer;
     z-index: 10; 
     transition: transform 0.3s ease; 
 }
-.boton-responsive-perfil:hover {
+.boton-perfil-empresa:hover {
     transform: scale(1.1); 
 }
 
 
+
+
 @media (max-width: 767px) { 
+    .foto-perfil-container-empresa {
+        margin-top: -3rem;
+    }
     .contenedor-todo{
         padding-left: 0.3rem;
         padding-right: 0.3rem;
     }
-    .foto-perfil-container .btn{
+    .foto-perfil-container-empresa .btn{
         font-size: 0.80rem;
     }
+    .botones-perfil-empresa .btn {
+        width: 6rem;
+        font-size: 0.7rem;
+    }
+    
     .botones-modal .btn,
     .form .btn{
         font-size: 0.7rem;
     }
-    .foto-perfil {
-        width: 8rem;
-        height: 8rem;
+
+    .foto-perfil-empresa {
+        width: 6rem;
+        height: 6rem;
 
     }
-    .perfilfoto-edit-btn {
-        left: 5.5rem;
+    .perfilfoto-edit-btn-empresa {
+        width: 2rem;  /* Reduce el tamaño del botón */
+        height: 2rem;
+        left: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .perfil-container h2{
+
+    .perfilfoto-edit-btn-empresa i{
+        font-size: 0.7rem;
+    }
+
+    .perfil-container-empresa h2{
         font-size: 1.3rem;
     }
-    .perfil-container p{
+    .perfil-container-empresa p{
         font-size: 0.8rem;
     }
-    .datos-container {
-        text-align: center;
+    .estadisticas-perfil-empresa{
+        gap: 1rem;
     }
+  
     .modal-content {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
@@ -344,45 +371,11 @@
         width: 15px; 
         height: 15px; 
         font-size: 8px; 
+        top: 5px; 
+        left: 5px;
     }
     .titulo-modal{
         font-size: 1rem;
-    }
-    .opciones-responsive {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 1.5rem; 
-        left: 1.8rem; 
-        background-color: #dde1e9;
-        border-radius: 0.5rem; 
-        box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
-        padding: 0.62rem; 
-        gap: 0.62rem; 
-        z-index: 1000;
- 
-    }
-
-    .opciones-responsive a {
-        color: #0B1C26;
-        text-decoration: none;
-        font-family: 'Arial', sans-serif;
-        font-weight: 500;
-        padding: 0.62rem; 
-        text-align: center;
-        transition: background-color 0.3s ease;
-        
-    }
-    .opciones-responsive a:hover {
-        background-color: #F2A922;
-        color: #0B1C26;
-        border-radius: 0.3125rem; 
-    }    
-    .botones-perfil {
-        display: none !important;
-    }
-    .boton-responsive-perfil{
-        display: flex;
     }
     .modal-content-opciones,
     .modal-content-reportar {

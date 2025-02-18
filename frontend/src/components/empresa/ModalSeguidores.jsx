@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import '../../styles/empresa/miperfil.css';
 
 export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
   const [query, setQuery] = useState('');
   const [seguidorAEliminar, setSeguidorAEliminar] = useState(null);
+  const navigate = useNavigate(); // Hook para redirigir a otra página
 
   // Función para eliminar seguimiento
   const toggleSeguir = async (idCandidato) => {
@@ -37,13 +39,18 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
   // Función para filtrar seguidores
   const buscar = (searchQuery) => {
     setQuery(searchQuery);
-
-
   };
 
   const seguidoresFiltrados = seguidores.filter((candidato) =>
     `${candidato.Nombre} ${candidato.Apellido}`.toLowerCase().includes(query.toLowerCase())
   );
+
+  // Función para redirigir al perfil del candidato
+  const irAlPerfil = (idCandidato) => {
+    navigate(`/usuario-empresa/perfil-candidato`, { 
+        state: { idCandidato: idCandidato }
+    });
+  };
 
   return (
     <div className="container">
@@ -76,6 +83,7 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
             return (
               <div
                 key={candidato.ID}
+                onClick={() => irAlPerfil(candidato.ID)}
                 className="seguidor-item d-flex align-items-center mb-3"
               >
                 <img

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import '../../styles/empresa/publicacion.css';
 import { ModalLikes } from './ModalLikes';
 import { ModalDislikes } from './ModalDislikes';
@@ -21,6 +22,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     const [descripcion, setDescripcion] = useState(publicacion.Contenido); 
     const [ocultarMeGusta, setOcultarMeGusta] = useState(null); 
     const [sinComentarios, setSinComentarios] = useState(null); 
+    const navigate = useNavigate(); // Hook para redirigir a otra página
 
     const fetchData = useCallback(async () => {
         try {
@@ -186,6 +188,24 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
         }
     };
 
+    // Función para redirigir al perfil del candidato
+    const irAlPerfil = (idCandidato) => {
+        navigate(`/usuario-empresa/perfil-candidato`, { 
+            state: { idCandidato: idCandidato }
+        });
+    };
+
+    const irAlPerfilEmpresa = (idEmpresaPerfil, idEmpresaActiva) => {
+        navigate(`/usuario-empresa/perfil-empresa`, { 
+            state: { idEmpresa: idEmpresaPerfil, empresaActiva: idEmpresaActiva }
+        });
+    };
+    const irAMiPerfilEmpresa = () => {
+        manejarOcultarSeccion("/usuario-empresa/inicio-empresa");
+      };
+  
+
+
 
     return (
         <div className='contenedor'>
@@ -199,8 +219,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
 
                 <div className="contenedor-publicacion d-flex flex-column justify-content-between">
                     <div className='seccion-usuario d-flex align-items-center gap-2 px-1 '>
-                        <img src={`${empresa.logo}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-perfil" />
-                        <p className='usuario-nombre m-0 align-self-center'>{empresa.nombre}</p>
+                        <img src={`${empresa.logo}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-perfil" onClick={() => irAMiPerfilEmpresa()}/>
+                        <p className='usuario-nombre m-0 align-self-center' onClick={() => irAMiPerfilEmpresa()}>{empresa.nombre}</p>
                         <i className="fa-solid fa-ellipsis ms-auto" onClick={manejarShowModalOpciones}></i>
                     </div>
                     <div className='seccion-img'>
@@ -233,44 +253,44 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
 
                 {/* Modal Likes */}
                 {showModalLikes && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
+                    <div className="modal-overlay" onClick={() => manejarCloseModalLikes()}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <button className="close-button btn" onClick={() => manejarCloseModalLikes()}>
                                     <i className="fa-solid fa-x"></i>
                             </button>
-                            <ModalLikes likes={likes} />
+                            <ModalLikes likes={likes} irAlPerfil={irAlPerfil}/>
                         </div>
                     </div>
                 )}
 
                 {/* Modal Disikes */}
                 {showModalDislikes && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
+                    <div className="modal-overlay" onClick={() => manejarCloseModalDislikes()}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <button className="close-button btn" onClick={() => manejarCloseModalDislikes()}>
                                     <i className="fa-solid fa-x"></i>
                             </button>
-                            <ModalDislikes dislikes={dislikes} />
+                            <ModalDislikes dislikes={dislikes} irAlPerfil={irAlPerfil} />
                         </div>
                     </div>
                 )}
 
                 {/* Modal Comentarios */}
                 {showModalComentarios && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
+                    <div className="modal-overlay" onClick={() => manejarCloseModalComentarios()}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <button className="close-button btn" onClick={() => manejarCloseModalComentarios()}>
                                     <i className="fa-solid fa-x"></i>
                             </button>
-                            <ModalComentarios empresa={empresa} comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} />
+                            <ModalComentarios empresa={empresa} comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfil={irAlPerfil} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfilEmpresa={irAMiPerfilEmpresa} />
                         </div>
                     </div>
                 )}
 
                 {/*Modal opciones*/}
                 {showModalOpciones && (
-                    <div className="modal-overlay-opciones">
-                        <div className="modal-content-opciones">
+                    <div className="modal-overlay-opciones" onClick={() => manejarCloseModalOpciones()}>
+                        <div className="modal-content-opciones" onClick={(e) => e.stopPropagation()}>
                             <div className="botones d-flex flex-column align-items-center">
             
                                 <button className="btn-opciones btn-eliminar" onClick={() => manejarShowModalConfirmacion()}>
@@ -293,8 +313,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
 
                 {/*Modal Confirmacion*/}
                 {showModalConfirmacion && (
-                    <div className="modal-overlay-confirmacion">
-                        <div className="modal-content-confirmacion">
+                    <div className="modal-overlay-confirmacion" onClick={() => manejarCloseModalConfirmacion()}>
+                        <div className="modal-content-confirmacion" onClick={(e) => e.stopPropagation()}>
                 
                             <p>¿Seguro que quieres eliminar la publicación?</p>
 
