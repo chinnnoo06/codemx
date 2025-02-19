@@ -114,7 +114,7 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
                 <img src={`${publicacion.Img}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-detalle" />
             </div>
             <div className='seccion-reacciones text-start d-flex gap-4  px-1'>
-                <div className='likes' onClick={() => manejarShowModalLikes()}>
+                <div className='likes'>
                     <i className="fa-solid fa-thumbs-up pe-2"></i>
                     {publicacion.Ocultar_MeGusta == 0 && numLikes}
                 </div>
