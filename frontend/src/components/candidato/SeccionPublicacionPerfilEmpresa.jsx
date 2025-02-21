@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import '../../styles/empresa/publicacion.css';
 import { ModalLikes } from './ModalLikes';
@@ -16,31 +16,50 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
     const [showModalDislikes, setShowModalDislikes] = useState(false);
     const [showModalComentarios, setShowModalComentarios] = useState(false);
     const navigate = useNavigate(); // Hook para redirigir a otra página
+    const [reaccion, setReaccion] = useState(null); // 'like', 'dislike' o null
+    const isProcessing = useRef(false); // Evita múltiples clics rápidos
+
 
     const fetchData = useCallback(async () => {
           try {
-              // Realiza la solicitud al backend enviando el session_id desencriptado
-              const response = await fetch("https://www.codemx.net/codemx/backend/empresa/obtener_likes_dislikes_comentarios.php", {
-                  method: "POST",
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ idPublicacion: publicacion.ID }), 
-              });
-  
-              if (!response.ok) {
-                  throw new Error('Error al obtener los datos');
-              }
-              const responseData = await response.json();
-  
-              // Actualizar estados
-              setLikes(responseData.likes);
-              setNumLikes(responseData.cantidadLikes);
-              setDislikes(responseData.dislikes);
-              setNumDislikes(responseData.cantidadDislikes);
-              setComentarios(responseData.comentarios);
-              setNumComentarios(responseData.cantidadComentarios);
-  
+            // Realiza la solicitud al backend enviando el session_id desencriptado
+            const response = await fetch("https://www.codemx.net/codemx/backend/empresa/obtener_likes_dislikes_comentarios.php", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idPublicacion: publicacion.ID }), 
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos');
+            }
+            const responseData = await response.json();
+
+            // Actualizar estados
+            setLikes(responseData.likes);
+            setNumLikes(responseData.cantidadLikes);
+            setDislikes(responseData.dislikes);
+            setNumDislikes(responseData.cantidadDislikes);
+            setComentarios(responseData.comentarios);
+            setNumComentarios(responseData.cantidadComentarios);
+
+            // Realiza la solicitud al backend enviando el session_id desencriptado
+            const responseReaccion = await fetch("https://www.codemx.net/codemx/backend/candidato/obtener_reaccion_publicacion.php", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idPublicacion: publicacion.ID, idCandidato }), 
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos');
+            }
+            const responseData2 = await responseReaccion.json();
+
+            setReaccion(responseData2.reaccion); // Puede ser 'like', 'dislike' o null
+
           } catch (error) {
               console.error("Error al obtener reacciones de la publicación:", error);
           }
@@ -76,6 +95,46 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
         setShowModalComentarios (false);
     };
 
+    const manejarReaccion = async (tipo) => {
+        if (isProcessing.current) return; // Evita múltiples clics seguidos
+        isProcessing.current = true;
+    
+        const nuevoEstado = reaccion === tipo ? null : tipo;
+        let url = "";
+    
+        if (nuevoEstado === "like") {
+            url = "https://www.codemx.net/codemx/backend/candidato/agregar_like_publicacion.php";
+        } else if (nuevoEstado === "dislike") {
+            url = "https://www.codemx.net/codemx/backend/candidato/agregar_dislike_publicacion.php";
+        } else {
+            url = "https://www.codemx.net/codemx/backend/candidato/eliminar_reaccion_publicacion.php"; // Nueva API para eliminar reacción
+        }
+    
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idCandidato, idPublicacion: publicacion.ID }),
+            });
+    
+            if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+    
+            const result = await response.json();
+            if (result.success) {
+                setReaccion(nuevoEstado);
+                setNumLikes((prev) => (nuevoEstado === "like" ? prev + 1 : reaccion === "like" ? prev - 1 : prev));
+                setNumDislikes((prev) => (nuevoEstado === "dislike" ? prev + 1 : reaccion === "dislike" ? prev - 1 : prev));
+            } else {
+                alert(`Error al actualizar la reacción: ${result.error || "Error desconocido"}`);
+            }
+        } catch (error) {
+            console.error("Error al actualizar la reacción:", error);
+        } finally {
+            isProcessing.current = false;
+        }
+    };
+    
+
     // Función para redirigir al perfil del candidato
     const irAlPerfilCandidato = (idCandidato) => {
         navigate(`/usuario-candidato/perfil-candidato`, { 
@@ -93,6 +152,8 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
     const irAMiPerfil = () => {
       navigate(`/usuario-candidato/miperfil-candidato`);  
     };
+
+    
 
 
   return (
@@ -115,12 +176,20 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
             </div>
             <div className='seccion-reacciones text-start d-flex gap-4  px-1'>
                 <div className='likes'>
-                    <i className="fa-solid fa-thumbs-up pe-2"></i>
-                    {publicacion.Ocultar_MeGusta == 0 && numLikes}
+                    <i className={reaccion === "like" ? "fa-solid fa-thumbs-up pe-2" : "fa-regular fa-thumbs-up pe-2"} onClick={() => manejarReaccion("like")}></i>
+                    {publicacion.Ocultar_MeGusta == 0 && (
+                        <span onClick={() => manejarShowModalLikes()}>
+                            {numLikes}
+                        </span>
+                    )}
                 </div>
-                <div className='dislikes' onClick={() => manejarShowModalDislikes()}>    
-                    <i className="fa-solid fa-thumbs-down pe-2"></i>
-                    {publicacion.Ocultar_MeGusta == 0 && numDislikes}
+                <div className='dislikes'>    
+                    <i className={reaccion === "dislike" ? "fa-solid fa-thumbs-down pe-2" : "fa-regular fa-thumbs-down pe-2"} onClick={() => manejarReaccion("dislike")}></i>
+                    {publicacion.Ocultar_MeGusta == 0 && (
+                        <span onClick={() => manejarShowModalDislikes()}>
+                            {numDislikes}
+                        </span>
+                    )}
                 </div>
                 {publicacion.Sin_Comentarios == 0 && (
                     <div className='comentarios' onClick={() => manejarShowModalComentarios()}>    

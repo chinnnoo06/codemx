@@ -65,6 +65,11 @@
   font-weight: 300;
 }
 
+.likes,
+.dislikes,
+.comentarios{
+  cursor: pointer;
+}
 .comentario-tiempo {
   font-size: 0.8rem;
   color: #777;
