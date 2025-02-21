@@ -19,34 +19,36 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     $fechaActual = date('Y-m-d H:i:s');
 
-    if ((!isset($data['idPublicacion'])) || !isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID de la publicación o el ID del candidato']);
-        http_response_code(400); 
+    if (!isset($data['idPublicacion']) || !isset($data['idCandidato'])) {
+        echo json_encode(['success' => false, 'error' => 'Falta el ID de la publicación o el ID del candidato']);
+        http_response_code(400);
         exit();
     }
 
+    // Escapar datos para evitar inyección SQL
     $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $fechaActual = date('Y-m-d H:i:s');
 
-    // Verificar si el usuario ya dio una reacción en esta publicación
-    $consultaReaccion = "SELECT Reaccion FROM reacciones WHERE Publicacion_ID = '$idPublicacion' AND Candidato_ID = '$idCandidato' AND Reaccion = 'dislike'";
+    // Verificar si el usuario ya tiene una reacción en esta publicación (like o dislike)
+    $consultaReaccion = "SELECT Reaccion FROM reacciones WHERE Publicacion_ID = '$idPublicacion' AND Candidato_ID = '$idCandidato' LIMIT 1";
     $resultadoReaccion = mysqli_query($conexion, $consultaReaccion);
-    
+
     if ($resultadoReaccion && mysqli_num_rows($resultadoReaccion) > 0) {
         $filaReaccion = mysqli_fetch_assoc($resultadoReaccion);
         $reaccionActual = $filaReaccion['Reaccion'];
 
         if ($reaccionActual === 'like') {
-            // Si ya tiene un like, eliminarlo (QUITAR LIKE)
+            // Si el usuario ya dio like, eliminarlo
             $consultaEliminarLike = "DELETE FROM reacciones WHERE Publicacion_ID = '$idPublicacion' AND Candidato_ID = '$idCandidato'";
             if (mysqli_query($conexion, $consultaEliminarLike)) {
                 echo json_encode(['success' => true, 'message' => 'Like eliminado.']);
+                exit();
             } else {
                 echo json_encode(['success' => false, 'error' => 'Error al eliminar like: ' . mysqli_error($conexion)]);
+                exit();
             }
         } elseif ($reaccionActual === 'dislike') {
-            // Si tenía un dislike, eliminarlo y agregar un like
+            // Si el usuario ya tenía dislike, eliminarlo y agregar el like
             $consultaEliminarDislike = "DELETE FROM reacciones WHERE Publicacion_ID = '$idPublicacion' AND Candidato_ID = '$idCandidato'";
             mysqli_query($conexion, $consultaEliminarDislike);
 
@@ -54,8 +56,10 @@ try {
                                      VALUES ('$idPublicacion', '$idCandidato', 'like', '$fechaActual')";
             if (mysqli_query($conexion, $consultaInsertarLike)) {
                 echo json_encode(['success' => true, 'message' => 'Dislike eliminado y like agregado.']);
+                exit();
             } else {
                 echo json_encode(['success' => false, 'error' => 'Error al agregar like: ' . mysqli_error($conexion)]);
+                exit();
             }
         }
     } else {
@@ -67,10 +71,10 @@ try {
         } else {
             echo json_encode(['success' => false, 'error' => 'Error al agregar like: ' . mysqli_error($conexion)]);
         }
+        exit();
     }
-
-
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
+    exit();
 }
 ?>
