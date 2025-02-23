@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM vacante
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
-        WHERE vacante.Empresa_ID = $idEmpresa
+        WHERE vacante.Empresa_ID = '$idEmpresa'
     ";
 
     $resultado = mysqli_query($conexion, $consulta);
