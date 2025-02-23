@@ -35,14 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Ubicacion,
             vacante.Fecha_Limite,
             vacante.Estatus,
-            vacante.Fecha_Creacion
+            vacante.Fecha_Creacion,
+             COALESCE(COUNT(postulados.ID), 0) AS Cantidad_Postulados
         FROM vacante
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
+        LEFT JOIN postulados ON vacante.ID = postulados.Vacante_ID
         WHERE vacante.Empresa_ID = '$idEmpresa'
+        GROUP BY vacante.ID
     ";
 
     $resultado = mysqli_query($conexion, $consulta);
+
+
 
     if (!$resultado) {
         echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
