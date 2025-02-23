@@ -26,22 +26,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
     $consulta = "
-        SELECT 
-            vacante.ID,
-            vacante.Nombre,
-            vacante.Titulo,
-            vacante.Descripcion,
-            modalidad_trabajo.Modalidad AS Modalidad_Vacante,
-            estado.Nombre AS Estado_Vacante,
-            vacante.Ubicacion,
-            vacante.Fecha_Limite,
-            vacante.Estatus,
-            vacante.Fecha_Creacion
-        FROM vacante
-        INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
-        INNER JOIN estado ON vacante.Estado = estado.ID
-        WHERE vacante.Empresa_ID = '$idEmpresa'
-    ";
+    SELECT 
+        vacante.ID,
+        vacante.Nombre,
+        vacante.Titulo,
+        vacante.Descripcion,
+        COALESCE(modalidad_trabajo.Modalidad, 'Desconocido') AS Modalidad_Vacante,
+        COALESCE(estado.Nombre, 'Desconocido') AS Estado_Vacante,
+        vacante.Ubicacion,
+        vacante.Fecha_Limite,
+        vacante.Estatus,
+        vacante.Fecha_Creacion
+    FROM vacante
+    LEFT JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
+    LEFT JOIN estado ON vacante.Estado = estado.ID
+    WHERE vacante.Empresa_ID = '$idEmpresa'
+";
+
 
     $resultado = mysqli_query($conexion, $consulta);
 
