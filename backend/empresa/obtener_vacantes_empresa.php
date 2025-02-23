@@ -36,11 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite,
             vacante.Estatus,
             vacante.Fecha_Creacion,
-             COALESCE(COUNT(postulados.ID), 0) AS Cantidad_Postulados
+             COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados
         FROM vacante
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
-        LEFT JOIN postulados ON vacante.ID = postulados.Vacante_ID
+        LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
         WHERE vacante.Empresa_ID = '$idEmpresa'
         GROUP BY vacante.ID
     ";
