@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
         WHERE vacante.Empresa_ID = '$idEmpresa'
+        GROUP BY vacante.ID
     ";
 
     $resultado = mysqli_query($conexion, $consulta);
