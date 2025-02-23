@@ -45,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $resultado = mysqli_query($conexion, $consulta);
 
-    $resultado = mysqli_query($conexion, $consulta);
-
     if (!$resultado) {
         echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
         http_response_code(500); 
