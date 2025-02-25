@@ -8,14 +8,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $modalidad = mysqli_real_escape_string($conexion, $_POST['modalidad']);
     $estado = mysqli_real_escape_string($conexion, $_POST['estado']);
     $ubicacion = mysqli_real_escape_string($conexion, $_POST['ubicacion']);
-    $fechaLimite = mysqli_real_escape_string($conexion, $_POST['fecha_limite']);
-    $estatus = mysqli_real_escape_string($conexion, $_POST['estatus']);
+    $fechaLimite = mysqli_real_escape_string($conexion, $_POST['fechaLimite']); 
     $fechaCreacion = date('Y-m-d H:i:s');
 
+    // Decodificar responsabilidades y requerimientos
+    $responsabilidades = isset($_POST['responsabilidades']) ? json_decode($_POST['responsabilidades'], true) : [];
+    $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
+
     $consulta = "INSERT INTO vacante (Empresa_ID, Titulo, Descripcion, Modalidad, Estado, Ubicacion, Fecha_Limite, Estatus, Fecha_Creacion) 
-        VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', '$estatus', '$fechaCreacion')";
+                 VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', 'activa', '$fechaCreacion')";
 
     if (mysqli_query($conexion, $consulta)) {
+        // Aquí puedes insertar en tablas relacionadas las responsabilidades y requerimientos si lo deseas.
         echo json_encode(['success' => 'Vacante agregada correctamente']);
     } else {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
