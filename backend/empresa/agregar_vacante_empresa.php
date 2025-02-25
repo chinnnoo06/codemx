@@ -19,7 +19,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', 'activa', '$fechaCreacion')";
 
     if (mysqli_query($conexion, $consulta)) {
-        // Aquí puedes insertar en tablas relacionadas las responsabilidades y requerimientos si lo deseas.
+        $vacanteId = mysqli_insert_id($conexion);
+
+        
+        // Insertar las nuevas experiencias y sus proyectos
+        foreach ($responsabilidades as $resp) {
+            // Insertar experiencia
+            $insertResp = "INSERT INTO responsabilidades_vacante (Vacante_ID, Responsabilidad) 
+                            VALUES ('$vacanteId', '$resp')";
+            if (!mysqli_query($conexion, $insertResp)) {
+                echo json_encode(['error' => 'Error al insertar responsabilidad: ' . mysqli_error($conexion)]);
+                http_response_code(500);
+                exit();
+            }
+        }
+
+        foreach ($requerimientos as $req) {
+            // Insertar experiencia
+            $insertReq = "INSERT INTO requisitos_vacante (Vacante_ID, Requerimiento) 
+                            VALUES ('$vacanteId', '$req')";
+            if (!mysqli_query($conexion, $insertReq)) {
+                echo json_encode(['error' => 'Error al insertar requerimientos: ' . mysqli_error($conexion)]);
+                http_response_code(500);
+                exit();
+            }
+        }
+
         echo json_encode(['success' => 'Vacante agregada correctamente']);
     } else {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
