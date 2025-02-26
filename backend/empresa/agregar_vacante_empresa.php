@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Decodificar responsabilidades y requerimientos
     $responsabilidades = isset($_POST['responsabilidades']) ? json_decode($_POST['responsabilidades'], true) : [];
     $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
+    $requerimientos    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
 
     $consulta = "INSERT INTO vacante (Empresa_ID, Titulo, Descripcion, Modalidad, Estado, Ubicacion, Fecha_Limite, Estatus, Fecha_Creacion) 
                  VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', 'activa', '$fechaCreacion')";
@@ -40,6 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             VALUES ('$vacanteId', '$req')";
             if (!mysqli_query($conexion, $insertReq)) {
                 echo json_encode(['error' => 'Error al insertar requerimientos: ' . mysqli_error($conexion)]);
+                http_response_code(500);
+                exit();
+            }
+        }
+
+        foreach ($tecnologias as $tec) {
+            // Insertar experiencia
+            $insertReq = "INSERT INTO tecnologias_vacante (Tecnologia_ID, Vacante_ID) 
+                            VALUES ('$tec', '$vacanteId')";
+            if (!mysqli_query($conexion, $insertReq)) {
+                echo json_encode(['error' => 'Error al insertar tecnologia: ' . mysqli_error($conexion)]);
                 http_response_code(500);
                 exit();
             }
