@@ -48,9 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($tecnologias as $tec) {
             // Insertar experiencia
-            $insertReq = "INSERT INTO tecnologias_vacante (Tecnologia_ID, Vacante_ID) 
+            $insertTec = "INSERT INTO tecnologias_vacante (Tecnologia_ID, Vacante_ID) 
                             VALUES ('$tec', '$vacanteId')";
-            if (!mysqli_query($conexion, $insertReq)) {
+            if (!mysqli_query($conexion, $insertTec)) {
                 echo json_encode(['error' => 'Error al insertar tecnologia: ' . mysqli_error($conexion)]);
                 http_response_code(500);
                 exit();
