@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Decodificar responsabilidades y requerimientos
     $responsabilidades = isset($_POST['responsabilidades']) ? json_decode($_POST['responsabilidades'], true) : [];
     $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
-    $requerimientos    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
+    $tecnologias    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
 
     $consulta = "INSERT INTO vacante (Empresa_ID, Titulo, Descripcion, Modalidad, Estado, Ubicacion, Fecha_Limite, Estatus, Fecha_Creacion) 
                  VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', 'activa', '$fechaCreacion')";
