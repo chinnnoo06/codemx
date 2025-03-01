@@ -26,65 +26,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $universidad = mysqli_real_escape_string($conexion, $_POST['universidad']);
     $tiempoRestante = mysqli_real_escape_string($conexion, $_POST['tiempoRestante']);
     $modalidadTrabajo = mysqli_real_escape_string($conexion, $_POST['modalidadTrabajo']);
+    $passwordActual = mysqli_real_escape_string($conexion, $_POST['passwordActual']); 
 
     // Obtener datos actuales
-    $consultaCandidato = "SELECT CV FROM candidato WHERE ID = '$idCandidato'";
+    $consultaCandidato = "SELECT ID, CV FROM candidato WHERE ID = '$idCandidato'";
     $resultado = mysqli_query($conexion, $consultaCandidato);
     $fila = mysqli_fetch_assoc($resultado);
     $cvActual = $fila['CV'];
 
-    // Procesar archivo si se sube
-    if (!empty($_FILES['curriculum']['name']) && $_FILES['curriculum']['error'] === UPLOAD_ERR_OK) {
-        $cvDir = __DIR__ . '/../../public/resources/cv/';
-        $serverUrl = 'https://codemx.net/codemx/public/resources/cv/';
-        
-        if (!file_exists($cvDir)) {
-            die(json_encode(['error' => 'El directorio para los CV no existe.']));
+    if (mysqli_num_rows($resultado) > 0) {
+        $fila = mysqli_fetch_assoc($resultado);
+        $passwordHash = $fila['password'];
+        $cvActual = $fila['CV'];
+
+        // Verificar que la contraseña ingresada sea correcta
+        if (!password_verify($passwordActual, $passwordHash)) {
+            echo json_encode(['error' => 'La contraseña actual es incorrecta.']);
+            exit;
         }
 
-        // Si ya existe un CV previo, eliminarlo
-        if ($cvActual) {
-            $cvActualPath = str_replace($serverUrl, $cvDir, $cvActual);
-            if (file_exists($cvActualPath)) {
-                unlink($cvActualPath);
+        // Procesar archivo si se sube
+        if (!empty($_FILES['curriculum']['name']) && $_FILES['curriculum']['error'] === UPLOAD_ERR_OK) {
+            $cvDir = __DIR__ . '/../../public/resources/cv/';
+            $serverUrl = 'https://codemx.net/codemx/public/resources/cv/';
+            
+            if (!file_exists($cvDir)) {
+                echo json_encode(['error' => 'El directorio para los CV no existe.']);
+                exit;
             }
+
+            // Si ya existe un CV previo, eliminarlo
+            if ($cvActual) {
+                $cvActualPath = str_replace($serverUrl, $cvDir, $cvActual);
+                if (file_exists($cvActualPath)) {
+                    unlink($cvActualPath);
+                }
+            }
+
+            // Guardar nuevo archivo con nombre único
+            $cvNombre = "curriculum_" . time() . "." . pathinfo($_FILES['curriculum']['name'], PATHINFO_EXTENSION);
+            $cvRutaCompleta = $serverUrl . $cvNombre;
+            if (!move_uploaded_file($_FILES['curriculum']['tmp_name'], $cvDir . $cvNombre)) {
+                echo json_encode(['error' => 'Error al guardar el currículum.']);
+                exit;
+            }
+        } else {
+            $cvRutaCompleta = $cvActual; // Mantener el CV actual si no se subió uno nuevo
         }
 
-        // Guardar nuevo archivo con nombre único
-        $cvNombre = "curriculum_" . time() . "." . pathinfo($_FILES['curriculum']['name'], PATHINFO_EXTENSION);
-        $cvRutaCompleta = $serverUrl . $cvNombre;
-        if (!move_uploaded_file($_FILES['curriculum']['tmp_name'], $cvDir . $cvNombre)) {
-            die(json_encode(['error' => 'Error al guardar el currículum.']));
+        // Actualizar datos del candidato
+        $query = "UPDATE candidato SET 
+            Nombre = '$nombre',
+            Apellido = '$apellido',
+            Fecha_Nacimiento = '$fechaNacimiento',
+            Telefono = '$telefono',
+            Estado = '$estado',
+            Direccion = '$direccion',
+            Sexo = '$sexo',
+            Universidad = '$universidad',
+            Tiempo_Restante = '$tiempoRestante',
+            Modalidad_Trabajo = '$modalidadTrabajo'";
+
+        // Solo actualizar el CV si se subió un archivo
+        if ($cvRutaCompleta !== $cvActual) {
+            $query .= ", CV = '$cvRutaCompleta'";
         }
+
+        $query .= " WHERE ID = '$idCandidato'";
+
+        if (mysqli_query($conexion, $query)) {
+            echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamente.']);
+        } else {
+            echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
+        }
+
     } else {
-        $cvRutaCompleta = $cvActual; // Mantener el CV actual si no se subió uno nuevo
+        echo json_encode(['error' => 'Candidato no encontrado.']);
     }
 
-    // Actualizar datos
-    $query = "UPDATE candidato SET 
-        Nombre = '$nombre',
-        Apellido = '$apellido',
-        Fecha_Nacimiento = '$fechaNacimiento',
-        Telefono = '$telefono',
-        Estado = '$estado',
-        Direccion = '$direccion',
-        Sexo = '$sexo',
-        Universidad = '$universidad',
-        Tiempo_Restante = '$tiempoRestante',
-        Modalidad_Trabajo = '$modalidadTrabajo'";
 
-    // Solo actualizar el CV si se subió un archivo
-    if ($cvRutaCompleta !== $cvActual) {
-        $query .= ", CV = '$cvRutaCompleta'";
-    }
-
-    $query .= " WHERE ID = '$idCandidato'";
-
-    if (mysqli_query($conexion, $query)) {
-        echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamente.']);
-    } else {
-        echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
-    }
+ 
 } else {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido.']);
