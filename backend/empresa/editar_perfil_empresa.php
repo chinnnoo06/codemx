@@ -16,25 +16,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = mysqli_query($conexion, $verificarEmpresa);
 
     if (mysqli_num_rows($resultado) > 0) {
-        // Actualizar los datos de la empresa
-        $consultaEmpresa = "
-            UPDATE empresa
-            SET 
-                Nombre = '$nombre',
-                Descripcion = '$descripcion',
-                Sector = '$sector',
-                Tamanio = '$tamanio',
-                Telefono = '$telefono',
-                Fecha_Creacion = '$fechaCreacion'
 
-            WHERE ID = '$idEmpresa'
-        ";
+         // Verificar que la contraseña actual sea correcta
+         if (password_verify($passwordActual, $passwordHash)) {
+            // Actualizar los datos de la empresa
+            $consultaEmpresa = "
+                UPDATE empresa
+                SET 
+                    Nombre = '$nombre',
+                    Descripcion = '$descripcion',
+                    Sector = '$sector',
+                    Tamanio = '$tamanio',
+                    Telefono = '$telefono',
+                    Fecha_Creacion = '$fechaCreacion'
 
-        if (mysqli_query($conexion, $consultaEmpresa)) {
-            echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamentee.']);
+                WHERE ID = '$idEmpresa'
+            ";
+
+            if (mysqli_query($conexion, $consultaEmpresa)) {
+                echo json_encode(['success' => true, 'message' => 'Datos actualizados correctamentee.']);
+            } else {
+                echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
+            }
+            
         } else {
-            echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
+            echo json_encode(['error' => 'La contraseña actual es incorrecta.']);
         }
+       
     } else {
         echo json_encode(['error' => 'Empresa no encontrada.']);
     }

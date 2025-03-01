@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         foreach ($tecnologias as $tec) {
-            // Insertar experiencia
+            // Insertar tecnologias
             $insertTec = "INSERT INTO tecnologias_vacante (Tecnologia_ID, Vacante_ID) 
                             VALUES ('$tec', '$vacanteId')";
             if (!mysqli_query($conexion, $insertTec)) {
