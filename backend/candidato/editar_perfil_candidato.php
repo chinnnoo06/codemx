@@ -10,7 +10,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204); // No Content
+    http_response_code(204);
     exit();
 }
 
@@ -26,17 +26,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $universidad = mysqli_real_escape_string($conexion, $_POST['universidad']);
     $tiempoRestante = mysqli_real_escape_string($conexion, $_POST['tiempoRestante']);
     $modalidadTrabajo = mysqli_real_escape_string($conexion, $_POST['modalidadTrabajo']);
-    $passwordActual = mysqli_real_escape_string($conexion, $_POST['passwordActual']); 
+    $passwordActual = isset($_POST['passwordActual']) ? mysqli_real_escape_string($conexion, $_POST['passwordActual']) : '';
 
-    // Obtener datos actuales
+    // Verificar si la contraseña actual fue proporcionada
+    if (empty($passwordActual)) {
+        echo json_encode(['error' => 'Por favor, ingresa tu contraseña actual.']);
+        exit;
+    }
+
+    // Obtener la contraseña actual del candidato desde la base de datos
     $consultaCandidato = "SELECT password, CV FROM candidato WHERE ID = '$idCandidato'";
     $resultado = mysqli_query($conexion, $consultaCandidato);
-    $fila = mysqli_fetch_assoc($resultado);
-    $cvActual = $fila['CV'];
+
+    if (!$resultado) {
+        echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
+        exit;
+    }
 
     if (mysqli_num_rows($resultado) > 0) {
         $fila = mysqli_fetch_assoc($resultado);
-        $passwordHash = $fila['password'];
+        $passwordHash = $fila['password']; // Asegurar que se obtiene el hash de la contraseña
         $cvActual = $fila['CV'];
 
         // Verificar que la contraseña ingresada sea correcta
@@ -99,16 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode(['error' => 'Error al actualizar los datos: ' . mysqli_error($conexion)]);
         }
-
     } else {
         echo json_encode(['error' => 'Candidato no encontrado.']);
     }
-
-
- 
 } else {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido.']);
 }
-
 ?>
