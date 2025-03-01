@@ -28,11 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $modalidadTrabajo = mysqli_real_escape_string($conexion, $_POST['modalidadTrabajo']);
     $passwordActual = isset($_POST['passwordActual']) ? mysqli_real_escape_string($conexion, $_POST['passwordActual']) : '';
 
-    // Verificar si la contraseña actual fue proporcionada
-    if (empty($passwordActual)) {
-        echo json_encode(['error' => 'Por favor, ingresa tu contraseña actual.']);
-        exit;
-    }
 
     // Obtener la contraseña actual del candidato desde la base de datos
     $consultaCandidato = "SELECT password, CV FROM candidato WHERE ID = '$idCandidato'";
@@ -45,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (mysqli_num_rows($resultado) > 0) {
         $fila = mysqli_fetch_assoc($resultado);
-        $passwordHash = $fila['password']; // Asegurar que se obtiene el hash de la contraseña
+        $passwordHash = $fila['password']; 
         $cvActual = $fila['CV'];
 
         // Verificar que la contraseña ingresada sea correcta
