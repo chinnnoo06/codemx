@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordActual = mysqli_real_escape_string($conexion, $_POST['passwordActual']); 
 
     // Obtener datos actuales
-    $consultaCandidato = "SELECT ID, CV FROM candidato WHERE ID = '$idCandidato'";
+    $consultaCandidato = "SELECT password, CV FROM candidato WHERE ID = '$idCandidato'";
     $resultado = mysqli_query($conexion, $consultaCandidato);
     $fila = mysqli_fetch_assoc($resultado);
     $cvActual = $fila['CV'];
