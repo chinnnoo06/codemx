@@ -75,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'cantidadSeguidores' => $cantidadDeSeguidores,
         'cantidadVacantes' => $cantidadDeVacantes,
         'seguidores' => $listaDeCandidatos,
-        'vacantes' => $listaDeVacantes
     ]);
 } else {
     http_response_code(405); 
