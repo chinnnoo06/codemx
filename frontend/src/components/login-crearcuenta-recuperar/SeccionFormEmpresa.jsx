@@ -31,14 +31,14 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
       try {
   
         // Fetch para obtener tamaños
-        const tamaniosResponse = await fetch('/config/obtener_tamanios.php');
+        const tamaniosResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_tamanios.php');
         if (!tamaniosResponse.ok) {
           throw new Error('Error al obtener los tamaños');
         }
         const tamaniosData = await tamaniosResponse.json();
 
         // Fetch para obtener sectores
-        const sectoresResponse = await fetch('/config/obtener_sectores.php');
+        const sectoresResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_sectores.php');
         if (!sectoresResponse.ok) {
           throw new Error('Error al obtener los tamaños');
         }

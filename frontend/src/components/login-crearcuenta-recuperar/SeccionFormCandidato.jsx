@@ -14,6 +14,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   const [modalidades, setModalidades] = useState([]); 
   const [universidades, setUniversidades] = useState([]); 
   const [isLoading, setIsLoading] = useState(false); 
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
@@ -35,40 +36,44 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
     tecnologias: []
   });
 
+  console.log(process.env.REACT_APP_API_URL); // Verifica el valor de la variable de entorno
+
+
    useEffect(() => {
       // Función para obtener datos del backend
       const fetchData = async () => {
         try {
           // Fetch para obtener estados
-          const estadosResponse = await fetch('/config/obtener_estados.php');
+          
+          const estadosResponse = await fetch(`https://www.codemx.net/codemx/backend/config/obtener_estados.php`);
           if (!estadosResponse.ok) {
             throw new Error('Error al obtener los estados');
           }
           const estadosData = await estadosResponse.json();
     
           // Fetch para obtener sexos
-          const sexosResponse = await fetch('/config/obtener_sexos.php');
+          const sexosResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_sexos.php');
           if (!sexosResponse.ok) {
             throw new Error('Error al obtener los sexos');
           }
           const sexosData = await sexosResponse.json();
 
           // Fetch para obtener tecnologias
-          const tecnologiasResponse = await fetch('/config/obtener_tecnologias.php');
+          const tecnologiasResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_tecnologias.php');
           if (!tecnologiasResponse.ok) {
             throw new Error('Error al obtener las tecnologias');
           }
           const tecnologiasData = await tecnologiasResponse.json();
 
           // Fetch para obtener modalidades de trabajo
-          const modalidadesResponse = await fetch('/config/obtener_modalidades.php');
+          const modalidadesResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_modalidades.php');
           if (!modalidadesResponse.ok) {
             throw new Error('Error al obtener las modalidades de trabajo');
           }
           const modalidadesData = await modalidadesResponse.json();
 
           // Fetch para obtener universidades
-          const universidadesResponse = await fetch('/config/obtener_universidades.php');
+          const universidadesResponse = await fetch('https://www.codemx.net/codemx/backend/config/obtener_universidades.php');
           if (!universidadesResponse.ok) {
             throw new Error('Error al obtener las universidades');
           }
