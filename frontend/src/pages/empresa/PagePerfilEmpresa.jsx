@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { Seccion1PagePerfilEmpresa } from '../../components/empresa/Seccion1PagePerfilEmpresa'
 import { Seccion2PagePerfilEmpresa } from '../../components/empresa/Seccion2PagePerfilEmpresa'
-import { SeccionPublicacionPerfilEmpresa } from '../../components/empresa/SeccionPublicacionPerfilEmpresa'
+import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
 
 export const PagePerfilEmpresa = ({empresaActiva}) => {
     const location = useLocation();
@@ -11,6 +11,7 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
     const [empresa, setEmpresa] = useState(null);
     const [numPublicaciones, setNumPublicaciones] = useState(0);
     const [publicaciones, setPublicaciones] = useState(0);
+    const [vacantes, setVacantes] = useState(0);
     const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
 
@@ -33,6 +34,14 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
             },
             body: JSON.stringify({ idEmpresa: idEmpresa })
           });
+
+          const responseVacantes = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_vacantes_empresa.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idEmpresa: idEmpresa })
+          });
   
           if (!responseDatos.ok ) {
             throw new Error('Error al obtener los datos');
@@ -40,14 +49,19 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
           if (!responsePublicaciones.ok ) {
             throw new Error('Error al obtener las publicaciones');
           }
+          if (!responseVacantes.ok ) {
+            throw new Error('Error al obtener las vacantes');
+          }
 
   
           const empresaData = await responseDatos.json();
           const publicacionesData = await responsePublicaciones.json();
-          setEmpresa(empresaData);
+          const vacantesData = await responseVacantes.json();
 
+          setEmpresa(empresaData);
           setPublicaciones(publicacionesData.publicaciones);
           setNumPublicaciones(publicacionesData.cantidad);
+          setVacantes(vacantesData.vacantes);
         } catch (error) {
           console.error('Error al obtener el perfil de la empresa:', error);
         }
@@ -57,13 +71,23 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
     }, [idEmpresa]);
   
     const manejarMostrarSeccion = (publicacion) =>{
-        setPublicacionSeleccionada(publicacion);
-        setSeccionActiva("publicacion");
+      setPublicacionSeleccionada(publicacion);
+      setSeccionActiva("publicacion");
 
-        window.scrollTo({
-            top: 100,
-            behavior: "smooth" 
-        });
+      // Esperar a que React renderice la sección antes de hacer scroll
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+            const seccion = document.getElementById("seccion-publicacion");
+            if (seccion) {
+                const rect = seccion.getBoundingClientRect();
+                const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                window.scrollTo({
+                  top: scrollPosition,
+                  behavior: "smooth"
+                });
+              }
+          });
+      }, 100); 
     }
 
     const manejarOcultarSeccion = () => {
@@ -85,7 +109,7 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
                 </div>
 
                 <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                    <Seccion2PagePerfilEmpresa publicaciones={publicaciones}  manejarMostrarSeccion={manejarMostrarSeccion}/>
+                    <Seccion2PagePerfilEmpresa empresa={empresa} publicaciones={publicaciones} vacantes={vacantes} manejarMostrarSeccion={manejarMostrarSeccion}/>
                 </div>
             </div>
         )}
@@ -93,7 +117,7 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
         {seccionActiva === "publicacion" && (
             <div className='contenedor-todo'>
                 <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                    <SeccionPublicacionPerfilEmpresa empresa={empresa} empresaActiva={empresaActiva} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
+                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} empresaActiva={empresaActiva}/>
                 </div>
             </div>
         )}

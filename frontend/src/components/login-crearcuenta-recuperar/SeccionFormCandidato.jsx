@@ -261,8 +261,8 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   
 
   return (
-    <div className="contenedor-form container py-5">
-      <h3 className="titulo-form text-center">Diseña tu perfil de Candidato</h3>
+    <div className="contenedor-form container py-4">
+      <h3 className="titulo-form text-center mb-4">Diseña tu perfil de Candidato</h3>
 
       {/* Render condicional basado en el paso */}
       {step === 1 && <Paso1 errors={errors} formData={formData} manejarValorInput={manejarValorInput} visibilidadPassword={visibilidadPassword} visibilidadConfirmarPassword={visibilidadConfirmarPassword} showPassword={showPassword} showConfirmPassword={showConfirmPassword} estados={estados} sexos={sexos}/>}

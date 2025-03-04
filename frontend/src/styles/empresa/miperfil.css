@@ -1,5 +1,5 @@
 .seccionn {
-    max-width: 900px;
+    max-width: 1000px;
     border-radius: 15px;
     width: 100%;
     padding: 0; 
@@ -16,7 +16,7 @@
     margin: 0; 
     background: #eff0f3;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -185,18 +185,7 @@
     border-radius: 8px;
     overflow: hidden; /* Asegura que los bordes sean redondeados */
  }
-
-.form-group {
-    margin-bottom: 1rem;
-}
-  
-.form-control {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
+ 
 .seguidor-item {
     padding: 10px;
     display: flex;
@@ -302,12 +291,16 @@
 
 
 @media (max-width: 767px) { 
-    .foto-perfil-container-empresa {
-        margin-top: -3rem;
-    }
     .contenedor-todo{
         padding-left: 0.3rem;
         padding-right: 0.3rem;
+    }
+    .custom-font-select,
+    .form input{
+        font-size: 0.8rem;
+    }
+    .foto-perfil-container-empresa {
+        margin-top: -3rem;
     }
     .foto-perfil-container-empresa .btn{
         font-size: 0.80rem;

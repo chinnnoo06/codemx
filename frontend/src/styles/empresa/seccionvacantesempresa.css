@@ -1,0 +1,276 @@
+
+.contenedor-seccion-vacantes {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto; 
+    padding: 20px;
+}
+
+.fila-foto img{
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+}
+
+.fila-info h4,
+.fila-info h5{
+    color: #0B1C26;
+}
+
+.contenedor-vacantes,
+.contenedor-sin-vacantes{
+    min-height: 60vh;
+    width: 100%;
+
+}
+
+.sin-vacantes{
+    margin-top: 6rem;
+}
+
+.datos span:not(:last-child)::after {
+    content: " · ";
+    color: #6c757d; /* Color del punto (gris Bootstrap) */
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.vacante:not(:last-child) {
+    border-bottom: 1px solid #ddd; /* Línea gris clara */
+    padding-bottom: 10px; /* Espacio para separar */
+    margin-bottom: 10px; /* Espacio inferior */
+    transition: transform 0.3s ease; ;
+}
+
+.vacante:hover{
+    transform: scale(1.01); 
+    cursor: pointer;
+}
+
+.btn-header-vacantes {
+    height: 2.5rem; 
+    width: 10rem;
+    font-size: 1rem;
+    font-family: 'Barlow', sans-serif; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    padding: 0; 
+}
+
+
+.custom-font-select option {
+    font-family: 'Barlow', sans-serif; 
+}
+
+.vacante {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.postulados {
+    position: absolute;
+    right: 20px; 
+    top: 25%;
+    transform: translateY(-50%); 
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.datos {
+    display: flex;
+    gap: 5px; 
+}
+
+.contenedor-sin-vacantes{
+    padding: 0;
+}
+
+.icono-vacante {
+    font-size: 5rem; 
+    color: #ccc; 
+}
+
+.texto-no-vacantes {
+    font-size: 1.5rem; 
+    color: #0B1C26; 
+    font-weight: 600; 
+}
+
+/*Agregar Vacante*/
+.mostrar-tecnologias{
+    border-radius: 8px;
+    border: 1px solid #8d8989fe;
+}
+
+
+.botones-requerimientos-responsabilidades{
+    font-size: 0.8rem !important;
+}
+
+.btn-publicar-vacante{
+    background-color: #0B1C26; 
+    color: #dde1e9; 
+    transition: all 0.3s ease;
+    width: 10rem; 
+}
+
+.btn-cancelar-vacante{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+    width: 10rem;
+}
+
+.btn-cancelar-vacante:hover,
+.btn-publicar-vacante:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #0B1C26;
+    border: 1px solid #0B1C26; 
+}
+
+.btn-sumar-restar {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn-sumar-restar:hover{
+    color: #504e4efe;;
+}
+
+.mostrar-tecnologias span{ 
+    font-weight: 600;
+    color: #0B1C26;
+    cursor: pointer;
+}
+
+.mostrar-tecnologias span:hover{
+    color: #504e4efe;
+}
+
+@media (min-width: 767px) and (max-width: 1280px) {
+    .btn-header-vacantes{
+        height: 2rem; 
+        width: 9rem;
+        font-size: 0.7rem;
+    }
+    .custom-font-select option {
+        font-size: 0.7rem;
+    }
+    
+    .fila-foto img{
+        width: 5rem;
+        height: 5rem;
+    }
+    
+    .fila-info h4 {
+        padding-top: 1rem;
+        font-size: 1rem;
+    }
+    
+    .fila-info h5 {
+        font-size: 0.9rem;
+    }
+
+    
+    
+    .fila-info .datos span {
+        font-size: 0.8rem;
+    }
+}
+
+
+@media (max-width: 767px) { 
+
+   
+    .vacante {
+        flex-direction: column;
+    }
+
+    .fila-foto {
+        width: 100%;
+    }
+
+    .fila-info {
+        width: 100%;
+    }
+
+    .postulados {
+        width: 100%;
+        text-align: center;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    .datos {
+        flex-wrap: wrap;
+    }
+
+    .btn-header-vacantes{
+        height: 1.5rem; 
+        width: 8rem;
+        font-size: 0.7rem;
+    }
+    .custom-font-select option {
+        font-size: 0.6rem;
+    }
+    
+    .fila-foto img{
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .fila-info h4 {
+        padding-top: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .fila-info h5 {
+        font-size: 0.8rem;
+    }
+    
+    .fila-info .datos span {
+        font-size: 0.7rem;
+    }
+
+    .postulados {
+        right: 20px; 
+        top: 20%;
+        justify-content: flex-end;
+    }
+
+    .postulados i,
+    .postulados span{
+        font-size: 0.8rem;
+    }
+
+    .icono-vacante {
+        font-size: 3rem; 
+    }
+    
+    .texto-no-vacantes {
+        font-size: 1rem; 
+        font-weight: 600; 
+    }
+
+    .btn-publicar-vacante{
+        font-size: 0.7rem;
+        width: 7rem;
+    }
+    
+    .btn-cancelar-vacante{
+        font-size: 0.7rem;
+        width: 7rem; 
+    }
+
+}

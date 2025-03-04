@@ -31,6 +31,7 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
     const [denunciadoId, setDenunciadoId] = useState(null);
     const [denunciadoTipo, setDenunciadoTipo] = useState(""); // "candidato" o "empresa"
     const [isLiking, setIsLiking] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false); 
 
     const obtenerLikesUsuario = useCallback(async () => {
         try {
@@ -159,6 +160,9 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
     };
 
     const eliminarComentario = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         if (!comentarioIdSeleccionado) return; 
     
         try {
@@ -167,7 +171,7 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idCandidato: idCandidato }),
+                body: JSON.stringify({ idComentario: comentarioIdSeleccionado}),
             });
     
             const result = await response.json();
@@ -179,6 +183,8 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
             }
         } catch (error) {
             console.error("Error en la petición:", error);
+        } finally {
+            setIsLoading(false);
         }
     
         setComentarioSeleccionado(null);
@@ -205,6 +211,9 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
     };
 
     const enviarReporte = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         try {
             const url = denunciadoTipo === "candidato"
                 ? "https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_candidato.php"
@@ -232,10 +241,15 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
             }
         } catch (error) {
             console.error("Error al enviar reporte:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
     
     const enviarComentario = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         if (nuevoComentario.trim() === "" || nuevoComentario.trim() === "@") return;
     
         // Remueve el "@" si el usuario lo deja solo
@@ -268,6 +282,8 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
             }
         } catch (error) {
             console.error("Error al agregar comentario:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -436,7 +452,7 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
                                 {opcionAutor ? (
                                     <>
                                         <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
-                                            Eliminar
+                                            {isLoading ? 'Cargando...' : 'Eliminar'}
                                         </button>
                                         <div className="divider"></div> 
                                         <button className="btn-opciones" onClick={cerrarModalOpciones}>
@@ -568,7 +584,7 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
                                         <div className="divider"></div>
 
                                         <button className="btn-opciones " onClick={enviarReporte}>
-                                            Enviar Reporte
+                                            {isLoading ? 'Cargando...' : 'Enviar Reporte'}
                                         </button>
 
                                         <div className="divider"></div>

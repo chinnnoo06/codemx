@@ -98,7 +98,7 @@ export const Seccion3PageMiPerfil = ({ candidato }) => {
                   {tecnologiasCategoria.map((tecnologia) => (
                     <motion.div
                       key={tecnologia.nombre_tecnologia}
-                      className="btn-tecnologia btn btn-warning disabled"
+                      className="btn-tecnologia"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}

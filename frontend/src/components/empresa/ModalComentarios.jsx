@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, use } from "react";
 import "../../styles/empresa/publicacion.css";
 
-export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData, irAlPerfil, irAlPerfilEmpresa, irAMiPerfilEmpresa }) => {
+export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData, irAlPerfil, irAlPerfilEmpresa, irAMiPerfilEmpresa, empresaActiva}) => {
     // Estado para manejar los likes por cada comentario
     const [likesEstado, setLikesEstado] = useState(
         comentarios.reduce((acc, comentario) => {
@@ -25,11 +25,14 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
     const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
     const [descripcionReporte, setDescripcionReporte] = useState("");
-    const [opcionAutor, setopcionAutor] = useState(null);
+    const [opcionAutorComentario, setOpcionAutorComentario] = useState(null);
+    const [opcionEsEmpresaComentario, setOpcionEsEmpresaComentario] = useState(null);
     const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
     const [comentarioIdSeleccionado, setComentarioIdSeleccionado] = useState(null);
     const [candidatoIdSeleccionado, setCandidatoIdSeleccionado] = useState(null);
     const [isLiking, setIsLiking] = useState(false); 
+    const idEmpresa = empresaActiva != empresa.id ? empresaActiva : empresa.id;
+    const [isLoading, setIsLoading] = useState(false); 
 
     const obtenerLikesUsuario = useCallback(async () => {
         try {
@@ -39,7 +42,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    idEmpresa: empresa.id,
+                    idEmpresa: idEmpresa,
                     idPublicacion: publicacion.ID
                 }),
             });
@@ -61,7 +64,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
         } catch (error) {
             console.error("Error al obtener likes:", error);
         }
-    }, [empresa.id, publicacion.ID]); // 🔹 Dependencias correctas
+    }, [empresa.id, empresaActiva, publicacion.ID]); // 🔹 Dependencias correctas
     
     useEffect(() => {
         obtenerLikesUsuario();
@@ -72,7 +75,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
         if (isLiking) return; 
 
         setIsLiking(true); 
-        
+
         const estaDandoLike = !likesEstado[idComentario];
         const url = estaDandoLike
             ? "https://www.codemx.net/codemx/backend/config/agregar_like_comentario.php"
@@ -82,7 +85,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idEmpresa: empresa.id, idComentario }),
+                body: JSON.stringify({ idEmpresa: idEmpresa, idComentario }),
             });
     
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
@@ -140,32 +143,36 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     };
 
     const manejarModalOpciones = (comentario) => {
-        const usuarioEsEmpresa = empresa.id !== undefined && empresa.id !== null;
-        const esAutor = usuarioEsEmpresa 
-            ? comentario.EmpresaID === empresa.id 
-            : comentario.CandidatoID === empresa.id;
-    
-        setopcionAutor(esAutor);
+        const esComentarioEmpresa = comentario.EmpresaID === empresaActiva;  // Verificar si es comentario de la empresa activa
+        const esComentarioCandidato = comentario.tipo_usuario === "candidato"; // Verificar si es comentario de un candidato
+        const esComentarioDeOtraEmpresa = comentario.EmpresaID !== empresaActiva && comentario.tipo_usuario === "empresa"; // Verificar si es otro comentario de una empresa
+
+        // Condiciones para mostrar las opciones de los tres puntos
+        setOpcionAutorComentario(esComentarioEmpresa); 
+        setOpcionEsEmpresaComentario(esComentarioDeOtraEmpresa);
         setModalOpciones(true);
         setComentarioSeleccionado(comentario);
         setComentarioIdSeleccionado(comentario.ID);
     };
 
+
     const cerrarModalOpciones = () => {
         setModalOpciones(false);
-        setopcionAutor(null);
+        setOpcionAutorComentario(null);
     };
 
     const eliminarComentario = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
         if (!comentarioIdSeleccionado) return; 
-    
+        
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/config/eliminar_comentario.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ idComentario: comentarioIdSeleccionado, idEmpresa: empresa.id }),
+                body: JSON.stringify({ idComentario: comentarioIdSeleccionado}),
             });
     
             const result = await response.json();
@@ -177,6 +184,8 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             }
         } catch (error) {
             console.error("Error en la petición:", error);
+        }finally {
+            setIsLoading(false);
         }
     
         setComentarioSeleccionado(null);
@@ -209,7 +218,8 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
     };
 
     const enviarReporte = async () => {
-    
+        if (isLoading) return;
+        setIsLoading(true);
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/empresa/denuncia_empresa_candidato.php", {
                 method: "POST",
@@ -220,7 +230,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     motivo: motivoSeleccionado,
                     descripcion: descripcionReporte,
                     idComentario: comentarioIdSeleccionado, 
-                    idDenunciante: empresa.id, 
+                    idDenunciante: idEmpresa, 
                     idDenunciado: candidatoIdSeleccionado
                 }),
             });
@@ -234,14 +244,19 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             }
         } catch (error) {
             console.error("Error al enviar reporte:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
     
     const enviarComentario = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
         if (nuevoComentario.trim() === "" || nuevoComentario.trim() === "@") return;
     
         // Remueve el "@" si el usuario lo deja solo
         const comentarioLimpio = nuevoComentario.startsWith("@") ? nuevoComentario.replace(/^@\S+\s/, "") : nuevoComentario;
+        const idEmpresa = empresaActiva != null ? empresaActiva : empresa.id;
     
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/config/agregar_comentario.php", {
@@ -250,7 +265,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    idEmpresa: empresa.id,
+                    idEmpresa: idEmpresa,
                     idPublicacion: publicacion.ID,
                     comentario: comentarioLimpio, 
                     respuestaA: respuestaA, 
@@ -270,6 +285,8 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
             }
         } catch (error) {
             console.error("Error al agregar comentario:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -362,10 +379,20 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                                 </span>
                                 
                             </div>
-                            {(comentario.tipo_usuario === "candidato" || comentario.EmpresaID === empresa.id) && (
-                                <i onClick={() => manejarModalOpciones(comentario)} className="fa-solid fa-ellipsis ms-auto"></i>
-                            )}
 
+
+                            {empresaActiva == empresa.id  ? (
+                                <>
+                                    <i onClick={() => manejarModalOpciones(comentario)} className="fa-solid fa-ellipsis ms-auto"></i>
+                                </>
+                            ) : (
+                                <>
+                                    {(comentario.tipo_usuario === "candidato" || comentario.EmpresaID === empresaActiva) && (
+                                        <i onClick={() => manejarModalOpciones(comentario)} className="fa-solid fa-ellipsis ms-auto"></i>
+                                    )}
+
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -438,27 +465,79 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     <div className="modal-overlay-opciones" onClick={cerrarModalOpciones}>
                         <div className="modal-content-opciones" onClick={(e) => e.stopPropagation()}>
                             <div className="botones d-flex flex-column align-items-center">
-                                {opcionAutor ? (
+                                {empresaActiva == empresa.id ? (
                                     <>
-                                        <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
-                                            Eliminar
-                                        </button>
-                                        <div className="divider"></div> 
-                                        <button className="btn-opciones" onClick={cerrarModalOpciones}>
-                                            Cancelar
-                                        </button>
+                                        {opcionAutorComentario ? (
+                                        <>
+                                            <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
+                                                {isLoading ? 'Cargando...' : 'Eliminar'}
+                                            </button>
+                                            <div className="divider"></div> 
+                                            <button className="btn-opciones" onClick={cerrarModalOpciones}>
+                                                Cancelar
+                                            </button>
+                                        </>
+                                        ) : (
+                                            <>
+                                                {opcionEsEmpresaComentario ? (
+                                                    <>
+                                                        <div className="divider"></div>
+                                                        <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
+                                                            {isLoading ? 'Cargando...' : 'Eliminar'}
+                                                        </button>
+                                                        <div className="divider"></div>
+                                                        <button className="btn-opciones" onClick={cerrarModalOpciones}>
+                                                            Cancelar
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button className="btn-opciones btn-reportar" onClick={manejarModalReportar}>
+                                                            Reportar
+                                                        </button>
+                                                        <div className="divider"></div>
+                                                        <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
+                                                            {isLoading ? 'Cargando...' : 'Eliminar'}
+                                                        </button>
+                                                        <div className="divider"></div>
+                                                        <button className="btn-opciones" onClick={cerrarModalOpciones}>
+                                                            Cancelar
+                                                        </button>
+                                                    </>
+                                                )}
+                            
+                                            </>
+                                        )}
                                     </>
                                 ) : (
                                     <>
-                                        <button className="btn-opciones btn-reportar" onClick={manejarModalReportar}>
-                                            Reportar
-                                        </button>
-                                        <div className="divider"></div>
-                                        <button className="btn-opciones" onClick={cerrarModalOpciones}>
-                                            Cancelar
-                                        </button>
+                                     {opcionAutorComentario ? (
+                                        <>
+                                            <button className="btn-opciones btn-eliminar" onClick={eliminarComentario}>
+                                                {isLoading ? 'Cargando...' : 'Eliminar'}
+                                            </button>
+                                            <div className="divider"></div> 
+                                            <button className="btn-opciones" onClick={cerrarModalOpciones}>
+                                                Cancelar
+                                            </button>
+                                        </>
+                                        ) : (
+                                            <>
+            
+                                                <button className="btn-opciones btn-reportar" onClick={manejarModalReportar}>
+                                                    Reportar
+                                                </button>
+                                                <div className="divider"></div>
+                                                <button className="btn-opciones" onClick={cerrarModalOpciones}>
+                                                    Cancelar
+                                                </button>
+                                          
+                            
+                                            </>
+                                        )}
                                     </>
                                 )}
+                                
                             </div>
                         </div>
                     </div>
@@ -530,7 +609,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                                         <div className="divider"></div>
 
                                         <button className="btn-opciones " onClick={enviarReporte}>
-                                            Enviar Reporte
+                                            {isLoading ? 'Cargando...' : 'Enviar Reporte'}
                                         </button>
 
                                         <div className="divider"></div>
@@ -545,6 +624,7 @@ export const ModalComentarios = ({ empresa, comentarios, publicacion, fetchData,
                     </div>
                 )}
             </div>
+            
         </div>
     );
 };

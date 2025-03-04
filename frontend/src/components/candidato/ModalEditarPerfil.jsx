@@ -25,7 +25,8 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
         universidad: '',
         tiempoRestante: candidato.tiempo_restante,
         modalidadTrabajo: '',
-        curriculum: null
+        curriculum: null,
+        password: '',
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -139,17 +140,21 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
         // Validar edad mínima de 18 años
         const fechaNacimiento = formData.fechaNacimiento;
         if (fechaNacimiento) {
-        const hoy = new Date();
-        const fechaNac = new Date(fechaNacimiento);
-        let edad = hoy.getFullYear() - fechaNac.getFullYear();
-        const mes = hoy.getMonth() - fechaNac.getMonth();
-        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
-            edad--;
+            const hoy = new Date();
+            const fechaNac = new Date(fechaNacimiento);
+            let edad = hoy.getFullYear() - fechaNac.getFullYear();
+            const mes = hoy.getMonth() - fechaNac.getMonth();
+            if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+                edad--;
+            }
+        
+            if (edad < 18) {
+                stepErrors['fechaNacimiento'] = 'Debes tener al menos 18 años';
+            }
         }
-    
-        if (edad < 18) {
-            stepErrors['fechaNacimiento'] = 'Debes tener al menos 18 años';
-        }
+
+        if (!formData.password.trim()) {
+            stepErrors.password = 'Por favor, ingresa tu contraseña actual.';
         }
     
         setErrors(stepErrors);
@@ -209,6 +214,8 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                         formDataToSend.append(key, formData[key]);
                     }
                 });
+
+                formDataToSend.append("passwordActual", formData.password.trim());
     
                 const response = await fetch('https://www.codemx.net/codemx/backend/candidato/editar_perfil_candidato.php', {
                     method: 'POST',
@@ -225,7 +232,14 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                     manejarCloseModalForm();
                     window.location.reload(); // Recarga la página
                 } else {
-                    alert(result.error || 'Hubo un error al actualizar.');
+                    if (result.error === 'La contraseña actual es incorrecta.') {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            password: result.error,
+                        }));
+                    } else {
+                        alert(result.error || 'Hubo un error al actualizar.');
+                    }
                 }
             } catch (error) {
                 console.error('Error al actualizar:', error);
@@ -390,6 +404,15 @@ export const ModalEditarPerfil = ({ candidato, manejarCloseModalForm }) => {
                             Archivo seleccionado: {formData.curriculum.name}
                             </small>
                         )}
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Confirme su contraseña <span className="text-danger">*</span></label>
+                        <input type={showPasswordActual ? "text" : "password"} id="password" name="password" className="form-control" value={formData.password} onChange={manejarCambio} required/>
+                        <span className="input-group-text" onClick={visibilidadPasswordActual}>
+                            <i className={showPasswordActual ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                        </span>
+                        {errors.password && <small className="text-danger">{errors.password}</small>}
                     </div>
                                 
                     <button type="submit" className="btn btn-tipodos" disabled={isLoading}>

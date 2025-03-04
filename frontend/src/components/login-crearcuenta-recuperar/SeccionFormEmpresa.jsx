@@ -250,7 +250,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
     </div>
 
     <div className="mb-3">
-      <label htmlFor="descripcion" className="form-label">Descripcion <span className="text-danger">*</span></label>
+      <label htmlFor="descripcion" className="form-label">Descripción <span className="text-danger">*</span></label>
       <textarea id="descripcion" name="descripcion" className="form-control"  maxLength={250} value={formData.descripcion} onChange={manejarValorInput} required/>
       {errors.descripcion && <small className="text-danger">{errors.descripcion}</small>}
     </div>

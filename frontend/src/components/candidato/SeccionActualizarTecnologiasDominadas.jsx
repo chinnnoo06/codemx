@@ -78,8 +78,8 @@ export const SeccionActualizarTecnologiasDominadas = ({ candidato, tecnologias, 
                   type="button"
                   className={`btn ${
                     tecnologiasSeleccionadas.includes(parseInt(tecnologia.id, 10))
-                      ? 'btn-tecnologia btn-warning'
-                      : 'btn-tecnologia btn-outline-warning'
+                      ? 'btn-tecnologia btn-tipouno'
+                      : 'btn-tecnologia btn-tipodos'
                   }`}
                   onClick={() => manejarSeleccion(parseInt(tecnologia.id, 10))}
                   initial={{ opacity: 0, scale: 0.8 }}

@@ -20,6 +20,7 @@ export const ModalEditarPerfil = ({ empresa, manejarCloseModalForm }) => {
         tamanio: '',
         telefono: empresa.telefono,
         fechaCreacion: empresa.fecha_creacion,
+        password: '',
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -117,6 +118,12 @@ export const ModalEditarPerfil = ({ empresa, manejarCloseModalForm }) => {
         if (fechaCreacion && fechaCreacion > today) {
         stepErrors['fechaCreacion'] = 'La fecha de creación no puede ser mayor al día de hoy';
         }
+
+            
+        if (!formData.password.trim()) {
+            stepErrors.password = 'Por favor, ingresa tu contraseña actual.';
+        }
+    
     
         setErrors(stepErrors);
     
@@ -158,35 +165,38 @@ export const ModalEditarPerfil = ({ empresa, manejarCloseModalForm }) => {
                 
             const isValid = validarCampos();
             if (!isValid) {
-                setIsLoading(false);
                 return; 
             }
-        
+    
             setIsLoading(true);
-
+    
             try {
                 const formDataToSend = new FormData();
-
                 Object.keys(formData).forEach((key) => {
                     formDataToSend.append(key, formData[key]);
                 });
-          
+
+                formDataToSend.append("passwordActual", formData.password.trim());
+    
                 const response = await fetch('https://www.codemx.net/codemx/backend/empresa/editar_perfil_empresa.php', {
-                  method: 'POST',
-                  body: formDataToSend,
+                    method: 'POST',
+                    body: formDataToSend,
                 });
     
-                if (!response.ok) {
-                    throw new Error('Error al enviar los datos al servidor');
-                  }
-            
                 const result = await response.json();
     
                 if (result.success) {
                     manejarCloseModalForm();
-                    window.location.reload(); 
+                    window.location.reload();
                 } else {
-                    alert(result.error || 'Hubo un error al actualizar.');
+                    if (result.error === 'La contraseña actual es incorrecta.') {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            password: result.error,
+                        }));
+                    } else {
+                        alert(result.error || 'Hubo un error al actualizar.');
+                    }
                 }
             } catch (error) {
                 console.error('Error al actualizar:', error);
@@ -228,7 +238,20 @@ export const ModalEditarPerfil = ({ empresa, manejarCloseModalForm }) => {
                     manejarCloseModalForm();
                     window.location.reload(); 
                 } else {
-                    alert(result.error || 'Hubo un error al actualizar.');
+                     // Manejo de errores en ambos campos de contraseña
+                    if (result.error === 'La contraseña actual es incorrecta.') {
+                        setPasswordsErrors((prevErrors) => ({
+                            ...prevErrors,
+                            passwordActual: result.error,
+                        }));
+                    } else if (result.error.includes('contraseña')) {
+                        setPasswordsErrors((prevErrors) => ({
+                            ...prevErrors,
+                            passwordNueva: result.error,
+                        }));
+                    } else {
+                        alert(result.error || 'Hubo un error al actualizar.');
+                    }
                 }
             } catch (error) {
                 console.error('Error al actualizar:', error);
@@ -302,6 +325,15 @@ export const ModalEditarPerfil = ({ empresa, manejarCloseModalForm }) => {
                         <label htmlFor="telefono" className="form-label">Teléfono <span className="text-danger">*</span></label>
                         <input type="tel" id="telefono" name="telefono" className="form-control" value={formData.telefono} onChange={manejarCambio} required />
                         {errors.telefono && <small className="text-danger">{errors.telefono}</small>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Confirme su contraseña <span className="text-danger">*</span></label>
+                        <input type={showPasswordActual ? "text" : "password"} id="password" name="password" className="form-control" value={formData.password} onChange={manejarCambio} required/>
+                        <span className="input-group-text" onClick={visibilidadPasswordActual}>
+                            <i className={showPasswordActual ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                        </span>
+                        {errors.password && <small className="text-danger">{errors.password}</small>}
                     </div>
 
 

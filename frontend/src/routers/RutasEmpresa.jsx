@@ -5,6 +5,7 @@ import '../styles/header-footer.css';
 import CryptoJS from "crypto-js";
 import { PagePerfilCandidato } from '../pages/empresa/PagePerfilCandidato';
 import { PagePerfilEmpresa } from '../pages/empresa/PagePerfilEmpresa';
+import { PageVacantesEmpresa } from '../pages/empresa/PageVacantesEmpresa';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
@@ -69,7 +70,7 @@ export const RutasEmpresa = () => {
                             <i className="fa-solid fa-house"></i>
                             Inicio
                         </NavLink>
-                        <NavLink to="/usuario-empresa/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
                             <i className="fa-solid fa-file-pen"></i>
                             Vacantes
                         </NavLink>
@@ -125,6 +126,7 @@ export const RutasEmpresa = () => {
                     <Route path="/inicio-empresa" element={<PageInicioEmpresa  empresa={empresa}  />} />
                     <Route path="/perfil-candidato/" element={<PagePerfilCandidato empresa={empresa}/>} />
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  empresaActiva={empresa.id}/>} />
+                    <Route path="/vacantes-empresa/" element={<PageVacantesEmpresa  empresa={empresa}/>} />
                 </Routes>
             </section>
 
@@ -202,9 +204,6 @@ export const RutasEmpresa = () => {
                                 </a>
                                 <a href="https://instagram.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://linkedin.com" className="social-icon" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-linkedin-in"></i>
                                 </a>
                             </div>
                         </div>

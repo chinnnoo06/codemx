@@ -8,6 +8,7 @@ export const PageInicioEmpresa = ({empresa}) => {
     const [publicaciones, setPublicaciones] = useState(0);
     const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
+    const empresaActiva = empresa.id;
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -41,17 +42,31 @@ export const PageInicioEmpresa = ({empresa}) => {
         setPublicacionSeleccionada(publicacion);
         setSeccionActiva("publicacion");
 
-        window.scrollTo({
-            top: 100,
-            behavior: "smooth" 
-        });
+        // Esperar a que React renderice la sección antes de hacer scroll
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                const seccion = document.getElementById("seccion-publicacion");
+                if (seccion) {
+                    const rect = seccion.getBoundingClientRect();
+                    const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        }, 100); 
     }
 
-    const manejarOcultarSeccion = (publicacion) => {
+    const manejarOcultarSeccion = () => {
         setSeccionActiva("perfil-publicaciones");
         setTimeout(() => {
             fetchData(); // 🔹 Asegura que se recargan los datos de publicaciones
         }, 500);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" 
+        });
     };
       
   return (
@@ -71,8 +86,8 @@ export const PageInicioEmpresa = ({empresa}) => {
 
         {seccionActiva === "publicacion" && (
             <div className='contenedor-todo'>
-                <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} actualizarFetch={fetchData} setPublicacionSeleccionada={setPublicacionSeleccionada}/>
+                <div className='seccionn container mt-4 mb-4 d-flex justify-content-center' id="seccion-publicacion">
+                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} actualizarFetch={fetchData} setPublicacionSeleccionada={setPublicacionSeleccionada} empresaActiva={empresaActiva}/>
                 </div>
             </div>
         )}

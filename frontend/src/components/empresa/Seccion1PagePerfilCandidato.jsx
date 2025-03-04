@@ -15,6 +15,7 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
     const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
     const [descripcionReporte, setDescripcionReporte] = useState("");
     const [hayChat, setHayChat] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false); 
     
 
     // Función para obtener datos del backend
@@ -108,6 +109,8 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
       };
     
       const enviarReporte = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/empresa/denuncia_empresa_candidato.php", {
                 method: "POST",
@@ -130,6 +133,8 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
             }
         } catch (error) {
             console.error("Error al enviar reporte:", error);
+        }finally {
+            setIsLoading(false);
         }
       };
     
@@ -308,7 +313,7 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
                                     <div className="divider"></div>
 
                                     <button className="btn-opciones " onClick={enviarReporte}>
-                                        Enviar Reporte
+                                        {isLoading ? 'Cargando...' : 'Enviar Reporte'}
                                     </button>
 
                                     <div className="divider"></div>

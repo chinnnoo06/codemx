@@ -8,8 +8,12 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
     );
     const [query, setQuery] = useState('');
     const navigate = useNavigate(); // Hook para redirigir a otra página
+    const [isLoading, setIsLoading] = useState(false); 
 
     const toggleSeguir = async (idEmpresa) => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         try {
             const empresa = empresasState.find((emp) => emp.ID === idEmpresa);
 
@@ -45,6 +49,8 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
         } catch (error) {
             console.error('Error al cambiar el estado de seguimiento:', error);
             alert('Ocurrió un error al intentar cambiar el estado de seguimiento.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -102,7 +108,11 @@ export const ModalSeguidos = ({ empresas, idCandidato }) => {
 
 
                             {empresa.ID && (
-                                <button className={`btn ${empresa.isFollowing ? 'btn-dejarseguir' : 'btn-seguir'} ms-auto`} onClick={() => toggleSeguir(empresa.ID)}>
+                                <button className={`btn ${empresa.isFollowing ? 'btn-dejarseguir' : 'btn-seguir'} ms-auto`} 
+                                    onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSeguir(empresa.ID); 
+                                  }}>
                                     {empresa.isFollowing ? 'Dejar de seguir' : 'Seguir'}
                                 </button>
                             )}

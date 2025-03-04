@@ -8,10 +8,16 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
   const [ocultarMeGusta, setOcultarMeGusta] = useState(0); 
   const [sinComentarios, setSinComentarios] = useState(0); 
   const [errorImagen, setErrorImagen] = useState(""); // Para mostrar mensajes de error
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchData();
-}, [fetchData]);
+      fetchData();
+  }, [fetchData]);
+
+  // Ordenar publicaciones por fecha de la más reciente a la más antigua
+  const publicacionesOrdenadas = publicaciones
+  ? [...publicaciones].sort((a, b) => new Date(b.Fecha_Publicacion) - new Date(a.Fecha_Publicacion))
+  : [];
 
   const manejarCambioImagen = (e) => {
     const file = e.target.files[0];
@@ -36,10 +42,9 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
   };
 
   const enviarPublicacion = async () => {
+    setIsLoading(true);
     if (descripcion && imagenPreview) {
-
       const formData = new FormData();
-
       formData.append("empresa_id", empresa.id); 
       formData.append("descripcion", descripcion); 
       formData.append("ocultar_me_gusta", ocultarMeGusta); 
@@ -59,18 +64,20 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
         const result = await response.json();
 
         if (result.success) {
-          alert("Publicación agregada correctamente.");
           setImagenPreview(null);
           setDescripcion("");
           setOcultarMeGusta(0);
           setSinComentarios(0);
           fetchData();
+          setSeccionActiva('ver-publicaciones');
         } else if (result.error) {
-            alert("Error al subir publicacion");
+          alert("Error al subir publicacion");
         }
-    } catch (error) {
-      alert("Error al subir publicacion");
-    }
+      } catch (error) {
+        alert("Error al subir publicacion");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -97,9 +104,9 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
       {/* Sección de publicaciones */}
       {seccionActiva === "ver-publicaciones" && (
         <>
-          {publicaciones && publicaciones.length > 0 ? (
+          {publicacionesOrdenadas && publicacionesOrdenadas.length > 0 ? (
             <div className='contenedor-publicaciones'>
-              {publicaciones.map((publicacion, index) => (
+              {publicacionesOrdenadas.map((publicacion, index) => (
                 <div key={index} className='item-publicacion' onClick={() => manejarMostrarSeccion(publicacion)}>
                   <img
                     src={`${publicacion.Img}?t=${new Date().getTime()}`}
@@ -112,7 +119,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
           ) : (
             <div className='contenedor-sin-publicaciones'>
               <div className='sin-publicaciones d-flex flex-column justify-content-center align-items-center'>
-                <i className="fa-solid fa-camera icono-camara mb-3"></i>
+                <i className="fa-solid fa-camera icono-camara mb-2"></i>
                 <h2 className="texto-no-publicaciones">Aún no hay publicaciones</h2>
               </div>
             </div>
@@ -141,9 +148,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
                 className="d-none"
                 accept=".jpg, .jpeg, .png"
                 onChange={manejarCambioImagen}
-                
               />
-
               {errorImagen && <p className="text-danger mt-2">{errorImagen}</p>}
             </div>
 
@@ -187,10 +192,10 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
             {/* Botón para finalizar publicación */}
             <button
               className="btn btn-tipouno mt-2 mb-2 btn-sm "
-              disabled={!descripcion || !imagenPreview} // Botón deshabilitado si los campos están vacíos
+              disabled={!descripcion || !imagenPreview || isLoading } // Botón deshabilitado si los campos están vacíos
               onClick={() => enviarPublicacion()}
             >
-              Finalizar publicación
+             {isLoading ? 'Cargando...' : 'Finalizar Publicación'}
             </button>
           </div>
         )}

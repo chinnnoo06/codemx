@@ -15,9 +15,14 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
     const [showModalLikes, setShowModalLikes] = useState(false);
     const [showModalDislikes, setShowModalDislikes] = useState(false);
     const [showModalComentarios, setShowModalComentarios] = useState(false);
-    const navigate = useNavigate(); // Hook para redirigir a otra página
-    const [reaccion, setReaccion] = useState(null); // 'like', 'dislike' o null
-    const isProcessing = useRef(false); // Evita múltiples clics rápidos
+    const navigate = useNavigate(); 
+    const [reaccion, setReaccion] = useState(null); 
+    const isProcessing = useRef(false); 
+    const [showModalDenuncia, setShowModalDenuncia] = useState(false);
+    const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
+    const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
+    const [descripcionReporte, setDescripcionReporte] = useState("");
+    const [isLoading, setIsLoading] = useState(false); 
 
 
     const fetchData = useCallback(async () => {
@@ -135,6 +140,56 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
     };
     
 
+    const manejarShowModalDenuncia = () => {
+        setShowModalDenuncia(true);
+        setPasoReporte(1);
+        setMotivoSeleccionado("");
+        setDescripcionReporte("");
+    };
+
+    const manejarCloseModalDenuncia = async () => {
+        setShowModalDenuncia(false);
+    };
+
+    const manejarSeleccionReporte = (motivo) => {
+        setMotivoSeleccionado(motivo);
+        setPasoReporte(2);
+    };
+
+    const enviarReporte = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_empresa.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    motivo: motivoSeleccionado,
+                    descripcion: descripcionReporte,
+                    idPublicacion: publicacion.ID,
+                    idDenunciante: idCandidato, 
+                    idDenunciado: empresa.id,
+                }),
+            });
+
+
+
+            const result = await response.json();
+            if (result.success) {
+                alert("Reporte enviado correctamente.");
+                manejarCloseModalDenuncia();
+            } else {
+                console.error("Error al enviar reporte:", result.error);
+                alert(`Error al enviar reporte: ${result.error || "Error desconocido"}`);
+            }
+        } catch (error) {
+            console.error("Error al enviar reporte:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     // Función para redirigir al perfil del candidato
     const irAlPerfilCandidato = (idCandidato) => {
         navigate(`/usuario-candidato/perfil-candidato`, { 
@@ -170,6 +225,7 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
             <div className='seccion-usuario d-flex align-items-center gap-2 px-1 '>
                 <img src={`${empresa.logo}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-perfil" onClick={() => irAlPerfilEmpresa(empresa.id)}/>
                 <p className='usuario-nombre m-0 align-self-center' onClick={() => irAlPerfilEmpresa(empresa.id)}>{empresa.nombre}</p>
+                <i className="fa-solid fa-ellipsis ms-auto" onClick={manejarShowModalDenuncia}></i>
             </div>
             <div className='seccion-img'>
                 <img src={`${publicacion.Img}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-detalle" />
@@ -242,6 +298,90 @@ export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicac
                 </div>
             </div>
         )}
+
+        <div className='modal-reportar'>
+          {showModalDenuncia && (
+              <div className="modal-overlay-reportar" onClick={manejarCloseModalDenuncia}>
+                  <div className="modal-content-reportar" onClick={(e) => e.stopPropagation()}>
+                      {/* Título */}
+                      <div className="modal-header-reportar d-flex justify-content-between align-items-center">
+                          <span className="modal-title-reportar">Reportar</span>
+                          <i className="fa-solid fa-x cursor-pointer close-button-reportar" onClick={manejarCloseModalDenuncia}></i>
+                      </div>
+
+                      <div className="divider"></div>
+
+                      {/* Pregunta inicial */}
+                      {pasoReporte === 1 && (
+                          <>
+                              <div className="modal-question-reportar d-flex justify-content-center align-items-center text-center">
+                                ¿Por qué quieres reportar esta publicacion?
+                              </div>
+
+                              <div className="divider"></div>
+
+                         
+                              {/* Opciones de reporte a candidato*/}
+                              <div className="modal-body-reportar">
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(1)}>
+                                    Información Falsa o Engañosa
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(3)}>
+                                    Publicación de Contenido Irrelevante o Spam
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(4)}>
+                                    Discriminación o Discurso de Odio
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(5)}>
+                                    Uso Fraudulento de la Plataforma
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones btn-cancelar" onClick={manejarCloseModalDenuncia}>
+                                      Cancelar
+                                  </button>
+                              </div>
+    
+                          </>
+                      )}
+
+                      {/* Segunda pantalla - Descripción del reporte */}
+                      {pasoReporte === 2 && (
+                          <>
+                              <div className="modal-body-reportar">
+                                  
+                                  <textarea
+                                      className="form-control text-center"
+                                      rows="3"
+                                      placeholder="Añade una descripción (opcional)"
+                                      value={descripcionReporte}
+                                      onChange={(e) => setDescripcionReporte(e.target.value)}
+                                  ></textarea>
+
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones " onClick={enviarReporte}>
+                                    {isLoading ? 'Cargando...' : 'Enviar Reporte'}                                      
+                                  </button>
+
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones btn-cancelar" onClick={() => setPasoReporte(1)}>
+                                      Volver
+                                  </button>
+                              </div>
+                          </>
+                      )}
+                  </div>
+              </div>
+            )}
+        </div>
 
         </>
   </div>

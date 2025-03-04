@@ -6,9 +6,13 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
   const [query, setQuery] = useState('');
   const [seguidorAEliminar, setSeguidorAEliminar] = useState(null);
   const navigate = useNavigate(); // Hook para redirigir a otra página
+  const [isLoading, setIsLoading] = useState(false); 
 
   // Función para eliminar seguimiento
   const toggleSeguir = async (idCandidato) => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     try {
       const response = await fetch(
         'https://www.codemx.net/codemx/backend/empresa/eliminar_seguimiento.php', // Ruta a tu API
@@ -31,6 +35,8 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
     } catch (error) {
       console.error('Error al eliminar seguimiento:', error);
       alert('Ocurrió un error al intentar eliminar el seguimiento.');
+    } finally {
+      setIsLoading(false);
     }
 
     setSeguidorAEliminar(null);
@@ -97,7 +103,10 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
                 {candidato.ID && (
                   <button
                     className={`btn btn-eliminar-seguidor ms-auto`}
-                    onClick={() => setSeguidorAEliminar(candidato)} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSeguidorAEliminar(candidato); 
+                    }}
                   >
                     Eliminar
                   </button>
@@ -129,7 +138,7 @@ export const ModalSeguidores = ({ seguidores, idEmpresa, fetchSeguidores }) => {
                 className="btn btn-danger btn-sm"
                 onClick={() => toggleSeguir(seguidorAEliminar.ID)} 
               >
-                Confirmar
+                {isLoading ? 'Cargando...' : 'Confirmar'}
               </button>
             </div>
           </div>

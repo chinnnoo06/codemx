@@ -230,9 +230,6 @@ export const RutasCandidato = () => {
                                 <a href="https://instagram.com" className="social-icon" target="_blank" rel="noopener noreferrer">
                                     <i className="fab fa-instagram"></i>
                                 </a>
-                                <a href="https://linkedin.com" className="social-icon" target="_blank" rel="noopener noreferrer">
-                                    <i className="fab fa-linkedin-in"></i>
-                                </a>
                             </div>
                         </div>
                     </div>

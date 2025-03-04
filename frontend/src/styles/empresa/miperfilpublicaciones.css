@@ -59,9 +59,8 @@
 
 .texto-no-publicaciones {
   font-size: 1.5rem; 
-  color: #555; 
+  color: #0B1C26;; 
   font-weight: 600; 
-  margin-top: 1rem;
 }
 
 .botones-seccion .btn {
@@ -254,4 +253,12 @@ input:checked + .slider:before {
   .seccion-inputimg {
     max-height: 400px;
   }
+  .icono-camara {
+    font-size: 3rem; 
+  }
+  
+  .texto-no-publicaciones {
+    font-size: 1rem;
+  }
+  
 }

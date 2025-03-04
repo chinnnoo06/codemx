@@ -5,7 +5,7 @@ import { ModalLikes } from './ModalLikes';
 import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios } from './ModalComentarios';
 
-export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion, actualizarFetch,  setPublicacionSeleccionada }) => {
+export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion, actualizarFetch,  setPublicacionSeleccionada, empresaActiva}) => {
 
     const [likes, setLikes] = useState(0);
     const [numLikes, setNumLikes] = useState(0);
@@ -22,6 +22,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     const [descripcion, setDescripcion] = useState(publicacion.Contenido); 
     const [ocultarMeGusta, setOcultarMeGusta] = useState(null); 
     const [sinComentarios, setSinComentarios] = useState(null); 
+    const [isLoading, setIsLoading] = useState(false); 
     const navigate = useNavigate(); // Hook para redirigir a otra página
 
     const fetchData = useCallback(async () => {
@@ -92,6 +93,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     };
 
     const eliminarPublicacion = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/empresa/eliminar_publicacion.php", {
                 method: "POST",
@@ -117,6 +120,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
             }
         } catch (error) {
             console.error("Error en la petición:", error);
+        }finally {
+            setIsLoading(false);
         }
 
     };
@@ -155,6 +160,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     };
 
     const editarPublicacion = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
         const formData = new FormData();
     
         formData.append("publicacion_id", publicacion.ID); 
@@ -185,6 +192,8 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
             }
         } catch (error) {
             console.error("Error en la petición:", error);
+        }finally {
+            setIsLoading(false);
         }
     };
 
@@ -195,17 +204,14 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
         });
     };
 
-    const irAlPerfilEmpresa = (idEmpresaPerfil, idEmpresaActiva) => {
+    const irAlPerfilEmpresa = (idEmpresaPerfil) => {
         navigate(`/usuario-empresa/perfil-empresa`, { 
-            state: { idEmpresa: idEmpresaPerfil, empresaActiva: idEmpresaActiva }
+            state: { idEmpresa: idEmpresaPerfil}
         });
     };
     const irAMiPerfilEmpresa = () => {
-        manejarOcultarSeccion("/usuario-empresa/inicio-empresa");
-      };
-  
-
-
+        manejarOcultarSeccion();
+    };
 
     return (
         <div className='contenedor'>
@@ -220,8 +226,17 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
                 <div className="contenedor-publicacion d-flex flex-column justify-content-between">
                     <div className='seccion-usuario d-flex align-items-center gap-2 px-1 '>
                         <img src={`${empresa.logo}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-perfil" onClick={() => irAMiPerfilEmpresa()}/>
-                        <p className='usuario-nombre m-0 align-self-center' onClick={() => irAMiPerfilEmpresa()}>{empresa.nombre}</p>
-                        <i className="fa-solid fa-ellipsis ms-auto" onClick={manejarShowModalOpciones}></i>
+                        {empresaActiva != empresa.id ? (
+                            <>
+                                <p className='usuario-nombre m-0 align-self-center' onClick={() => irAlPerfilEmpresa(empresaActiva)}>{empresa.nombre}</p>
+                            </>
+                        ) : (
+                            <>
+                                <p className='usuario-nombre m-0 align-self-center' onClick={() => irAMiPerfilEmpresa()}>{empresa.nombre}</p>
+                                <i className="fa-solid fa-ellipsis ms-auto" onClick={manejarShowModalOpciones}></i>
+                            </>
+                        )}
+
                     </div>
                     <div className='seccion-img'>
                         <img src={`${publicacion.Img}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-detalle" />
@@ -282,7 +297,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
                             <button className="close-button btn" onClick={() => manejarCloseModalComentarios()}>
                                     <i className="fa-solid fa-x"></i>
                             </button>
-                            <ModalComentarios empresa={empresa} comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfil={irAlPerfil} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfilEmpresa={irAMiPerfilEmpresa} />
+                            <ModalComentarios empresa={empresa} comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfil={irAlPerfil} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfilEmpresa={irAMiPerfilEmpresa} empresaActiva={empresaActiva}/>
                         </div>
                     </div>
                 )}
@@ -329,7 +344,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
                                 className="btn btn-danger btn-sm"
                             onClick={() => eliminarPublicacion()}
                             >
-                                Confirmar
+                                 {isLoading ? 'Cargando...' : 'Confirmar'}
                             </button>
                             </div>
                         </div>
@@ -396,7 +411,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
                             disabled={!descripcion} 
                             onClick={() => editarPublicacion()}
                         >
-                        Editar publicación
+                         {isLoading ? 'Cargando...' : 'Editar Publicación'}
                         </button>
                     </div>
                 </>

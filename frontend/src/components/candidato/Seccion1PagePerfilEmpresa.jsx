@@ -17,6 +17,7 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
     const [menuVisible, setMenuVisible] = useState(false);
     const [siguiendo, setSiguiendo] = useState(false); 
     const [hayChat, setHayChat] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false); 
 
 
     // Función para obtener datos del backend
@@ -93,6 +94,9 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
     
 
     const toggleSeguir = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         try {
             const url = siguiendo
                 ? 'https://www.codemx.net/codemx/backend/candidato/dejar_seguir.php'
@@ -111,6 +115,7 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
             if (result.success) {
                 // Cambia el estado local para reflejar el cambio
                 setSiguiendo(!siguiendo);
+                fetchData();
                 setNumSeguidores((prev) => (siguiendo ? prev - 1 : prev + 1)); 
             } else {
                 alert('No se pudo actualizar el seguimiento.');
@@ -118,6 +123,8 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
         } catch (error) {
             console.error('Error al cambiar el estado de seguimiento:', error);
             alert('Ocurrió un error al intentar cambiar el estado de seguimiento.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -140,6 +147,9 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
       };
     
       const enviarReporte = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         try {
             const response = await fetch("https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_empresa.php", {
                 method: "POST",
@@ -164,6 +174,8 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
             }
         } catch (error) {
             console.error("Error al enviar reporte:", error);
+        } finally {
+            setIsLoading(false);
         }
       };
 
@@ -369,7 +381,7 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
                                   <div className="divider"></div>
 
                                   <button className="btn-opciones " onClick={enviarReporte}>
-                                      Enviar Reporte
+                                    {isLoading ? 'Cargando...' : 'Enviar Reporte'}
                                   </button>
 
                                   <div className="divider"></div>
