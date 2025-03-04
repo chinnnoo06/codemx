@@ -17,6 +17,8 @@
     "web-vitals": "^4.2.4"
   },
   "homepage": "https://www.codemx.net/codemx/frontend/build/",
+  "proxy": "https://www.codemx.net/codemx/backend",
+
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

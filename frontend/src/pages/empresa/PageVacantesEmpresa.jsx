@@ -2,11 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/empresa/seccionvacantesempresa.css';
 import { Seccion1VacantesEmpresa } from '../../components/empresa/Seccion1VacantesEmpresa';
 import { Seccion2VacantesEmpresa } from '../../components/empresa/Seccion2VacantesEmpresa';
+import { SeccionVacante } from '../../components/empresa/SeccionVacante';
 
 export const PageVacantesEmpresa = ({empresa}) => {
     const [vacantes, setVacantes] = useState([]);
     const [estadoFiltro, setEstadoFiltro] = useState("activa");
     const [seccionActiva, setSeccionActiva] = useState("vacantes");
+    const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
+    const empresaActiva = empresa.id;
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -52,6 +55,19 @@ export const PageVacantesEmpresa = ({empresa}) => {
     const manejarMostrarSeccion = () => {
         setSeccionActiva("agregar-vacante");
     };
+
+    const manejarOcultarSeccionVacante = () => {
+        setSeccionActiva("vacantes");
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" 
+        });
+    };
+
+    const manejarMostrarSeccionVacante = (vacante) => {
+        setVacanteSeleccionada(vacante);
+        setSeccionActiva("detalles-vacante");
+    };
       
 
   return (
@@ -68,12 +84,17 @@ export const PageVacantesEmpresa = ({empresa}) => {
 
         {seccionActiva === "vacantes" &&(
             <div className='w-100'>
-                <Seccion1VacantesEmpresa empresa={empresa} vacantes={vacantesFiltradas}></Seccion1VacantesEmpresa>
+                <Seccion1VacantesEmpresa empresa={empresa} vacantes={vacantesFiltradas} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}></Seccion1VacantesEmpresa>
             </div>
         )}
         {seccionActiva === "agregar-vacante" && (
             <div id="seccion-agregar-vacante" className='container'>
                 <Seccion2VacantesEmpresa empresa={empresa} manejarOcultarSeccion={manejarOcultarSeccion} fetchData={fetchData} />
+            </div>
+        )}
+        {seccionActiva === "detalles-vacante" && (
+            <div id="seccion-agregar-vacante" className='container'>
+                <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} actualizarFetch={fetchData} setVacanteSeleccionada={setVacanteSeleccionada}/>
             </div>
         )}
 

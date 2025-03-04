@@ -5,7 +5,7 @@ import { ModalLikes } from './ModalLikes';
 import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios} from './ModalComentarios';
 
-export const SeccionPublicacionPerfilEmpresa = ({ empresa, idCandidato, publicacion, manejarOcultarSeccion}) => {
+export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarOcultarSeccion}) => {
     const [likes, setLikes] = useState(0);
     const [numLikes, setNumLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);

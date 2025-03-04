@@ -1,13 +1,13 @@
 import React from 'react'
 import '../../styles/empresa/seccionvacantesempresa.css';
 
-export const Seccion1VacantesEmpresa = ({empresa, vacantes}) => {
+export const Seccion1VacantesEmpresa = ({empresa, vacantes, manejarMostrarSeccionVacante}) => {
   return (
     <>
         {vacantes && vacantes.length > 0 ? (
             <div className='contenedor-vacantes w-100'>
                 {vacantes.map((vacante, index) => (
-                    <div key={index} className='vacante d-flex align-items-center pt-3 pb-3'>
+                    <div key={index} className='vacante d-flex align-items-center pt-3 pb-3' onClick={() => manejarMostrarSeccionVacante(vacante)}>
 
                         {/* Logo de la empresa */}
                         <div className='fila-foto'>

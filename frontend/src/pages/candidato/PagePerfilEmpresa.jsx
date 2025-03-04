@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Seccion1PagePerfilEmpresa } from '../../components/candidato/Seccion1PagePerfilEmpresa';
 import { Seccion2PagePerfilEmpresa } from '../../components/candidato/Seccion2PagePerfilEmpresa';
-import { SeccionPublicacionPerfilEmpresa } from '../../components/candidato/SeccionPublicacionPerfilEmpresa';
+import { SeccionPublicacion } from '../../components/candidato/SeccionPublicacion';
 
 
 export const PagePerfilEmpresa = ({candidato}) => {
@@ -108,7 +108,7 @@ export const PagePerfilEmpresa = ({candidato}) => {
             {seccionActiva === "publicacion" && (
                 <div className='contenedor-todo'>
                     <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                        <SeccionPublicacionPerfilEmpresa empresa={empresa} idCandidato={candidato.id} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
+                        <SeccionPublicacion empresa={empresa} idCandidato={candidato.id} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
                     </div>
                 </div>
             )}
