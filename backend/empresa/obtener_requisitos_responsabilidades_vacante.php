@@ -53,31 +53,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    if (mysqli_num_rows($resultadoResponsabilidades) > 0 && (mysqli_num_rows($resultadoRequisitos) > 0)) {
+        $listaDeResponsabilidades = [];
+        while ($filaResponsabilidades = mysqli_fetch_assoc($resultadoResponsabilidades)) {
+            $listaDeResponsabilidades[] = $filaResponsabilidades;
+        }
 
-    if (mysqli_num_rows($resultadoRequisitos) > 0) {
         $listaDeRequisitos = [];
         while ($filaRequisitos = mysqli_fetch_assoc($resultadoRequisitos)) {
             $listaDeRequisitos[] = $filaRequisitos;
         }
 
         echo json_encode([
-            'requisitos' => $listaDeRequisitos
-        ]);
-    } else {
-        echo json_encode(['requisitos' => [], 'error' => 'La vacante no tiene requisitos disponibles.']);
-    }
-
-    if (mysqli_num_rows($resultadoResponsabilidades) > 0) {
-        $listaDeResponsabilidades = [];
-        while ($filaResponsabilidades = mysqli_fetch_assoc($resultadoResponsabilidades)) {
-            $listaDeResponsabilidades[] = $filaResponsabilidades;
-        }
-
-        echo json_encode([
+            'requisitos' => $listaDeRequisitos,
             'responsabilidades' => $listaDeResponsabilidades
         ]);
     } else {
-        echo json_encode(['responsabilidades' => [], 'error' => 'La vacante no tiene requisitos disponibles.']);
+        echo json_encode(['responsabilidades' => [], 'requisitos' => [], 'error' => 'La vacante no tiene requisitos o responsabilidades disponibles.']);
     }
 } else {
     http_response_code(405); 
