@@ -28,17 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta para obtener las tecnologías dominadas junto con su nombre y categoría
     $consultaTecnologiasRequeridas = "
         SELECT 
-            tecnologias_vacante.Vacante_ID, 
-            tecnologias.ID AS id_tecnologia, 
-            tecnologias.Tecnologia AS nombre_tecnologia, 
-        FROM 
-            tecnologias_vacante
-        INNER JOIN 
-            tecnologias 
-        ON 
-            tecnologias_vacante.Tecnologia_ID = tecnologias.ID
-        WHERE 
-            tecnologias_vacante.Vacante_ID = '$idVacante'
+        tecnologias_vacante.Vacante_ID,
+        tecnologias.ID AS id_tecnologia,
+        tecnologias.Tecnologia AS nombre_tecnologia
+        FROM tecnologias_vacante
+        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia_ID = tecnologia.ID
+        WHERE tecnologias_vacante.Vacante_ID = '$idVacante'
     ";
 
     $resultadoTecnologiasRqueridas = mysqli_query($conexion, $consultaTecnologiasRequeridas);
