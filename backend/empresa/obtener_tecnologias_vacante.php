@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         tecnologias.ID AS id_tecnologia,
         tecnologias.Tecnologia AS nombre_tecnologia
         FROM tecnologias_vacante
-        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia_ID = tecnologia.ID
+        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia_ID = tecnologias.ID
         WHERE tecnologias_vacante.Vacante_ID = '$idVacante'
     ";
 
