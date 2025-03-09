@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $consultaRequesitos = "
         SELECT * FROM requisitos_vacante
-        WHERE Vacante_ID = '$idvacante'
+        WHERE Vacante_ID = '$idVacante'
     ";
 
     $resultadoRequisitos = mysqli_query($conexion, $consultaRequesitos);
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $consultaResponsabilidades = "
         SELECT * FROM responsabilidades_vacante
-        WHERE Vacante_ID = '$idvacante'
+        WHERE Vacante_ID = '$idVacante'
     ";
 
     $resultadoResponsabilidades = mysqli_query($conexion, $consultaResponsabilidades);
