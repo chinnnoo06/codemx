@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     echo json_encode([
         'success' => true,
-        'tecnologias_dominadas' => $listaDeTecnologiasDominadas
+        'tecnologias_requeridas' => $listaDeTecnologiasRequeridas
     ]);
 } else {
     // Método no permitido
