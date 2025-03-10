@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     while ($fila = mysqli_fetch_assoc($resultadoTecnologiasRqueridas)) {
         $listaDeTecnologiasRequeridas[] = [
             'id_tecnologia' => $fila['id_tecnologia'],
-            'nombre_tecnologia' => $fila['nombre_tecnologia']
+            'nombre_tecnologia' => $fila['nombre_tecnologia'],
+            'categoria_tecnologia' => $fila['categoria_tecnologia']
         ];
     }
 
