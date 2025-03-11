@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE ID = '$idVacante'";
 
     if (mysqli_query($conexion, $consulta)) {
-        $vacanteId = mysqli_insert_id($conexion);
+        $vacanteId = $idVacante;
 
         
         // Insertar las nuevas experiencias y sus proyectos
