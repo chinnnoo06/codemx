@@ -19,25 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
     $tecnologias    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
 
-    $consultaEliminarResponsabilidades = "DELETE FROM responsabilidades_vacante WHERE Vacante_ID = '$idVacante'";
-    if (!mysqli_query($conexion, $consultaEliminarResponsabilidades)) {
-        echo json_encode(['error' => 'Error al eliminar responsabilidades: ' . mysqli_error($conexion)]);
-        http_response_code(500);
-        exit();
-    }
-    $consultaEliminarRequerimientos = "DELETE FROM requisitos_vacante WHERE Vacante_ID = '$idVacante'";
-    if (!mysqli_query($conexion, $consultaEliminarRequerimientos)) {
-        echo json_encode(['error' => 'Error al eliminar requerimientos: ' . mysqli_error($conexion)]);
-        http_response_code(500);
-        exit();
-    }
-    $consultaEliminarTecnologias = "DELETE FROM tecnologias_vacante WHERE Vacante_ID = '$idVacante'";
-    if (!mysqli_query($conexion, $consultaEliminarTecnologias)) {
-        echo json_encode(['error' => 'Error al eliminar responsabilidades: ' . mysqli_error($conexion)]);
-        http_response_code(500);
-        exit();
-    }
-
     $consulta = "
         UPDATE vacante
         SET 
