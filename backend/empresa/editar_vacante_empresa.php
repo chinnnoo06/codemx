@@ -1,6 +1,8 @@
 <?php
 require_once '../config/conexion.php';
 
+header('Content-Type: application/json');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idVacante = mysqli_real_escape_string($conexion, $_POST['vacante_id']);
     $titulo = mysqli_real_escape_string($conexion, $_POST['titulo']);
