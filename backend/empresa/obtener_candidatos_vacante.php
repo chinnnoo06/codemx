@@ -47,12 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $listaDeCandidatos[] = $fila;
     }
 
-    // Contar seguidores y vacantes usando count()
-    $cantidadDeCandidatos = count($listaDeCandidatos);
-
     // Respuesta JSON con la cantidad y lista de vacantes + seguidores
     echo json_encode([
-        'cantidadCandidatos' => $cantidadDeCandidatos,
         'candidatos' => $listaDeCandidatos,
     ]);
 } else {

@@ -2,13 +2,14 @@
 require_once '../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idEmpresa = mysqli_real_escape_string($conexion, $_POST['empresa_id']);
+    $idVacante = mysqli_real_escape_string($conexion, $_POST['vacante_id']);
     $titulo = mysqli_real_escape_string($conexion, $_POST['titulo']);
     $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion']);
     $modalidad = mysqli_real_escape_string($conexion, $_POST['modalidad']);
     $estado = mysqli_real_escape_string($conexion, $_POST['estado']);
     $ubicacion = mysqli_real_escape_string($conexion, $_POST['ubicacion']);
     $fechaLimite = mysqli_real_escape_string($conexion, $_POST['fechaLimite']); 
+    $estatus = mysqli_real_escape_string($conexion, $_POST['estatus']); 
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Decodificar responsabilidades y requerimientos
@@ -16,12 +17,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
     $tecnologias    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
 
-    $consulta = "INSERT INTO vacante (Empresa_ID, Titulo, Descripcion, Modalidad, Estado, Ubicacion, Fecha_Limite, Estatus, Fecha_Creacion) 
-                 VALUES ('$idEmpresa', '$titulo', '$descripcion', '$modalidad', '$estado', '$ubicacion', '$fechaLimite', 'activa', '$fechaCreacion')";
+    $consultaEliminarResponsabilidades = "DELETE FROM responsabilidades_vacante WHERE Vacante_ID = '$idVacante'";
+    $consultaEliminarRequerimientos = "DELETE FROM requisitos_vacante WHERE Vacante_ID = '$idVacante'";
+    $consultaEliminarTecnologias = "DELETE FROM tecnologias_vacante WHERE Vacante_ID = '$idVacante'";
+
+    $consulta = "
+        UPDATE vacante
+        SET 
+            Titulo = '$titulo',
+            Descripcion = '$descripcion',
+            Modalidad = '$modalidad',
+            Estado = '$estado',
+            Ubicacion = '$ubicacion',
+            Fecha_Limite = '$fechaLimite',
+            Estatus = '$estatus'
+        WHERE ID = '$idVacante'";
 
     if (mysqli_query($conexion, $consulta)) {
         $vacanteId = mysqli_insert_id($conexion);
 
+        
         // Insertar las nuevas experiencias y sus proyectos
         foreach ($responsabilidades as $resp) {
             // Insertar experiencia
