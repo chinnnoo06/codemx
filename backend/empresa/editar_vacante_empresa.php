@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requerimientos    = isset($_POST['requerimientos']) ? json_decode($_POST['requerimientos'], true) : [];
     $tecnologias    = isset($_POST['tecnologias']) ? json_decode($_POST['tecnologias'], true) : [];
 
+
     $consulta = "
         UPDATE vacante
         SET 
@@ -34,7 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mysqli_query($conexion, $consulta)) {
         $vacanteId = $idVacante;
 
-        
+        $consultaEliminarResponsabilidades = "DELETE FROM responsabilidades_vacante WHERE Vacante_ID = '$idVacante'";
+        if (!mysqli_query($conexion, $consultaEliminarResponsabilidades)) {
+            echo json_encode(['error' => 'Error al eliminar responsabilidades: ' . mysqli_error($conexion)]);
+            http_response_code(500);
+            exit();
+        }
         // Insertar las nuevas experiencias y sus proyectos
         foreach ($responsabilidades as $resp) {
             // Insertar experiencia
@@ -47,6 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        $consultaEliminarRequerimientos = "DELETE FROM requisitos_vacante WHERE Vacante_ID = '$idVacante'";
+        if (!mysqli_query($conexion, $consultaEliminarRequerimientos)) {
+            echo json_encode(['error' => 'Error al eliminar requerimientos: ' . mysqli_error($conexion)]);
+            http_response_code(500);
+            exit();
+        }
+
         foreach ($requerimientos as $req) {
             // Insertar experiencia
             $insertReq = "INSERT INTO requisitos_vacante (Vacante_ID, Requerimiento) 
@@ -56,6 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 http_response_code(500);
                 exit();
             }
+        }
+
+        $consultaEliminarTecnologias = "DELETE FROM tecnologias_vacante WHERE Vacante_ID = '$idVacante'";
+        if (!mysqli_query($conexion, $consultaEliminarTecnologias)) {
+            echo json_encode(['error' => 'Error al eliminar tecnologias: ' . mysqli_error($conexion)]);
+            http_response_code(500);
+            exit();
         }
 
         foreach ($tecnologias as $tec) {
