@@ -29,13 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta para obtener las tecnologías dominadas junto con su nombre y categoría
     $consulta = "
         SELECT 
-            estado_candidato.Estado AS estado
+            postulaciones.Estado_Candidato
         FROM 
             postulaciones
-        INNER JOIN 
-            tecnologias 
-        ON 
-           postulaciones.Estado_Candidato = estado_candidato.ID
         WHERE 
             postulaciones.Candidato_ID = '$idCandidato' AND postulaciones.Vacante_ID = '$idVacante'
     ";
