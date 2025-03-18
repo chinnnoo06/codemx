@@ -1,6 +1,13 @@
 <?php
 require_once '../config/conexion.php';
 
+// Encabezados para habilitar CORS
+$allowed_origin = 'https://www.codemx.net';
+header("Access-Control-Allow-Origin: $allowed_origin");
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
