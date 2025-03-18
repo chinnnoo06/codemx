@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
 
     // Consulta para obtener las tecnologías dominadas junto con su nombre y categoría
-    $consulta = " SELECT Estado_Candidato FROM postulacionesss
+    $consulta = " SELECT Estado_Candidato FROM postulaciones
         WHERE Candidato_ID = '$idCandidato' AND Vacante_ID = '$idVacante'";
 
     $resultado = mysqli_query($conexion, $consulta);
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($fila = mysqli_fetch_assoc($resultado)) {
         echo json_encode([
             'success' => true,
-            'estado_candidato' => $fila['Estado'] // Devolver el estado del candidato
+            'estado_candidato' => $fila['Estado_Candidato'] // Devolver el estado del candidato
         ]);
     } else {
         echo json_encode(['error' => 'No se encontró el estado del candidato para esta vacante']);
