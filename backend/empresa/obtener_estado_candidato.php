@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
 
     // Consulta para obtener las tecnologías dominadas junto con su nombre y categoría
-    $consulta = " SELECT Estado_Candidato FROM postulaciones
+    $consulta = " SELECT Estado_Candidato FROM postulacionesss
         WHERE Candidato_ID = '$idCandidato' AND Vacante_ID = '$idVacante'";
 
     $resultado = mysqli_query($conexion, $consulta);
