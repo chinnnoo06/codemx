@@ -8,7 +8,13 @@ header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Manejo del método OPTIONS (Preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204); // No Content
+    exit();
+}
+
+try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['idCandidato']) || !isset($data['idVacante']) || !isset($data['estadoNuevo'])) {
@@ -30,8 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
     }
 
-} else {
-    http_response_code(405); 
-    echo json_encode(['error' => 'El método no está permitido.']);
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
 }
 ?>
