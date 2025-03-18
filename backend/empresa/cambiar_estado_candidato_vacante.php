@@ -28,7 +28,7 @@ try {
     $estadoNuevo = mysqli_real_escape_string($conexion, $data['estadoNuevo']);
 
   
-    $consulta = "UPDATE postulacion SET Estado_Candidato = '$estadoNuevo' WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato'";
+    $consulta = "UPDATE postulaciones SET Estado_Candidato = '$estadoNuevo' WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato'";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => 'Publicacion editada corrctamente']);
