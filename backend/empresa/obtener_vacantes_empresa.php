@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $fecha = date('Y-m-d H:i:s'); // Fecha actual
 
     $consulta = "
         SELECT 
@@ -47,8 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $resultado = mysqli_query($conexion, $consulta);
 
-    
-
     if (!$resultado) {
         echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
         http_response_code(500); 
@@ -58,6 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mysqli_num_rows($resultado) > 0) {
         $listaDeVacantes = [];
         while ($fila = mysqli_fetch_assoc($resultado)) {
+            // Comprobar si la fecha límite es menor que la fecha actual
+            if ($fila['Fecha_Limite'] < $fecha) {
+                // Actualizar el estatus de la vacante a "inactiva"
+                $updateQuery = "UPDATE vacante SET Estatus = 'inactiva' WHERE ID = '{$fila['ID']}'";
+                mysqli_query($conexion, $updateQuery); // Ejecutar la actualización
+                $fila['Estatus'] = 'inactiva';  // Actualizar en la respuesta también
+            }
+
             $listaDeVacantes[] = $fila;
         }
 
