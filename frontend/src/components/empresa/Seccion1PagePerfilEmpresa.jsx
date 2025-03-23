@@ -88,52 +88,48 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones }) => {
      
              <div className="perfil-empresa">
                  {/* Información del usuario */}
-                 <div className="perfil-body-empresa py-3 px-2">
-                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
-                         {/* Foto de perfil */}
-                         <div className="foto-perfil-container-empresa mb-3 mb-md-0">
-                             {empresa.logo && (
-                                 <img
-                                     src={`${empresa.logo}?t=${new Date().getTime()}`}
-                                     alt="Perfil"
-                                     className="foto-perfil-empresa rounded-circle"
-                                 />
-                             )}
-                         </div>
+                <div className="perfil-body-empresa py-3 px-2">
+                    <div className="d-flex  justify-content-between  ">
+                        {/* Foto de perfil */}
+                        <div className="foto-perfil-container-empresa mb-3 mb-md-0">
+                            {empresa.logo && (
+                                <img
+                                    src={`${empresa.logo}?t=${new Date().getTime()}`}
+                                    alt="Perfil"
+                                    className="foto-perfil-empresa rounded-circle"
+                                />
+                            )}
+                        </div>
     
-                          
-                         {/* Estadisticas*/}
-                         <div className="estadisticas-perfil-empresa d-flex  gap-4  ">
-                            <div className='d-flex flex-column align-items-center'  onClick={() => manejarShowModalSeguidores()}>
-                                <p className='text-highlight'>{`${numSeguidores}`}</p>
-                                <p >Seguidores</p> 
-                            </div>
-           
-                            <div className='d-flex flex-column align-items-center'>
-                                <p className='text-highlight'>{`${numVacantes}`}</p>
-                                <p >Vacantes</p>
+                        
+                        {/* Estadisticas*/}
+                        <div className="estadisticas-perfil-empresa d-flex flex-row text-center flex-nowrap">
+                            <div className="d-flex flex-column align-items-center" onClick={() => manejarShowModalSeguidores()}>
+                                <p className="text-highlight">{`${numSeguidores}`}</p>
+                                <p>Seguidores</p> 
                             </div>
     
-                            <div className='d-flex flex-column align-items-center'>
-                                <p className='text-highlight'>{`${numPublicaciones}`}</p>
-                                <p >Publicaciones</p>
+                            <div className="d-flex flex-column align-items-center">
+                                <p className="text-highlight">{`${numVacantes}`}</p>
+                                <p>Vacantes</p>
                             </div>
     
-                         </div>
-    
-                     </div>
-     
-                     {/* Detalles del usuario */}
-                     <div className="datos-container-empresa mt-2">
-                         <h2 >{`${empresa.nombre}`}</h2>
-                         <p className='text-muted mt-2 mb-2'>{`${empresa.descripcion}`}</p>
-                         <p className='text-muted mt-2 mb-2' >Especializados en el sector de {`${empresa.sector}`}</p>
-                         <p className='text-muted mt-2 mb-2'>Somos una empresa denominda "{`${empresa.tamanio}`}"</p>
-                         <p className='text-muted mt-2 mb-2'>Fundada el {`${empresa.fecha_creacion}`}</p>
+                            <div className="d-flex flex-column align-items-center">
+                                <p className="text-highlight">{`${numPublicaciones}`}</p>
+                                <p>Publicaciones</p>
+                            </div>
+                        </div>
     
     
-                     </div>
-                 </div>
+                    </div>
+    
+                    {/* Detalles del usuario */}
+                    <div className="datos-container-empresa  mt-0 mt-md-2">
+                        <h2 >{`${empresa.nombre}`}</h2>
+                        <p className='text-muted mt-2 mb-2'>{`${empresa.descripcion}`}</p>
+                    </div>
+    
+                </div>
              </div>
     
     

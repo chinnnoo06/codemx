@@ -22,7 +22,7 @@ export const RutasBienvenida = () => {
                     </div>
                     {/* Opciones de botones grandes */}
                     <div className="botones d-none d-md-flex gap-3">
-                        <Link to="/iniciar-sesion"><button className="login">Inicia Sesión</button></Link>
+                        <Link to="/iniciar-sesion"><button className="login">Iniciar Sesión</button></Link>
                         <Link to="/crear-cuenta"><button className="register">Crear Cuenta</button></Link>
                     </div>
                     {/* Menú responsive */}

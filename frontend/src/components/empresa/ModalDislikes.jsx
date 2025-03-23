@@ -14,7 +14,7 @@ export const ModalDislikes = ({dislikes, irAlPerfil}) => {
     );
 
     return (
-        <div className="container">
+        <div className="container container-modal">
              <h5 className="mb-3 text-center titulo-modal">Dislikes</h5>
             {/* Barra de búsqueda */}
             <div className="input-group mb-4 position-relative">

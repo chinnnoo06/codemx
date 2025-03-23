@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/login-crearcuenta-recuperar/form.css';
-import { SeccionTecnologiasDominadas } from './SeccionTecnologiasDominadas';
+import { SeccionTecnologiasRequeridasDominadas } from './SeccionTecnologiasRequeridasDominadas.jsx';
 
 export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   
@@ -454,7 +454,7 @@ const Paso3 = ({ errors, formData, manejarValorInput, tecnologias }) => {
     <form className="form" data-step="3">
 
 
-      <SeccionTecnologiasDominadas
+      <SeccionTecnologiasRequeridasDominadas
         tecnologias={tecnologias}
         seleccionadas={formData.tecnologias}
         onSeleccionChange={manejarCambioTecnologias}

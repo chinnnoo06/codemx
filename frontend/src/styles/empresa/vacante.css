@@ -1,0 +1,351 @@
+
+.vacante-detalle {
+    max-width: 1000px;
+    margin: 0 auto;
+
+}
+
+.vacante-detalle ul{
+    margin: 0;
+}
+
+.vacante-detalle .boton-opciones-vacante i:hover{
+    color: #504e4efe;
+}
+
+.vacante-detalle .postulados-vacantes,
+.vacante-detalle .tecnologias-requeridas{
+    cursor: pointer;
+    color: #6c757d; 
+}
+
+.vacante-detalle .postulados-vacantes:hover,
+.vacante-detalle .tecnologias-requeridas:hover{
+    color: #0B1C26;
+    font-weight: 600; 
+    transition: color 0.3s ease; 
+}
+
+
+.vacante-detalle .titulo-vacante{
+    font-weight: 600;
+}
+
+.vacante-detalle .subtitulo{
+    font-weight: 600;
+}
+
+.datos-vacante span:not(:last-child)::after {
+    content: " · ";
+    color: #6c757d; 
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.datos-vacante {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap; 
+}
+
+.datos2-vacante {
+    display: flex;
+    flex-wrap: wrap; 
+}
+
+
+.categoria-tecnologia {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.categoria-titulo {
+    font-weight: 600;
+    color: #0B1C26;
+}
+
+.tecnologia-item {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.tecnologia-item:hover {
+    background-color: #e9ecef;
+}
+
+.tecnologia-nombre {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.tecnologia-item i {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+.usuario-postulado-list{
+    max-height: 400px;
+    overflow-y: auto;
+}
+.usuario-postulado-item {
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+  
+.usuario-postulado-foto {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+  
+.usuario-postulado-nombre {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.btn-eliminar-vacante{
+    background-color: #d70f2a; 
+    color: #dde1e9; 
+    transition: all 0.3s ease; 
+    font-size: 0.7rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.btn-administrar-candidato,
+.btn-estado-candidato{
+    background-color: #0B1C26; 
+    color: #dde1e9; 
+    transition: all 0.3s ease; 
+    font-size: 0.7rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.btn-administrar-candidato:hover,
+.btn-estado-candidato:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+}
+
+.add-margin {
+    margin-right: 10px;
+}
+
+.btn-volver-vacantes {
+    background: none;
+    border: none;
+    color: #0B1C26; 
+    font-size: 1rem;
+    font-weight: 600;
+    transition: color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+  
+.btn-volver-vacantes i {
+    font-size: 1.2rem;
+}
+
+.btn-volver-vacantes:hover {
+    color: #0056b3; 
+    transform: translateX(-2px);
+}
+
+
+.contenedor-perfil-postulado .candidato-postulado-nombre{
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.contenedor-perfil-postulado .universidad-postulado{
+    font-size: 1rem;
+}
+  
+.foto-candidato {
+    margin-top: 0.5rem;
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+}
+
+  
+.technology-tag {
+    background-color: #f0f0f0;
+    padding: 3px 8px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.manejar-estado {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.manejar-estado h4 {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.manejar-estado span {
+  font-size: 1rem;
+  color: #333;
+}
+
+.contenedor-btn-estado {
+  margin-top: 10px;
+}
+
+.btn-estado {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-estado:hover {
+  background-color: #0056b3;
+}
+
+.btn-estado:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.eliminar-postulacion {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.eliminar-postulacion .btn {
+  background-color: #dc3545;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.eliminar-postulacion .btn:hover {
+  background-color: #c82333;
+}
+
+.eliminar-postulacion .btn i {
+  margin-right: 10px;
+}
+
+.icono-guardar{
+    color: #0B1C26;
+}
+
+.icono-guardar:hover{
+    color: #504e4efe;
+}
+  
+.btn-estado-postulacion{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.875rem; 
+    line-height: 1.25; 
+    border-radius: 0.2rem; 
+}
+@media (max-width: 767px) { 
+    .contenedor-perfil-postulado {
+        flex-direction: column;
+
+      }
+    .titulo-vacante{
+        font-size: 1.3rem;
+    }
+    .nombre-empresa{
+        font-size: 1.1rem;
+    }
+    .datos-vacante{
+        flex-wrap: wrap;
+    }
+    .datos-vacante span{
+        font-size: 0.8rem;
+    }
+
+    .datos2-vacante,
+    .datos2-vacante span {
+        font-size: 0.8rem;
+    }
+
+    .datos2-vacante{
+        gap: 0.5rem !important;
+    }
+    .subtitulo{
+        font-size: 1.2rem;
+    }
+    .informacion-detallada span,
+    .informacion-detallada ul {
+        font-size: 0.8rem;
+    }
+    .usuario-postulado-nombre{
+        font-size: 0.8rem;
+    }
+    .usuario-postulado-foto {
+        width: 2rem;
+        height: 2rem;
+    }
+
+     .texto-modal-tecnologias-requeridas{
+        font-size: 0.8rem;
+     }
+
+     .categoria-titulo{
+        font-size: 0.9rem;
+     }
+
+     .tecnologia-nombre{
+        font-size: 0.8rem;
+     }
+
+
+     .contenedor-perfil-postulado .candidato-postulado-nombre{
+        padding-top: 0;
+        font-size: 1.2rem;
+    }
+
+    .contenedor-perfil-postulado .universidad-postulado{
+        font-size: 0.8rem;
+    }
+    .technology-tag {
+        font-size: 0.7rem;
+    }
+
+    .manejar-estado h4{
+        font-size: 1rem;
+    }
+    .manejar-estado span {
+        font-size: 0.9rem;
+      }
+ 
+
+}

@@ -6,10 +6,12 @@ import CryptoJS from "crypto-js";
 import { PagePerfilCandidato } from '../pages/empresa/PagePerfilCandidato';
 import { PagePerfilEmpresa } from '../pages/empresa/PagePerfilEmpresa';
 import { PageVacantesEmpresa } from '../pages/empresa/PageVacantesEmpresa';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
         const fetchData = async () => {
@@ -36,12 +38,15 @@ export const RutasEmpresa = () => {
                 if (result.success) {
                     // Actualiza el estado con los datos recibidos
                     setEmpresa(result);
+                    setIsLoading(false);
                 } else if (result.error) {
                     alert("Necesitas iniciar sesión")
                     window.location.href = `/codemx/frontend/build/iniciar-sesion`;
+                    setIsLoading(false);
                 }
             } catch (error) {
                 console.error("Error al obtener los datos de la empresa:", error);
+                setIsLoading(false);
             }
         };
     
@@ -53,8 +58,8 @@ export const RutasEmpresa = () => {
         setMenuVisible(!menuVisible);
     };
 
-    if (!empresa) {
-        return <div>Cargando datos de la empresa...</div>;
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
     }
 
     return (
@@ -65,28 +70,28 @@ export const RutasEmpresa = () => {
                     <div className="logo">
                         <Link to="/usuario-empresa/inicio-empresa"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
-                    <nav className="nav d-none d-md-flex gap-5">
-                        <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                    <nav className="nav d-none d-md-flex">
+                        <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-house"></i>
                             Inicio
                         </NavLink>
-                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-file-pen"></i>
                             Vacantes
                         </NavLink>
-                        <NavLink to="/usuario-empresa/chats-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/chats-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-comment"></i>
                             Chats
                         </NavLink>
-                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-bell"></i>
                             Notificaciones
                         </NavLink>
-                        <NavLink to="/usuario-empresa/informacion-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/informacion-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-chart-simple"></i>
                             Información
                         </NavLink>
-                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({isActive}) => isActive ? "activado d-flex flex-column align-items-center" : "noactivado d-flex flex-column align-items-center" }>
+                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-magnifying-glass"></i>
                             Buscar
                         </NavLink>

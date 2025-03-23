@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Seccion1PagePerfilEmpresa } from '../../components/candidato/Seccion1PagePerfilEmpresa';
 import { Seccion2PagePerfilEmpresa } from '../../components/candidato/Seccion2PagePerfilEmpresa';
 import { SeccionPublicacion } from '../../components/candidato/SeccionPublicacion';
+import { SeccionVacante } from '../../components/candidato/SeccionVacante';
 
 
 export const PagePerfilEmpresa = ({candidato}) => {
@@ -15,10 +16,9 @@ export const PagePerfilEmpresa = ({candidato}) => {
     const [vacantes, setVacantes] = useState(0);
     const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
+    const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
 
-    // Función para obtener datos del backend
-    useEffect(() => {
-        const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const responseDatos = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_perfil_de_empresa.php', {
             method: 'POST',
@@ -62,28 +62,72 @@ export const PagePerfilEmpresa = ({candidato}) => {
             setEmpresa(empresaData);
             setPublicaciones(publicacionesData.publicaciones);
             setNumPublicaciones(publicacionesData.cantidad);
-            setVacantes(vacantesData.vacantes);
+            
+            // Filtrar vacantes cuyo Estatus sea "inactiva"
+            const vacantesInactivas = vacantesData.vacantes.filter(vacante => vacante.Estatus === "activa");
+            setVacantes(vacantesInactivas);  // Solo se pasan vacantes inactivas
         } catch (error) {
             console.error('Error al obtener el perfil de la empresa:', error);
         }
-        };
-    
-        fetchData();
+            
     }, [idEmpresa]);
+    
+
+    // Función para obtener datos del backend
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
     
     const manejarMostrarSeccion = (publicacion) =>{
         setPublicacionSeleccionada(publicacion);
         setSeccionActiva("publicacion");
 
-        window.scrollTo({
-            top: 100,
-            behavior: "smooth" 
-        });
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                const seccion = document.getElementById("seccion-publicacion");
+                if (seccion) {
+                    const rect = seccion.getBoundingClientRect();
+                    const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: "smooth"
+                    });
+                    }
+            });
+        }, 100); 
     }
 
     const manejarOcultarSeccion = () => {
         setSeccionActiva("perfil-publicaciones");
     };
+
+    const manejarOcultarSeccionVacante = () => {
+        setSeccionActiva("perfil-publicaciones");
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" 
+        });
+      };
+  
+      const manejarMostrarSeccionVacante = (vacante) => {
+        setVacanteSeleccionada(vacante);
+        setSeccionActiva("detalles-vacante");
+    
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                const seccion = document.getElementById("seccion-publicacion");
+                if (seccion) {
+                    const rect = seccion.getBoundingClientRect();
+                    const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: "smooth"
+                    });
+                    }
+            });
+        }, 100); 
+      };
+  
 
     if (!empresa) {
         return <div>Cargando perfil...</div>;
@@ -100,7 +144,7 @@ export const PagePerfilEmpresa = ({candidato}) => {
                     </div>
 
                     <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                        <Seccion2PagePerfilEmpresa empresa={empresa} publicaciones={publicaciones} vacantes={vacantes} manejarMostrarSeccion={manejarMostrarSeccion}/>
+                        <Seccion2PagePerfilEmpresa empresa={empresa} publicaciones={publicaciones} vacantes={vacantes} manejarMostrarSeccion={manejarMostrarSeccion} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}/>
                     </div>
                 </div>
             )}
@@ -111,6 +155,16 @@ export const PagePerfilEmpresa = ({candidato}) => {
                         <SeccionPublicacion empresa={empresa} idCandidato={candidato.id} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
                     </div>
                 </div>
+            )}
+
+                  
+            {seccionActiva === "detalles-vacante" && (
+                <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
+                    <div className='w-100 pt-4 pb-4'> 
+                        <SeccionVacante empresa={empresa} idCandidato={candidato.id} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData}/>
+                    </div>
+                </div>
+    
             )}
 
       </>

@@ -1,22 +1,29 @@
-/* Línea separadora entre secciones */
+
+.contenedor-seccion2 {
+  width: 1000px;
+  margin: 0 auto;
+}
+
 .linea-separadora {
   width: 100%;
   height: 2px;
-  background-color: #ddd; /* Color de la línea */
+  background-color: #ddd;
   margin: 20px 0;
   position: relative;
+  max-width: 1000px; 
+  margin-left: auto;
+  margin-right: auto;
 }
-
 .contenedor-publicaciones {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Siempre 3 columnas */
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.2rem; 
   width: 100%;
 }
 
 .item-publicacion {
   width: 100%;
-  aspect-ratio: 1; /* Mantiene el aspecto cuadrado */
+  aspect-ratio: 1; 
   overflow: hidden;
   display: flex;
   justify-content: center; 
@@ -27,8 +34,8 @@
 .img-publicacion {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Ajusta la imagen al contenedor sin recortar */
-  object-position: center; /* Centra la imagen */
+  object-fit: contain; 
+  object-position: center; 
   transition: transform 0.3s ease;
 }
 
@@ -89,7 +96,6 @@
 }
 
 
-/* Contenedor principal */
 .contenedor-agregar-publicaciones {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -101,7 +107,6 @@
   gap: 10px; 
 }
 
-/* Contenedor de imagen */
 .seccion-inputimg {
   border: 1px dashed #ccc;
   border-radius: 8px;
@@ -126,7 +131,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* Imagen previsualizada */
+
 .seccion-inputimg .img-preview {
   width: 100%;
   height: 100%;
@@ -134,7 +139,7 @@
   object-position: center; 
   border-radius: 8px;
 }
-/* Input de descripción */
+
 .seccion-inputdescripcion {
   width: 100%; 
 }
@@ -152,7 +157,6 @@
   outline: none;
 }
 
-/* Sección de configuración avanzada */
 .seccion-configuracion {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -182,7 +186,6 @@
   margin: 5px 0 10px 0;
 }
 
-/* Estilo para el switch */
 .switch {
   position: relative;
   display: inline-block;
@@ -240,15 +243,12 @@ input:checked + .slider:before {
 
 
 @media (max-width: 767px) {
+
   .texto-boton {
     display: none;
   }
   .titulo-configuracion {
     font-size: 0.8rem;
-  }
-  .contenedor-todo{
-    padding-left: 0.3rem;
-    padding-right: 0.3rem;
   }
   .seccion-inputimg {
     max-height: 400px;

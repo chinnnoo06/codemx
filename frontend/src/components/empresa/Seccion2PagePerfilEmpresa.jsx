@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/empresa/miperfilpublicaciones.css';
 
-export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, manejarMostrarSeccion }) => {
+export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, manejarMostrarSeccion, manejarMostrarSeccionVacante }) => {
   const [seccionActiva, setSeccionActiva] = useState('ver-publicaciones');
 
    // Ordenar publicaciones de la más reciente a la más antigua
@@ -11,7 +11,7 @@ export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, ma
 
   
   return (
-    <div className="contenedor"> 
+    <div className="contenedor contenedor-seccion2"> 
       <div className="linea-separadora"></div>
       
       {/* Botones de navegación */}
@@ -58,11 +58,11 @@ export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, ma
 
       {/* Sección para agregar publicación */}
       {seccionActiva === "ver-vacantes" && (
-        <>
+        <div className='contenedor-vacantes-empresa'>
             {vacantes && vacantes.length > 0 ? (
-                <div className='contenedor-vacantes w-100 p-3'>
+                <div className='contenedor-vacantes w-100 '>
                     {vacantes.map((vacante, index) => (
-                        <div key={index} className='vacante d-flex align-items-center pt-3 pb-3'>
+                        <div key={index} className='vacante d-flex align-items-center pt-3 pb-3' onClick={() => manejarMostrarSeccionVacante(vacante)}>
     
                             {/* Logo de la empresa */}
                             <div className='fila-foto'>
@@ -105,7 +105,7 @@ export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, ma
                     </div>
                 </div>
             )}
-        </>
+        </div>
       )}
     </div>
   )

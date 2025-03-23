@@ -1,3 +1,8 @@
+
+.container-modal{
+    padding: 0;
+  }
+  
 .seccionn {
     max-width: 1000px;
     border-radius: 15px;
@@ -20,20 +25,17 @@
     overflow: hidden;
 }
 
-/* Fondo del encabezado */
 .perfil-header-empresa img {
     width: 100%;
     height: 12rem;
     object-fit: cover;
 }
 
-/* Contenedor de la foto de perfil */
 .foto-perfil-container-empresa {
     position: relative;
     margin-top: -5rem;
 }
 
-/* Foto de perfil */
 .foto-perfil-empresa {
     width: 10rem;
     height: 10rem;
@@ -43,7 +45,6 @@
     margin-right: 1rem;
 }
 
-/* Botón de editar foto */
 .perfilfoto-edit-btn-empresa {
     position: absolute;
     bottom: 0.2rem;
@@ -55,8 +56,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     background-color: rgba(255, 255, 255, 0.9);
 }
-
-/* Botones */
 
 .botones-perfil-empresa .btn {
     width: 12rem;
@@ -96,8 +95,6 @@
     color: #504e4efe
 }
 
-
-/* Datos de empresa */
 .text-muted {
     font-size: 1rem;
     color: #777;
@@ -129,8 +126,6 @@
 }
 
 
-
-/* Modal Overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -143,8 +138,7 @@
     justify-content: center;
     z-index: 1000;
 }
-  
-/* Modal Content */
+ 
 .modal-content {
     background: #fff;
     border-radius: 8px;
@@ -183,7 +177,7 @@
     width: 20rem;
     background: #fff;
     border-radius: 8px;
-    overflow: hidden; /* Asegura que los bordes sean redondeados */
+    overflow: hidden; 
  }
  
 .seguidor-item {
@@ -240,7 +234,7 @@
 }
 
 .input-busqueda{
-    padding-left: 2rem
+    padding-left: 2rem;
 }
 
 .close-button {
@@ -291,10 +285,6 @@
 
 
 @media (max-width: 767px) { 
-    .contenedor-todo{
-        padding-left: 0.3rem;
-        padding-right: 0.3rem;
-    }
     .custom-font-select,
     .form input{
         font-size: 0.8rem;
@@ -321,7 +311,7 @@
 
     }
     .perfilfoto-edit-btn-empresa {
-        width: 2rem;  /* Reduce el tamaño del botón */
+        width: 2rem;  
         height: 2rem;
         left: 4rem;
         display: flex;
@@ -373,5 +363,8 @@
     .modal-content-opciones,
     .modal-content-reportar {
         width: 15rem;
+    }
+    .input-busqueda{
+        font-size: 0.8rem;
     }
 }

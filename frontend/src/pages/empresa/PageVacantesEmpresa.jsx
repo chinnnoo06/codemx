@@ -9,7 +9,6 @@ export const PageVacantesEmpresa = ({empresa}) => {
     const [estadoFiltro, setEstadoFiltro] = useState("activa");
     const [seccionActiva, setSeccionActiva] = useState("vacantes");
     const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
-    const empresaActiva = empresa.id;
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -71,9 +70,9 @@ export const PageVacantesEmpresa = ({empresa}) => {
       
 
   return (
-    <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100'>
+    <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
         {seccionActiva === "vacantes" && (
-            <div className='header  d-flex justify-content-between align-items-center w-100 py-5'>
+            <div className='header  d-flex justify-content-between align-items-center w-100 py-4'>
                 <button className='btn btn-tipodos btn-header-vacantes' onClick={manejarMostrarSeccion}>Agregar Vacante</button>
                 <select id="estado" name="estado" className=" custom-font-select btn btn-tipodos btn-header-vacantes" onChange={(e) => setEstadoFiltro(e.target.value)} value={estadoFiltro}>
                     <option value="activa">Vacantes Activas</option>
@@ -83,17 +82,17 @@ export const PageVacantesEmpresa = ({empresa}) => {
         )}
 
         {seccionActiva === "vacantes" &&(
-            <div className='w-100'>
+            <div className='w-100 pb-4'>
                 <Seccion1VacantesEmpresa empresa={empresa} vacantes={vacantesFiltradas} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}></Seccion1VacantesEmpresa>
             </div>
         )}
         {seccionActiva === "agregar-vacante" && (
-            <div id="seccion-agregar-vacante" className='container'>
+            <div className='w-100 pt-4 pb-4'>
                 <Seccion2VacantesEmpresa empresa={empresa} manejarOcultarSeccion={manejarOcultarSeccion} fetchData={fetchData} />
             </div>
         )}
         {seccionActiva === "detalles-vacante" && (
-            <div id="seccion-agregar-vacante" className='container'>
+            <div className='w-100 pt-4 pb-4'> 
                 <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} actualizarFetch={fetchData} setVacanteSeleccionada={setVacanteSeleccionada}/>
             </div>
         )}

@@ -82,7 +82,7 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
   };
 
   return (
-    <div className="contenedor"> 
+    <div className="conteiner contenedor-seccion2"> 
       <div className="linea-separadora"></div>
       
       {/* Botones de navegación */}

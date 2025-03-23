@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SeccionTecnologiasDominadas } from '../login-crearcuenta-recuperar/SeccionTecnologiasDominadas';
+import { SeccionTecnologiasRequeridasDominadas } from '../login-crearcuenta-recuperar/SeccionTecnologiasRequeridasDominadas.jsx';
+
 
 export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchData}) => {
     const [estados, setEstados] = useState([]);
@@ -192,7 +193,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
   return (
     <>
         {seccionActiva === "form" && (
-            <form className="form p-4" onSubmit={enviarVacante} noValidate>
+            <form className="form " onSubmit={enviarVacante} noValidate>
                 <div className='header-agregar-vacante d-flex align-items-center mb-3'>
 
                     <h2 className="mx-auto text-center titulo-header">Agregar Vacante</h2>
@@ -284,7 +285,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
                     </div>
                     <div className="col-md-6 mb-4">
                         <label htmlFor="ubicacion" className="form-label">Ubicación <span className="text-danger">*</span></label>
-                        <input type="text" id="ubicacion" name="ubicacion" className="form-control" maxLength={100}  value={formData.ubicacion} onChange={manejarValorInput} required/>
+                        <input type="text" id="ubicacion" name="ubicacion" className="form-control" maxLength={70}  value={formData.ubicacion} onChange={manejarValorInput} required/>
                         {errors.ubicacion && <small className="text-danger">{errors.ubicacion}</small>}
                     </div>
                 </div>
@@ -301,7 +302,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
                             <option value="">Seleccione una modalidad</option>
                             <option value="1">Presencial</option>
                             <option value="2">Remota</option>
-                            <option value="3">Hibrido</option>
+                            <option value="3">Híbrido</option>
                         </select>
                         {errors.modalidad && <small className="text-danger">{errors.modalidad}</small>}
                     </div>
@@ -347,7 +348,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
             
             <form className="form" data-step="3">
         
-                <SeccionTecnologiasDominadas
+                <SeccionTecnologiasRequeridasDominadas
                 tecnologias={tecnologias}
                 seleccionadas={tecnologiasRequeridas}
                 onSeleccionChange={manejarCambioTecnologias}

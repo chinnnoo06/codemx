@@ -36,6 +36,8 @@ export const Seccion1VacantesEmpresa = ({empresa, vacantes, manejarMostrarSeccio
                                 <span className='estado-vacante text-muted'>{vacante.Estado_Vacante}, México</span>
                                 <span className='direccion-vacante text-muted'>{vacante.Ubicacion}</span>
                                 <span className='modalidad-vacante text-muted'>({vacante.Modalidad_Vacante})</span>
+                                {vacante.Estatus == "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
+                                {vacante.Estatus == "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
                             </div>
                         </div>
 

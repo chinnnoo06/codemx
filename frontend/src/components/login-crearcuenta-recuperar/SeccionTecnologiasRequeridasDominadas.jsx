@@ -2,19 +2,26 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/login-crearcuenta-recuperar/form.css';
 import { motion } from 'framer-motion';
 
-export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], onSeleccionChange, tecnologiasVacante }) => {
+export const SeccionTecnologiasRequeridasDominadas = ({ tecnologias, seleccionadas = [], onSeleccionChange, tecnologiasVacante }) => {
   const [tecnologiasSeleccionadas, setTecnologiasSeleccionadas] = useState(seleccionadas);
 
+  // Sincronizar el estado de tecnologías seleccionadas con las prop seleccionadas
   useEffect(() => {
     setTecnologiasSeleccionadas(seleccionadas);
   }, [seleccionadas]);
 
+  // Función para manejar la selección de tecnologías
   const manejarSeleccion = (id) => {
     const actualizadas = tecnologiasSeleccionadas.includes(id)
-      ? tecnologiasSeleccionadas.filter((item) => item !== id)
-      : [...tecnologiasSeleccionadas, id];
+      ? tecnologiasSeleccionadas.filter((item) => item !== id) // Si ya está seleccionada, la deseleccionamos
+      : [...tecnologiasSeleccionadas, id]; // Si no está seleccionada, la agregamos
 
-    setTecnologiasSeleccionadas(actualizadas);
+    setTecnologiasSeleccionadas(actualizadas); // Actualizamos el estado local
+  };
+
+  // Función para manejar el cierre de la sección (cuando el usuario hace clic en "Cancelar" o "Guardar")
+  const manejarCerrar = () => {
+    onSeleccionChange(tecnologiasSeleccionadas); // Pasamos las tecnologías seleccionadas al componente padre
   };
 
   return (
@@ -36,7 +43,6 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
           </p>
         </>
       )}
- 
 
       {Object.entries(tecnologias.reduce((categorias, tecnologia) => {
         if (!categorias[tecnologia.categoria]) categorias[tecnologia.categoria] = [];
@@ -55,7 +61,7 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
                     ? 'btn-tecnologia btn-tipouno'
                     : 'btn-tecnologia btn-tipodos'
                 }`}
-                onClick={() => manejarSeleccion(tecnologia.id)}
+                onClick={() => manejarSeleccion(tecnologia.id)} // Al hacer clic, llamamos a manejarSeleccion
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
@@ -68,16 +74,15 @@ export const SeccionTecnologiasDominadas = ({ tecnologias, seleccionadas = [], o
       ))}
 
       {tecnologiasVacante === 1 && (
-      <div className="d-flex justify-content-between gap-4 mt-4 mb-4">
-        <button className="btn btn-cancelar-vacante" onClick={() => onSeleccionChange(tecnologiasSeleccionadas)}>
-          Cancelar
-        </button>
-        <button className="btn btn-publicar-vacante" onClick={() => onSeleccionChange(tecnologiasSeleccionadas)}>
-          Guardar
-        </button>
-      </div>
+        <div className="d-flex justify-content-between gap-4 mt-4 mb-4">
+          <button className="btn btn-cancelar-vacante" onClick={manejarCerrar}>
+            Cancelar
+          </button>
+          <button className="btn btn-publicar-vacante" onClick={manejarCerrar}>
+            Guardar
+          </button>
+        </div>
       )}
-
     </div>
   );
 };
