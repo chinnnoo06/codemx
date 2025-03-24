@@ -38,11 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite AS Fecha_Limite,
             vacante.Estatus AS Estatus,
             vacante.Fecha_Creacion AS Fecha_Creacion,
-            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
+            empresa.ID AS Empresa_ID,
+            empresa.Nombre AS Empresa_Nombre,
+            empresa.Logo AS Empresa_Logo
         FROM postulaciones
         INNER JOIN vacante ON postulaciones.Vacante_ID = vacante.ID
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
+        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         WHERE postulaciones.Candidato_ID = '$idCandidato'
         GROUP BY vacante.ID
     ";
@@ -72,12 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite AS Fecha_Limite,
             vacante.Estatus AS Estatus,
             vacante.Fecha_Creacion AS Fecha_Creacion,
-            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
+            empresa.ID AS Empresa_ID,
+            empresa.Nombre AS Empresa_Nombre,
+            empresa.Logo AS Empresa_Logo
         FROM vacantes_guardadas
         INNER JOIN vacante ON vacantes_guardadas.Vacante_ID = vacante.ID
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
+        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         WHERE vacantes_guardadas.Candidato_ID = '$idCandidato'
         GROUP BY vacante.ID
     ";
