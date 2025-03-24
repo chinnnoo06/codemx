@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
+    // Consulta para obtener las vacantes postuladas
     $consultaPostuladas = "
         SELECT 
             postulaciones.Vacante_ID,
@@ -54,20 +55,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (mysqli_num_rows($resultadoPostuladas) > 0) {
-        $listaDeVacantes = [];
-        while ($fila = mysqli_fetch_assoc($resultadoPostuladas)) {
-            
-            $listaDeVacantes[] = $fila;
-        }
-
-        echo json_encode([
-            'cantidad' => count($listaDeVacantes),
-            'vacantesPostuladas' => $listaDeVacantes
-        ]);
-    } else {
-        echo json_encode(['cantidad' => 0, 'vacantesPostuladas' => [], 'error' => 'La empresa no tiene vacantes disponibles.']);
+    $postuladas = [];
+    while ($fila = mysqli_fetch_assoc($resultadoPostuladas)) {
+        $postuladas[] = $fila;
     }
+
+    // Consulta para obtener las vacantes guardadas
+    $consultaGuardadas = "
+        SELECT 
+            vacantes_guardadas.Vacante_ID,
+            vacante.Titulo AS Titulo,
+            vacante.Descripcion AS Descripcion,
+            modalidad_trabajo.Modalidad AS Modalidad_Vacante,
+            estado.Nombre AS Estado_Vacante,
+            vacante.Ubicacion AS Ubicacion,
+            vacante.Fecha_Limite AS Fecha_Limite,
+            vacante.Estatus AS Estatus,
+            vacante.Fecha_Creacion AS Fecha_Creacion,
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados
+        FROM vacantes_guardadas
+        INNER JOIN vacante ON vacantes_guardadas.Vacante_ID = vacante.ID
+        INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
+        INNER JOIN estado ON vacante.Estado = estado.ID
+        LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
+        WHERE vacantes_guardadas.Candidato_ID = '$idCandidato'
+        GROUP BY vacante.ID
+    ";
+
+    $resultadoGuardadas = mysqli_query($conexion, $consultaGuardadas);
+
+    if (!$resultadoGuardadas) {
+        echo json_encode(['error' => 'Error en la consulta SQL de Guardadas: ' . mysqli_error($conexion)]);
+        http_response_code(500); 
+        exit();
+    }
+
+    $guardadas = [];
+    while ($fila = mysqli_fetch_assoc($resultadoGuardadas)) {
+        $guardadas[] = $fila;
+    }
+
+    // Devolver las vacantes postuladas y guardadas
+    echo json_encode([
+        'postuladas' => $postuladas,
+        'guardadas' => $guardadas
+    ]);
+
 } else {
     http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
