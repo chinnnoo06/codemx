@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta para obtener las vacantes postuladas
     $consultaPostuladas = "
         SELECT 
-            postulaciones.Vacante_ID,
+            postulaciones.Vacante_ID AS ID,
             postulaciones.Estado_Candidato,
             vacante.Titulo AS Titulo,
             vacante.Descripcion AS Descripcion,
