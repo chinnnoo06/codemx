@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta para obtener las vacantes guardadas
     $consultaGuardadas = "
         SELECT 
-            vacantes_guardadas.Vacante_ID,
+            vacantes_guardadas.Vacante_ID AS ID,
             vacante.Titulo AS Titulo,
             vacante.Descripcion AS Descripcion,
             modalidad_trabajo.Modalidad AS Modalidad_Vacante,
