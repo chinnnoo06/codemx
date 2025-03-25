@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $consultaPostuladas = "
     SELECT 
         vacante.ID AS ID,
+        postulaciones.Estado_Candidato,
         vacante.Titulo AS Titulo,
         vacante.Descripcion AS Descripcion,
         modalidad_trabajo.Modalidad AS Modalidad_Vacante,
