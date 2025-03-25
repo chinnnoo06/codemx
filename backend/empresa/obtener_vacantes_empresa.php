@@ -37,11 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite,
             vacante.Estatus,
             vacante.Fecha_Creacion,
-            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
+            empresa.ID AS Empresa_ID,
+            empresa.Nombre AS Empresa_Nombre,
+            empresa.Logo AS Empresa_Logo
         FROM vacante
         INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
         INNER JOIN estado ON vacante.Estado = estado.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
+        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         WHERE vacante.Empresa_ID = '$idEmpresa'
         GROUP BY vacante.ID
     ";
