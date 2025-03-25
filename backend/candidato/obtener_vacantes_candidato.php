@@ -27,29 +27,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consulta para obtener las vacantes postuladas
     $consultaPostuladas = "
-        SELECT 
-            postulaciones.Vacante_ID AS ID,
-            postulaciones.Estado_Candidato,
-            vacante.Titulo AS Titulo,
-            vacante.Descripcion AS Descripcion,
-            modalidad_trabajo.Modalidad AS Modalidad_Vacante,
-            estado.Nombre AS Estado_Vacante,
-            vacante.Ubicacion AS Ubicacion,
-            vacante.Fecha_Limite AS Fecha_Limite,
-            vacante.Estatus AS Estatus,
-            vacante.Fecha_Creacion AS Fecha_Creacion,
-            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
-            empresa.ID AS Empresa_ID,
-            empresa.Nombre AS Empresa_Nombre,
-            empresa.Logo AS Empresa_Logo
-        FROM postulaciones
-        INNER JOIN vacante ON postulaciones.Vacante_ID = vacante.ID
-        INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
-        INNER JOIN estado ON vacante.Estado = estado.ID
-        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
-        WHERE postulaciones.Candidato_ID = '$idCandidato'
-        GROUP BY vacante.ID
+    SELECT 
+        vacante.ID AS ID,
+        vacante.Titulo AS Titulo,
+        vacante.Descripcion AS Descripcion,
+        modalidad_trabajo.Modalidad AS Modalidad_Vacante,
+        estado.Nombre AS Estado_Vacante,
+        vacante.Ubicacion AS Ubicacion,
+        vacante.Fecha_Limite AS Fecha_Limite,
+        vacante.Estatus AS Estatus,
+        vacante.Fecha_Creacion AS Fecha_Creacion,
+        (SELECT COUNT(*) FROM postulaciones WHERE postulaciones.Vacante_ID = vacante.ID) AS Cantidad_Postulados, 
+        empresa.ID AS Empresa_ID,
+        empresa.Nombre AS Empresa_Nombre,
+        empresa.Logo AS Empresa_Logo
+    FROM vacante
+    INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
+    INNER JOIN estado ON vacante.Estado = estado.ID
+    INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
+    LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
+    WHERE postulaciones.Candidato_ID = '$idCandidato' 
+    GROUP BY vacante.ID
     ";
+
 
     $resultadoPostuladas = mysqli_query($conexion, $consultaPostuladas);
 
