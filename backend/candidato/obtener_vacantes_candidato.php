@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite AS Fecha_Limite,
             vacante.Estatus AS Estatus,
             vacante.Fecha_Creacion AS Fecha_Creacion,
-            (SELECT COUNT(*) FROM postulaciones p WHERE p.Vacante_ID = vacante.ID) AS Cantidad_Postulados,  // Subconsulta para contar postulados
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
             empresa.ID AS Empresa_ID,
             empresa.Nombre AS Empresa_Nombre,
             empresa.Logo AS Empresa_Logo
@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE postulaciones.Candidato_ID = '$idCandidato'
         GROUP BY vacante.ID
     ";
-
 
     $resultadoPostuladas = mysqli_query($conexion, $consultaPostuladas);
 
