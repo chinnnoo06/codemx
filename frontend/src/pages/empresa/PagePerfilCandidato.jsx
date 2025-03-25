@@ -4,11 +4,13 @@ import { useLocation } from 'react-router-dom';
 import { Seccion1PagePerfilCandidato } from '../../components/empresa/Seccion1PagePerfilCandidato'
 import { Seccion2PagePerfilCandidato } from '../../components/empresa/Seccion2PagePerfilCandidato'
 import { Seccion3PagePerfilCandidato } from '../../components/empresa/Seccion3PagePerfilCandidato'
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PagePerfilCandidato = ({empresa}) => {
     const location = useLocation();
     const { idCandidato } = location.state || {}; 
     const [candidato, setCandidato] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,16 +29,18 @@ export const PagePerfilCandidato = ({empresa}) => {
 
         const candidatoData = await response.json();
         setCandidato(candidatoData);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error al obtener el perfil del candidato:', error);
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, [idCandidato]);
 
-  if (!candidato) {
-    return <div>Cargando perfil...</div>; 
+  if (isLoading) {
+    return <LoadingSpinner></LoadingSpinner> 
   }
 
   return (

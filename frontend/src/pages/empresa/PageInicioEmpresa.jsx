@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Seccion1PageInicio } from '../../components/empresa/Seccion1PageInicio'
 import { Seccion2PageInicio } from '../../components/empresa/Seccion2PageInicio'
 import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PageInicioEmpresa = ({empresa}) => {
     const [numPublicaciones, setNumPublicaciones] = useState(0);
@@ -9,6 +10,7 @@ export const PageInicioEmpresa = ({empresa}) => {
     const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
     const empresaActiva = empresa.id;
+    const [isLoading, setIsLoading] = useState(true); 
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -29,8 +31,10 @@ export const PageInicioEmpresa = ({empresa}) => {
             // Actualizar estados
             setPublicaciones(publicacionesData.publicaciones);
             setNumPublicaciones(publicacionesData.cantidad);
+            setIsLoading(false);
         } catch (error) {
             console.error('Error al obtener los datos de publicaciones:', error);
+            setIsLoading(false);
         }
     }, [empresa.id]); 
 
@@ -68,6 +72,10 @@ export const PageInicioEmpresa = ({empresa}) => {
             behavior: "smooth" 
         });
     };
+
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
       
   return (
       <>

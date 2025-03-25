@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../../styles/empresa/seccionvacantesempresa.css';
+import '../../styles/empresa/seccionvacantes.css';
 import { Seccion1VacantesEmpresa } from '../../components/empresa/Seccion1VacantesEmpresa';
 import { Seccion2VacantesEmpresa } from '../../components/empresa/Seccion2VacantesEmpresa';
 import { SeccionVacante } from '../../components/empresa/SeccionVacante';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PageVacantesEmpresa = ({empresa}) => {
     const [vacantes, setVacantes] = useState([]);
     const [estadoFiltro, setEstadoFiltro] = useState("activa");
     const [seccionActiva, setSeccionActiva] = useState("vacantes");
     const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
+    const empresaActiva = empresa.id;
+    const [isLoading, setIsLoading] = useState(true); 
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -29,9 +32,10 @@ export const PageVacantesEmpresa = ({empresa}) => {
 
             // Actualizar estados
             setVacantes(vacantesData.vacantes);
-
+            setIsLoading(false);
         } catch (error) {
             console.error('Error al obtener los datos de vacantes:', error);
+            setIsLoading(false);
         }
     }, [empresa.id]); 
 
@@ -68,6 +72,9 @@ export const PageVacantesEmpresa = ({empresa}) => {
         setSeccionActiva("detalles-vacante");
     };
       
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
 
   return (
     <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
@@ -83,7 +90,7 @@ export const PageVacantesEmpresa = ({empresa}) => {
 
         {seccionActiva === "vacantes" &&(
             <div className='w-100 pb-4'>
-                <Seccion1VacantesEmpresa empresa={empresa} vacantes={vacantesFiltradas} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}></Seccion1VacantesEmpresa>
+                <Seccion1VacantesEmpresa vacantes={vacantesFiltradas} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}></Seccion1VacantesEmpresa>
             </div>
         )}
         {seccionActiva === "agregar-vacante" && (
@@ -93,7 +100,7 @@ export const PageVacantesEmpresa = ({empresa}) => {
         )}
         {seccionActiva === "detalles-vacante" && (
             <div className='w-100 pt-4 pb-4'> 
-                <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} actualizarFetch={fetchData} setVacanteSeleccionada={setVacanteSeleccionada}/>
+                <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} actualizarFetch={fetchData} setVacanteSeleccionada={setVacanteSeleccionada} empresaActiva={empresaActiva}/>
             </div>
         )}
 

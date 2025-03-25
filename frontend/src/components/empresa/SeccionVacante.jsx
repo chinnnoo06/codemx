@@ -4,8 +4,9 @@ import '../../styles/empresa/vacante.css';
 import { ModalTecnologiasRequeridas } from './ModalTecnologiasRequeridas';
 import { SeccionTecnologiasRequeridasDominadas } from '../login-crearcuenta-recuperar/SeccionTecnologiasRequeridasDominadas';
 import { ModalAdministrarCandidato } from './ModalAdministrarCandidato';
+import LoadingSpinner from '../LoadingSpinner';
 
-export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, actualizarFetch, setVacanteSeleccionada}) => {
+export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, actualizarFetch, setVacanteSeleccionada, empresaActiva}) => {
     const [isScrollExceeded, setIsScrollExceeded] = useState(false);
     const postuladoListRef = useRef(null);
     const [requisitos, setRequisitos] = useState([]);
@@ -18,7 +19,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
     const [showModalTecnologias, setShowModalTecnologias] = useState(false);
     const [showModalAdministrar, setShowModalAdministrar] = useState(false);
     const [query, setQuery] = useState('');
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(true); 
     const [errors, setErrors] = useState({}); 
     const [estados, setEstados] = useState([]);
     const [tecnologias, setTecnologias] = useState([]);
@@ -151,10 +152,11 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
     
             // Asignar las tecnologiasRequeridas a tecnologiasRequeridasEditar
             setTecnologiasRequeridasEditar(tecnologiasDataTecnologiasRequeridas.map(t => t.id_tecnologia));
-
+            setIsLoading(false);
     
         } catch (error) {
             console.error('Error al obtener los requisitos y requerimientos de la vacante:', error);
+            setIsLoading(false);
         }
     }, [vacante.ID]);
 
@@ -214,8 +216,6 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
     
     const manejarShowEditarSeccion = () => {
         setSeccionActiva("editar-vacante");
-        console.log(tecnologiasRequeridas)
-        console.log(tecnologiasRequeridasEditar)
     };
 
     const manejarCloseEditarSeccion = () => {
@@ -449,13 +449,17 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
         window.scrollTo(0, 0);
     };
 
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
+
     return (
         <div> 
 
             {seccionActiva == "detalle-vacante" && (
                 <>
                     <div className='boton d-flex align-items-center '>
-                        <button className="btn-volver-vacantes d-flex align-items-center" onClick={() => manejarOcultarSeccionVacante("vacantes")}>
+                        <button className="btn-volver-vacantes d-flex align-items-center" onClick={() => manejarOcultarSeccionVacante()}>
                             <i className="fa-solid fa-arrow-left me-2"></i> Volver a vacantes
                         </button>
                     </div>
@@ -465,12 +469,14 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                             <div className='fila-info-vacante w-100'>
                                 <div className='d-flex justify-content-between align-items-start'>
                                     <h3 className='titulo-vacante'>{vacante.Titulo}</h3>
-                                    <div className="boton-opciones-vacante" onClick={manejarShowModalOpciones}>
-                                        <i className="fa-solid fa-ellipsis ms-auto"></i>
-                                    </div>
+                                    {empresaActiva === empresa.id && (
+                                        <div className="boton-opciones-vacante" onClick={manejarShowModalOpciones}>
+                                            <i className="fa-solid fa-ellipsis ms-auto"></i>
+                                        </div>
+                                    )}
                                 </div>
                                 
-                                <h5 className='nombre-empresa'>{empresa.nombre}</h5>
+                                <h5 className='nombre-empresa'>{vacante.Empresa_Nombre}</h5>
 
                                 <div className='datos-vacante d-flex'>
                                     <span className='estado-vacante text-muted'>{vacante.Estado_Vacante}, México</span>
@@ -551,16 +557,19 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                                         className="usuario-postulado-foto rounded-circle me-3"
                                                     />
                                                     <span className="usuario-postulado-nombre">{nombreCompleto}</span>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setCandidatoSeleccionado(candidato);
-                                                            setShowModalAdministrar(true);
-                                                        }}
-                                                        className={`btn btn-administrar-candidato ms-auto ${isScrollExceeded ? 'add-margin' : ''}`}
-                                                    >
-                                                        Administrar
-                                                    </button>
+                                                    {empresaActiva === empresa.id && (
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setCandidatoSeleccionado(candidato);
+                                                                setShowModalAdministrar(true);
+                                                            }}
+                                                            className={`btn btn-administrar-candidato ms-auto ${isScrollExceeded ? 'add-margin' : ''}`}
+                                                        >
+                                                            Administrar
+                                                        </button>
+                                                    )}
+                                 
                                                 </div>
                                             );
                                         })
@@ -670,7 +679,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
 
                             <div className="mb-4">
                                 <label htmlFor="descripcion" className="form-label">Descripción <span className="text-danger">*</span></label>
-                                <textarea id="descripcion" name="descripcion" className="form-control" maxLength={250}  value={formData.descripcion} onChange={manejarValorInput}required></textarea>
+                                <textarea id="descripcion" name="descripcion" className="form-control" maxLength={400}  value={formData.descripcion} onChange={manejarValorInput}required></textarea>
                                 {errors.descripcion && <small className="text-danger">{errors.descripcion}</small>}
                             </div>
 
@@ -683,7 +692,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                             type="text" 
                                             name={`responsabilidad-${index}`} 
                                             className="form-control" 
-                                            maxLength={50} 
+                                            maxLength={150} 
                                             value={resp} 
                                             onChange={(e) => handleResponsabilidadChange(e, index)} 
                                             required
@@ -712,7 +721,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                             type="text" 
                                             name={`requerimiento-${index}`} 
                                             className="form-control" 
-                                            maxLength={50} 
+                                            maxLength={150} 
                                             value={req} 
                                             onChange={(e) => handleRequerimientoChange(e, index)} 
                                             required

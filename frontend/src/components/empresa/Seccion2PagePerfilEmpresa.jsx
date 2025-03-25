@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import '../../styles/empresa/miperfilpublicaciones.css';
 
-export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, manejarMostrarSeccion, manejarMostrarSeccionVacante }) => {
-  const [seccionActiva, setSeccionActiva] = useState('ver-publicaciones');
+export const Seccion2PagePerfilEmpresa = ({ empresa, publicaciones, vacantes, manejarMostrarSeccion, manejarMostrarSeccionVacante, mostrarVacantes}) => {
+  const [seccionActiva, setSeccionActiva] = useState(mostrarVacantes ? 'ver-vacantes' : 'ver-publicaciones');
 
    // Ordenar publicaciones de la más reciente a la más antigua
    const publicacionesOrdenadas = publicaciones

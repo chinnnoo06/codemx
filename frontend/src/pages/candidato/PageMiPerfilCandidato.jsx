@@ -3,10 +3,12 @@ import { Seccion1PageMiPerfil } from '../../components/candidato/Seccion1PageMiP
 import { Seccion2PageMiperfil } from '../../components/candidato/Seccion2PageMiperfil';
 import { Seccion3PageMiPerfil } from '../../components/candidato/Seccion3PageMiPerfil';
 import '../../styles/candidato/miperfil.css';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PageMiPerfilCandidato = ({candidato}) => {
+
     if (!candidato) {
-        return <p>Cargando datos del perfil...</p>;
+        return <LoadingSpinner></LoadingSpinner> 
     }
 
     return (

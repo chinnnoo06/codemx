@@ -4,6 +4,7 @@ import '../../styles/empresa/publicacion.css';
 import { ModalLikes } from './ModalLikes';
 import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios } from './ModalComentarios';
+import LoadingSpinner from '../LoadingSpinner';
 
 export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion, actualizarFetch,  setPublicacionSeleccionada, empresaActiva}) => {
 
@@ -22,7 +23,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     const [descripcion, setDescripcion] = useState(publicacion.Contenido); 
     const [ocultarMeGusta, setOcultarMeGusta] = useState(null); 
     const [sinComentarios, setSinComentarios] = useState(null); 
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(true); 
     const navigate = useNavigate(); // Hook para redirigir a otra página
 
     const fetchData = useCallback(async () => {
@@ -48,9 +49,11 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
             setNumDislikes(responseData.cantidadDislikes);
             setComentarios(responseData.comentarios);
             setNumComentarios(responseData.cantidadComentarios);
+            setIsLoading(false);
 
         } catch (error) {
             console.error("Error al obtener reacciones de la publicación:", error);
+            setIsLoading(false);
         }
 
     }, [publicacion.ID]); 
@@ -212,6 +215,10 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
     const irAMiPerfilEmpresa = () => {
         manejarOcultarSeccion();
     };
+          
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
 
     return (
         <div className='contenedor'>

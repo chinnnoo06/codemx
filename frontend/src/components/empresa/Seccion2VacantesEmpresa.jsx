@@ -208,7 +208,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
 
                 <div className="mb-4">
                     <label htmlFor="descripcion" className="form-label">Descripción <span className="text-danger">*</span></label>
-                    <textarea id="descripcion" name="descripcion" className="form-control" maxLength={250}  value={formData.descripcion} onChange={manejarValorInput}required></textarea>
+                    <textarea id="descripcion" name="descripcion" className="form-control" maxLength={400}  value={formData.descripcion} onChange={manejarValorInput}required></textarea>
                     {errors.descripcion && <small className="text-danger">{errors.descripcion}</small>}
                 </div>
 
@@ -221,7 +221,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
                                 type="text" 
                                 name={`responsabilidad-${index}`} 
                                 className="form-control" 
-                                maxLength={50} 
+                                maxLength={150} 
                                 value={resp} 
                                 onChange={(e) => handleResponsabilidadChange(e, index)} 
                                 required
@@ -250,7 +250,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
                                 type="text" 
                                 name={`requerimiento-${index}`} 
                                 className="form-control" 
-                                maxLength={50} 
+                                maxLength={150} 
                                 value={req} 
                                 onChange={(e) => handleRequerimientoChange(e, index)} 
                                 required

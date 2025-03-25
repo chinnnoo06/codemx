@@ -4,6 +4,7 @@ import { Seccion1PagePerfilEmpresa } from '../../components/empresa/Seccion1Page
 import { Seccion2PagePerfilEmpresa } from '../../components/empresa/Seccion2PagePerfilEmpresa'
 import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
 import { SeccionVacante } from '../../components/empresa/SeccionVacante';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PagePerfilEmpresa = ({empresaActiva}) => {
     const location = useLocation();
@@ -15,6 +16,8 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
     const [seccionActiva, setSeccionActiva] = useState("perfil-publicaciones");
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
     const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); 
+    const [mostrarVacantes, setMostrarVacantes] = useState(false);
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -62,8 +65,10 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
             setPublicaciones(publicacionesData.publicaciones);
             setNumPublicaciones(publicacionesData.cantidad);
             setVacantes(vacantesData.vacantes);
+            setIsLoading(false);
         } catch (error) {
             console.error('Error al obtener el perfil de la empresa:', error);
+            setIsLoading(false);
         }
             
     }, [idEmpresa]);
@@ -99,11 +104,12 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
     };
 
     const manejarOcultarSeccionVacante = () => {
-      setSeccionActiva("vacantes");
+      setSeccionActiva("perfil-publicaciones");
       window.scrollTo({
           top: 0,
           behavior: "smooth" 
       });
+      setMostrarVacantes(true);
     };
 
     const manejarMostrarSeccionVacante = (vacante) => {
@@ -126,12 +132,10 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
       }, 100); 
     };
 
-    if (!empresa) {
-      return <div>Cargando perfil...</div>;
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
     }
     
-  
-
   return (
       <div className='contenedor-todo'>
 
@@ -142,7 +146,7 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
                 </div>
 
                 <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                    <Seccion2PagePerfilEmpresa empresa={empresa} publicaciones={publicaciones} vacantes={vacantes} manejarMostrarSeccion={manejarMostrarSeccion} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante}/>
+                    <Seccion2PagePerfilEmpresa empresa={empresa} publicaciones={publicaciones} vacantes={vacantes} manejarMostrarSeccion={manejarMostrarSeccion} manejarMostrarSeccionVacante={manejarMostrarSeccionVacante} mostrarVacantes={mostrarVacantes}/>
                 </div>
             </div>
         )}
@@ -158,7 +162,8 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
         {seccionActiva === "detalles-vacante" && (
             <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
                 <div className='w-100 pt-4 pb-4'> 
-                    <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData} empresaActiva={empresaActiva}/>
+                    <SeccionVacante empresa={empresa} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} actualizarFetch={fetchData} setVacanteSeleccionada={setVacanteSeleccionada} empresaActiva={empresaActiva}/>
+                     
                 </div>
             </div>
 

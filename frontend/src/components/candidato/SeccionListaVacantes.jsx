@@ -1,7 +1,6 @@
 import React from 'react'
-import '../../styles/empresa/seccionvacantes.css';
 
-export const Seccion1VacantesEmpresa = ({vacantes, manejarMostrarSeccionVacante}) => {
+export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante}) => {
   return (
     <>
         {vacantes && vacantes.length > 0 ? (

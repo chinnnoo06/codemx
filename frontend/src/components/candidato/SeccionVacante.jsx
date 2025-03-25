@@ -5,7 +5,7 @@ import { ModalTecnologiasRequeridas } from './ModalTecnologiasRequeridas';
 import LoadingSpinner from '../LoadingSpinner';
 
  
-export const SeccionVacante = ({empresa, idCandidato, vacante, manejarOcultarSeccionVacante, setVacanteSeleccionada, actualizarFetch}) => {
+export const SeccionVacante = ({idCandidato, vacante, manejarOcultarSeccionVacante, setVacanteSeleccionada, actualizarFetch}) => {
     const [requisitos, setRequisitos] = useState([]);
     const [responsabilidades, setResponsabilidades] = useState([]);
     const [candidatos, setCandidatos] = useState([]);
@@ -181,6 +181,7 @@ export const SeccionVacante = ({empresa, idCandidato, vacante, manejarOcultarSec
 
             if (result.success) {
                 setVacanteGuardada((prevState) => !prevState);  // Cambiar estado
+                actualizarFetch();
             } else {
                 console.error("Error al guardar o desguardar la vacante:", result.message);
             }
@@ -250,7 +251,7 @@ export const SeccionVacante = ({empresa, idCandidato, vacante, manejarOcultarSec
                     descripcion: descripcionReporte,
                     idVacante: vacante.ID,
                     idDenunciante: idCandidato, 
-                    idDenunciado: empresa.id,
+                    idDenunciado: vacante.Empresa_ID,
                 }),
             });
 
@@ -285,7 +286,7 @@ export const SeccionVacante = ({empresa, idCandidato, vacante, manejarOcultarSec
     return (
         <div> 
             <div className='boton d-flex align-items-center '>
-                <button className="btn-volver-vacantes d-flex align-items-center" onClick={() => manejarOcultarSeccionVacante("vacantes")}>
+                <button className="btn-volver-vacantes d-flex align-items-center" onClick={() => manejarOcultarSeccionVacante()}>
                     <i className="fa-solid fa-arrow-left me-2"></i> Volver a vacantes
                 </button>
             </div>
@@ -300,7 +301,7 @@ export const SeccionVacante = ({empresa, idCandidato, vacante, manejarOcultarSec
                             </div>
                         </div>
                         
-                        <h5 className='nombre-empresa'>{empresa.nombre}</h5>
+                        <h5 className='nombre-empresa'>{vacante.Empresa_Nombre}</h5>
 
                         <div className='datos-vacante d-flex'>
                             <span className='estado-vacante text-muted'>{vacante.Estado_Vacante}, México</span>

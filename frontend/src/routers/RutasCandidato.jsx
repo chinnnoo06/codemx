@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 import { PagePerfilCandidato } from '../pages/candidato/PagePerfilCandidato';
 import { PagePerfilEmpresa } from '../pages/candidato/PagePerfilEmpresa';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { PageMisVacantes } from '../pages/candidato/PageMisVacantes';
 
 
 export const RutasCandidato = () => {
@@ -158,6 +159,7 @@ export const RutasCandidato = () => {
                     <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} />} />
                     <Route path="/perfil-candidato/" element={<PagePerfilCandidato  candidatoActivo={candidato}/>} />
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  candidato={candidato}/>} />
+                    <Route path="/vacantes-candidato/" element={<PageMisVacantes  candidato={candidato}/>} />
                 </Routes> 
             </section>
 

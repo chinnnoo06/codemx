@@ -4,6 +4,7 @@ import '../../styles/empresa/publicacion.css';
 import { ModalLikes } from './ModalLikes';
 import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios} from './ModalComentarios';
+import LoadingSpinner from '../LoadingSpinner';
 
 export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarOcultarSeccion}) => {
     const [likes, setLikes] = useState(0);
@@ -22,7 +23,7 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
     const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
     const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
     const [descripcionReporte, setDescripcionReporte] = useState("");
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(true); 
 
 
     const fetchData = useCallback(async () => {
@@ -64,9 +65,11 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
             const responseData2 = await responseReaccion.json();
 
             setReaccion(responseData2.reaccion); // Puede ser 'like', 'dislike' o null
+            setIsLoading(false);
 
           } catch (error) {
               console.error("Error al obtener reacciones de la publicación:", error);
+              setIsLoading(false);
           }
   
       }, [publicacion.ID]); 
@@ -208,8 +211,9 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
       navigate(`/usuario-candidato/miperfil-candidato`);  
     };
 
-    
-
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
 
   return (
     <div className='contenedor'>
