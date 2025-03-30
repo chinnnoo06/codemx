@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $page = isset($data['page']) ? (int)$data['page'] : 1; // Número de página, por defecto es 1
-    $limit = 5; // Limitar a 5 vacantes por carga
+    $limit = 5; // Limitar a 10 vacantes por carga
     $offset = ($page - 1) * $limit; // Calcular el offset
 
      // Consultar modalidad de trabajo del candidato
@@ -111,27 +111,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
         $coincidencias = 0;
-        $tecnologiasCoincidentes = [];
         foreach ($tecnologiasDominadas as $tecDominada) {
             if (in_array($tecDominada, $tecnologiasRequeridas)) {
                 $coincidencias++;
-                $tecnologiasCoincidentes[] = $tecDominada; // Guardar la tecnología coincidente
             }
         }
 
         // Si hay coincidencias, agregar la vacante a las recomendaciones
         if ($coincidencias > 0) {
-            $vacantesRecomendadas[] = array_merge($vacante, [
-                'coincidencias' => $coincidencias,
-                'tecnologiasCoincidentes' => $tecnologiasCoincidentes // Agregar tecnologías coincidentes
-            ]);
+            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
         }
     }
-
-    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
-    usort($vacantesRecomendadas, function($a, $b) {
-        return $b['coincidencias'] - $a['coincidencias']; // Ordenamos por el número de coincidencias
-    });
 
     // Retornar las vacantes recomendadas
     echo json_encode([
