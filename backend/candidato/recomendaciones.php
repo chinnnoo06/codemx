@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
     if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID de la empresa o candidato, o el ID de la publicación.']);
+        echo json_encode(['error' => 'Falta el ID del candidato.']);
         http_response_code(400);
         exit();
     }
@@ -53,8 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-
-    // Retornar las vacantes recomendadas
+    // Si ambas consultas fueron exitosas, retornar éxito
     echo json_encode([
         'success' => true
     ]);
