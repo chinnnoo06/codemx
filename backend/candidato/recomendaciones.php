@@ -17,15 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) || !isset($data['pagina'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato o el número de página.']);
+    if (!isset($data['idCandidato'])) {
+        echo json_encode(['error' => 'Falta el ID del candidato.']);
         http_response_code(400);
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $pagina = intval($data['pagina']); // La página solicitada
-    $vacantesPorPagina = 5; // Número de vacantes por página
 
     // Consultar modalidad de trabajo del candidato
     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
@@ -55,9 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar vacantes que coincidan con la modalidad de trabajo y paginación
-    $offset = ($pagina - 1) * $vacantesPorPagina; // Calcula el desplazamiento
-
+    // Consultar vacantes que coincidan con la modalidad de trabajo
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -79,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
         WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
-        LIMIT $vacantesPorPagina OFFSET $offset
+        GROUP BY vacante.ID
     ";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
@@ -122,6 +118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
         }
     }
+
+    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
+    usort($vacantesRecomendadas, function($a, $b) {
+        return $b['coincidencias'] - $a['coincidencias'];
+    });
 
     // Retornar las vacantes recomendadas
     echo json_encode([
