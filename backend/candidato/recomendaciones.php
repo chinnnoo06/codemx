@@ -25,33 +25,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-     // Consultar modalidad de trabajo del candidato
-     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
-     $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
- 
-     if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
-         $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
-         $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
-     } else {
-         $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
-         echo json_encode($response);
-         exit();
-     }
+    // Consultar modalidad de trabajo del candidato
+    $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
+    $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
 
-     // Consultar tecnologías dominadas por el candidato
-     $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
-     $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
- 
-     if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
-         $tecnologiasDominadas = [];
-         while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
-             $tecnologiasDominadas[] = strtolower(trim($tec['Tecnologia'])); // Normalizamos las tecnologías (minúsculas y sin espacios)
-         }
-     } else {
-         $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
-         echo json_encode($response);
-         exit();
-     }
+    if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
+        $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
+        $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
+    } else {
+        $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
+        echo json_encode($response);
+        exit();
+    }
+
+    // Consultar tecnologías dominadas por el candidato
+    $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
+    $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
+
+    if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
+        $tecnologiasDominadas = [];
+        while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
+            $tecnologiasDominadas[] = $tec['Tecnologia']; // Esto debe ser el ID de la tecnología
+        }
+    } else {
+        $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
+        echo json_encode($response);
+        exit();
+    }
 
     // Consultar vacantes que coincidan con la modalidad de trabajo
     $consultaVacantes = "
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Inicializar un array para almacenar las vacantes
     $vacantesRecomendadas = [];
- 
+
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
         // Consultar tecnologías requeridas por la vacante
         $consultaTecnologiasVacante = "SELECT Tecnologia_ID FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $tecnologiasRequeridas = [];
         while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
-            $tecnologiasRequeridas[] = strtolower(trim($tecVacante['Tecnologia'])); // Normalizamos las tecnologías (minúsculas y sin espacios)
+            $tecnologiasRequeridas[] = $tecVacante['Tecnologia_ID']; // Esto debe ser el ID de la tecnología
         }
 
         // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
