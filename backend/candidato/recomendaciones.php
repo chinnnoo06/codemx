@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
         // Consultar tecnologías requeridas por la vacante
-        $consultaTecnologiasVacante = "SELECT Tecnologia FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
+        $consultaTecnologiasVacante = "SELECT Tecnologia_ID FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
         $resultadoTecnologiasVacante = mysqli_query($conexion, $consultaTecnologiasVacante);
 
         if (!$resultadoTecnologiasVacante) {
