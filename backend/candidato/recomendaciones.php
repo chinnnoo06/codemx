@@ -96,11 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
         // Consultar tecnologías requeridas por la vacante
-        $consultaTecnologiasVacante = "SELECT t.Tecnologia, t.Categoria, t.ID AS Tecnologia_ID
-                                      FROM tecnologias_vacante tv
-                                      JOIN tecnologias t ON tv.Tecnologia_ID = t.ID 
-                                      WHERE tv.Vacante_ID = '".$vacante['ID']."'
-                                      ORDER BY t.Categoria";
+        $consultaTecnologiasVacante = "SELECT Tecnologia_ID FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
         $resultadoTecnologiasVacante = mysqli_query($conexion, $consultaTecnologiasVacante);
 
         if (!$resultadoTecnologiasVacante) {
@@ -110,28 +106,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $tecnologiasRequeridas = [];
         while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
-            $tecnologiasRequeridas[] = $tecVacante; // Guardar la tecnología con su categoría
+            $tecnologiasRequeridas[] = $tecVacante['Tecnologia_ID']; // Esto debe ser el ID de la tecnología
         }
 
         // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
         $coincidencias = 0;
-        $tecnologiasCoincidentes = [];
         foreach ($tecnologiasDominadas as $tecDominada) {
-            foreach ($tecnologiasRequeridas as $tecRequerida) {
-                if ($tecDominada == $tecRequerida['Tecnologia_ID']) {
-                    $coincidencias++;
-                    $tecnologiasCoincidentes[] = $tecRequerida['Tecnologia']; // Guardar la tecnología coincidente
-                }
+            if (in_array($tecDominada, $tecnologiasRequeridas)) {
+                $coincidencias++;
             }
         }
 
         // Si hay coincidencias, agregar la vacante a las recomendaciones
         if ($coincidencias > 0) {
-            $vacantesRecomendadas[] = array_merge($vacante, [
-                'coincidencias' => $coincidencias,
-                'tecnologiasCoincidentes' => $tecnologiasCoincidentes, // Tecnologías coincidentes
-                'tecnologiasRequeridas' => $tecnologiasRequeridas // Tecnologías requeridas por categoría
-            ]);
+            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
         }
     }
 
