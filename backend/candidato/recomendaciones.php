@@ -53,8 +53,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          exit();
      }
 
+    // Consultar vacantes que coincidan con la modalidad de trabajo
+    $consultaVacantes = "
+        SELECT 
+        vacante.ID AS ID,
+        vacante.Titulo AS Titulo,
+        vacante.Descripcion AS Descripcion,
+        vacante.Modalidad AS Modalidad_Vacante,
+        vacante.Ubicacion AS Ubicacion,
+        vacante.Fecha_Limite AS Fecha_Limite,
+        vacante.Estatus AS Estatus,
+        vacante.Fecha_Creacion AS Fecha_Creacion,
+        empresa.Nombre AS Empresa_Nombre
+        FROM vacante
+        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
+        WHERE vacante.Modalidad = '$idModalidad_Trabajo'
+    ";
+
+    $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
+
+    if (!$resultadoVacantes) {
+        error_log("Error al consultar vacantes: " . mysqli_error($conexion));
+        echo json_encode(['error' => 'Error al consultar las vacantes.']);
+        http_response_code(500);
+        exit();
+    }
+
+    $vacantesRecomendadas = [];
+
+    while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
+        // Consultar tecnologías requeridas por la vacante
+        $consultaTecnologiasVacante = "SELECT Tecnologia FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
+        $resultadoTecnologiasVacante = mysqli_query($conexion, $consultaTecnologiasVacante);
+
+        if (!$resultadoTecnologiasVacante) {
+            error_log("Error al consultar tecnologías de la vacante: " . mysqli_error($conexion));
+            continue; // Pasar a la siguiente vacante si hay un error con las tecnologías
+        }
+
+        $tecnologiasRequeridas = [];
+        while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
+            $tecnologiasRequeridas[] = $tecVacante['Tecnologia'];
+        }
+
+        // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
+        $coincidencias = 0;
+        foreach ($tecnologiasDominadas as $tecDominada) {
+            if (in_array($tecDominada, $tecnologiasRequeridas)) {
+                $coincidencias++;
+            }
+        }
+
+        // Si hay coincidencias, agregar la vacante a las recomendaciones
+        if ($coincidencias > 0) {
+            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
+        }
+    }
+
+    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
+    usort($vacantesRecomendadas, function($a, $b) {
+        return $b['coincidencias'] - $a['coincidencias'];
+    });
+
+    // Retornar las vacantes recomendadas
     echo json_encode([
-        'success' => true
+        'success' => true,
+        'vacantes' => $vacantesRecomendadas
     ]);
 } else {
     // Método no permitido
