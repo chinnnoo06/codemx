@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          echo json_encode($response);
          exit();
      }
- 
+
      // Consultar tecnologías dominadas por el candidato
      $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
      $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
@@ -87,7 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $vacantesRecomendadas = mysqli_fetch_assoc($resultadoVacantes);;
+    // Inicializar un array para almacenar las vacantes
+    $vacantesRecomendadas = [];
+    while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
+        $vacantesRecomendadas[] = $vacante;
+    }
 
     // Retornar las vacantes recomendadas
     echo json_encode([
