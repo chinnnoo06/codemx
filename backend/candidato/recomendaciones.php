@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
      // Consultar modalidad de trabajo del candidato
-     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM Candidato WHERE ID = '$idCandidato'";
+     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
      $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
  
      if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
@@ -35,12 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      } else {
          $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
          echo json_encode($response);
-         http_response_code(404);
          exit();
      }
  
      // Consultar tecnologías dominadas por el candidato
-     $consultaTecnologiasDominadas = "SELECT Tecnologia FROM Tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
+     $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
      $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
  
      if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
@@ -51,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      } else {
          $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
          echo json_encode($response);
-         http_response_code(404);
          exit();
      }
 
