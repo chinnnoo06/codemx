@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $page = isset($data['page']) ? (int)$data['page'] : 1; // Número de página, por defecto es 1
-    $limit = 10; // Limitar a 10 vacantes por carga
+    $limit = 5; // Limitar a 10 vacantes por carga
     $offset = ($page - 1) * $limit; // Calcular el offset
 
      // Consultar modalidad de trabajo del candidato
