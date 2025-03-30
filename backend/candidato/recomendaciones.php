@@ -111,15 +111,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
         $coincidencias = 0;
+        $tecnologiasCoincidentes = [];
         foreach ($tecnologiasDominadas as $tecDominada) {
             if (in_array($tecDominada, $tecnologiasRequeridas)) {
                 $coincidencias++;
+                $tecnologiasCoincidentes[] = $tecDominada; // Guardar la tecnología coincidente
             }
         }
 
         // Si hay coincidencias, agregar la vacante a las recomendaciones
         if ($coincidencias > 0) {
-            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
+            $vacantesRecomendadas[] = array_merge($vacante, [
+                'coincidencias' => $coincidencias,
+                'tecnologiasCoincidentes' => $tecnologiasCoincidentes // Agregar tecnologías coincidentes
+            ]);
         }
     }
 
