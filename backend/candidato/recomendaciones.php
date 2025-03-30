@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-// Configuración de CORS
+// Encabezados para habilitar CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
@@ -16,15 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    
+
     if (!isset($data['idCandidato'])) {
         echo json_encode(['error' => 'Falta el ID del candidato.']);
-        http_response_code(400);
+        http_response_code(400); 
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
+   
     // Consultar modalidad de trabajo del candidato
     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM Candidato WHERE ID = '$idCandidato'";
     $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
