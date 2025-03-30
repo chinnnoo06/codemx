@@ -17,13 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idCandidato']) || !isset($data['page']) || !isset($data['limit'])) {
+        echo json_encode(['error' => 'Faltan parámetros necesarios (idCandidato, page, limit).']);
         http_response_code(400);
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $page = intval($data['page']);
+    $limit = intval($data['limit']);
+
+    $offset = ($page - 1) * $limit;
 
     // Consultar modalidad de trabajo del candidato
     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
@@ -45,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
         $tecnologiasDominadas = [];
         while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
-            $tecnologiasDominadas[] = $tec['Tecnologia']; // Esto debe ser el ID de la tecnología
+            $tecnologiasDominadas[] = $tec['Tecnologia'];
         }
     } else {
         $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
@@ -53,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar vacantes que coincidan con la modalidad de trabajo
+    // Consultar vacantes que coincidan con la modalidad de trabajo con paginación
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -74,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
-        GROUP BY vacante.ID
+        WHERE vacante.Modalidad = '$idModalidad_Trabajo'
+        LIMIT $offset, $limit
     ";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
@@ -87,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Inicializar un array para almacenar las vacantes
     $vacantesRecomendadas = [];
 
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
@@ -97,15 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$resultadoTecnologiasVacante) {
             error_log("Error al consultar tecnologías de la vacante: " . mysqli_error($conexion));
-            continue; // Pasar a la siguiente vacante si hay un error con las tecnologías
+            continue;
         }
 
         $tecnologiasRequeridas = [];
         while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
-            $tecnologiasRequeridas[] = $tecVacante['Tecnologia_ID']; // Esto debe ser el ID de la tecnología
+            $tecnologiasRequeridas[] = $tecVacante['Tecnologia_ID'];
         }
 
-        // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
         $coincidencias = 0;
         foreach ($tecnologiasDominadas as $tecDominada) {
             if (in_array($tecDominada, $tecnologiasRequeridas)) {
@@ -113,25 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Si hay coincidencias, agregar la vacante a las recomendaciones
         if ($coincidencias > 0) {
             $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
         }
     }
 
-    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
     usort($vacantesRecomendadas, function($a, $b) {
         return $b['coincidencias'] - $a['coincidencias'];
     });
 
-    // Retornar las vacantes recomendadas
     echo json_encode([
         'success' => true,
         'vacantes' => $vacantesRecomendadas
     ]);
 
 } else {
-    // Método no permitido
     http_response_code(405);
     echo json_encode(['error' => 'El método no está permitido.']);
 }
