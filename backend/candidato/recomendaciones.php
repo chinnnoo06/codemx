@@ -25,44 +25,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Consulta para obtener las tecnologías dominadas junto con su nombre y categoría
-    $consultaTecnologiasDominadas = "
-        SELECT 
-            tecnologias_dominadas.Candidato_ID, 
-            tecnologias.ID AS id_tecnologia, 
-            tecnologias.Tecnologia AS nombre_tecnologia, 
-            tecnologias.Categoria AS categoria_tecnologia
-        FROM 
-            tecnologias_dominadas
-        INNER JOIN 
-            tecnologias 
-        ON 
-            tecnologias_dominadas.Tecnologia = tecnologias.ID
-        WHERE 
-            tecnologias_dominadas.Candidato_ID = '$idCandidato'
-    ";
-
-    $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
-
-    if (!$resultadoTecnologiasDominadas) {
-        echo json_encode(['error' => 'Error en la consulta SQL de tecnologías dominadas: ' . mysqli_error($conexion)]);
-        http_response_code(500);
-        exit();
-    }
-
-    $listaDeTecnologiasDominadas = [];
-
-    while ($fila = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
-        $listaDeTecnologiasDominadas[] = [
-            'id_tecnologia' => $fila['id_tecnologia'],
-            'nombre_tecnologia' => $fila['nombre_tecnologia'],
-            'categoria_tecnologia' => $fila['categoria_tecnologia']
-        ];
-    }
+     // Consultar modalidad de trabajo del candidato
+     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM Candidato WHERE ID = '$idCandidato'";
+     $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
+ 
+     if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
+         $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
+         $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
+     } else {
+         $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
+         echo json_encode($response);
+         http_response_code(404);
+         exit();
+     }
+ 
+     // Consultar tecnologías dominadas por el candidato
+     $consultaTecnologiasDominadas = "SELECT Tecnologia FROM Tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
+     $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
+ 
+     if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
+         $tecnologiasDominadas = [];
+         while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
+             $tecnologiasDominadas[] = $tec['Tecnologia'];
+         }
+     } else {
+         $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
+         echo json_encode($response);
+         http_response_code(404);
+         exit();
+     }
 
     echo json_encode([
-        'success' => true,
-        'tecnologias_dominadas' => $listaDeTecnologiasDominadas
+        'success' => true
     ]);
 } else {
     // Método no permitido
