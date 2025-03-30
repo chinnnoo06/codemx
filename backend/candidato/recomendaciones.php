@@ -89,8 +89,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Inicializar un array para almacenar las vacantes
     $vacantesRecomendadas = [];
+ 
+    
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
-        $vacantesRecomendadas[] = $vacante;
+        // Consultar tecnologías requeridas por la vacante
+        $consultaTecnologiasVacante = "SELECT Tecnologia FROM Tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
+        $resultadoTecnologiasVacante = mysqli_query($conexion, $consultaTecnologiasVacante);
+
+        if (!$resultadoTecnologiasVacante) {
+            error_log("Error al consultar tecnologías de la vacante: " . mysqli_error($conexion));
+            continue; // Pasar a la siguiente vacante si hay un error con las tecnologías
+        }
+
+        $tecnologiasRequeridas = [];
+        while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
+            $tecnologiasRequeridas[] = $tecVacante['Tecnologia'];
+        }
+
+        // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
+        $coincidencias = 0;
+        foreach ($tecnologiasDominadas as $tecDominada) {
+            if (in_array($tecDominada, $tecnologiasRequeridas)) {
+                $coincidencias++;
+            }
+        }
+
+        // Si hay coincidencias, agregar la vacante a las recomendaciones
+        if ($coincidencias > 0) {
+            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
+        }
     }
 
     // Retornar las vacantes recomendadas
