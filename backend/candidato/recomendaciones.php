@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
          $tecnologiasDominadas = [];
          while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
-             $tecnologiasDominadas[] = $tec['Tecnologia'];
+             $tecnologiasDominadas[] = strtolower(trim($tec['Tecnologia'])); // Normalizamos las tecnologías (minúsculas y sin espacios)
          }
      } else {
          $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
@@ -90,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Inicializar un array para almacenar las vacantes
     $vacantesRecomendadas = [];
  
-    
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
         // Consultar tecnologías requeridas por la vacante
         $consultaTecnologiasVacante = "SELECT Tecnologia_ID FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
@@ -103,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $tecnologiasRequeridas = [];
         while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
-            $tecnologiasRequeridas[] = $tecVacante['Tecnologia'];
+            $tecnologiasRequeridas[] = strtolower(trim($tecVacante['Tecnologia'])); // Normalizamos las tecnologías (minúsculas y sin espacios)
         }
 
         // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
