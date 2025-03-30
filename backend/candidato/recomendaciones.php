@@ -123,6 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor) antes de retornarlas
+    usort($vacantesRecomendadas, function($a, $b) {
+        return $b['coincidencias'] - $a['coincidencias']; // Ordenamos por el número de coincidencias
+    });
+
     // Retornar las vacantes recomendadas
     echo json_encode([
         'success' => true,
