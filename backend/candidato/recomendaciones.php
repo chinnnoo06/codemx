@@ -28,35 +28,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 5; // Limitar a 5 vacantes por carga
     $offset = ($page - 1) * $limit; // Calcular el offset
 
-     // Consultar modalidad de trabajo del candidato
-     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
-     $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
- 
-     if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
-         $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
-         $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
-     } else {
-         $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
-         echo json_encode($response);
-         exit();
-     }
+    // Consultar modalidad de trabajo del candidato
+    $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
+    $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
 
-     // Consultar tecnologías dominadas por el candidato
-     $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
-     $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
- 
-     if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
-         $tecnologiasDominadas = [];
-         while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
-             $tecnologiasDominadas[] = $tec['Tecnologia']; // Esto debe ser el ID de la tecnología
-         }
-     } else {
-         $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
-         echo json_encode($response);
-         exit();
-     }
+    if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
+        $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
+        $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
+    } else {
+        $response['error'] = 'No se encontró la modalidad de trabajo para el candidato.';
+        echo json_encode($response);
+        exit();
+    }
 
-    // Consultar vacantes que coincidan con la modalidad de trabajo con paginación
+    // Consultar tecnologías dominadas por el candidato
+    $consultaTecnologiasDominadas = "SELECT Tecnologia FROM tecnologias_dominadas WHERE Candidato_ID = '$idCandidato'";
+    $resultadoTecnologiasDominadas = mysqli_query($conexion, $consultaTecnologiasDominadas);
+
+    if ($resultadoTecnologiasDominadas && mysqli_num_rows($resultadoTecnologiasDominadas) > 0) {
+        $tecnologiasDominadas = [];
+        while ($tec = mysqli_fetch_assoc($resultadoTecnologiasDominadas)) {
+            $tecnologiasDominadas[] = $tec['Tecnologia']; // Esto debe ser el ID de la tecnología
+        }
+    } else {
+        $response['error'] = 'No se encontraron las tecnologías dominadas por el candidato.';
+        echo json_encode($response);
+        exit();
+    }
+
+    // Construir la consulta SQL para obtener las vacantes recomendadas con las coincidencias
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -68,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             vacante.Fecha_Limite AS Fecha_Limite,
             vacante.Estatus AS Estatus,
             vacante.Fecha_Creacion AS Fecha_Creacion,
+            (SELECT COUNT(*) 
+                FROM tecnologias_vacante 
+                WHERE Vacante_ID = vacante.ID AND Tecnologia_ID IN (" . implode(',', $tecnologiasDominadas) . ")
+            ) AS Coincidencias,
             (SELECT COUNT(*) FROM postulaciones WHERE postulaciones.Vacante_ID = vacante.ID) AS Cantidad_Postulados, 
             empresa.ID AS Empresa_ID,
             empresa.Nombre AS Empresa_Nombre,
@@ -77,8 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
-        GROUP BY vacante.ID
+        WHERE vacante.Modalidad = '$idModalidad_Trabajo'
+        HAVING Coincidencias > 0
+        ORDER BY Coincidencias DESC
         LIMIT $limit OFFSET $offset
     ";
 
@@ -91,42 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Inicializar un array para almacenar las vacantes
+    // Inicializar un array para almacenar las vacantes recomendadas
     $vacantesRecomendadas = [];
 
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
-        // Consultar tecnologías requeridas por la vacante
-        $consultaTecnologiasVacante = "SELECT Tecnologia_ID FROM tecnologias_vacante WHERE Vacante_ID = '".$vacante['ID']."'";
-        $resultadoTecnologiasVacante = mysqli_query($conexion, $consultaTecnologiasVacante);
-
-        if (!$resultadoTecnologiasVacante) {
-            error_log("Error al consultar tecnologías de la vacante: " . mysqli_error($conexion));
-            continue; // Pasar a la siguiente vacante si hay un error con las tecnologías
-        }
-
-        $tecnologiasRequeridas = [];
-        while ($tecVacante = mysqli_fetch_assoc($resultadoTecnologiasVacante)) {
-            $tecnologiasRequeridas[] = $tecVacante['Tecnologia_ID']; // Esto debe ser el ID de la tecnología
-        }
-
-        // Contar coincidencias entre las tecnologías dominadas por el candidato y las tecnologías requeridas por la vacante
-        $coincidencias = 0;
-        foreach ($tecnologiasDominadas as $tecDominada) {
-            if (in_array($tecDominada, $tecnologiasRequeridas)) {
-                $coincidencias++;
-            }
-        }
-
-        // Si hay coincidencias, agregar la vacante a las recomendaciones
-        if ($coincidencias > 0) {
-            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
-        }
+        $vacantesRecomendadas[] = $vacante;
     }
-
-    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor) antes de retornarlas
-    usort($vacantesRecomendadas, function($a, $b) {
-        return $b['coincidencias'] - $a['coincidencias']; // Ordenamos por el número de coincidencias
-    });
 
     // Retornar las vacantes recomendadas
     echo json_encode([
