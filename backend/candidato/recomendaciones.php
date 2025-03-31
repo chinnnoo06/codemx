@@ -17,13 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idCandidato']) || !isset($data['page'])) {
+        echo json_encode(['error' => 'Faltan parámetros en la solicitud.']);
         http_response_code(400);
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $page = (int)$data['page'];
+    $limit = 10;  // Número de vacantes a devolver por página
+    $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Consultar modalidad de trabajo del candidato
     $consultaModalidadCandidato = "SELECT Modalidad_Trabajo FROM candidato WHERE ID = '$idCandidato'";
@@ -53,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar vacantes que coincidan con la modalidad de trabajo
+    // Consultar vacantes que coincidan con la modalidad de trabajo y aplicar paginación
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -76,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
         WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
         GROUP BY vacante.ID
+        LIMIT $limit OFFSET $offset
     ";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
@@ -129,7 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'success' => true,
         'vacantes' => $vacantesRecomendadas
     ]);
-
 } else {
     // Método no permitido
     http_response_code(405);
