@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar vacantes que coincidan con la modalidad de trabajo y aplicar paginación
+    // Consultar todas las vacantes que coincidan con la modalidad de trabajo
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -77,9 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
+        WHERE vacante.Modalidad = '$idModalidad_Trabajo'
         GROUP BY vacante.ID
-        LIMIT $limit OFFSET $offset
     ";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
@@ -128,10 +127,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return $b['coincidencias'] - $a['coincidencias'];
     });
 
-    // Retornar las vacantes recomendadas
+    // Ahora, hacemos la paginación: traemos solo las vacantes correspondientes a la página solicitada
+    $vacantesPaginadas = array_slice($vacantesRecomendadas, $offset, $limit);
+
+    // Retornar las vacantes recomendadas paginadas
     echo json_encode([
         'success' => true,
-        'vacantes' => $vacantesRecomendadas
+        'vacantes' => $vacantesPaginadas
     ]);
 } else {
     // Método no permitido
