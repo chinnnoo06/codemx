@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar todas las vacantes que coincidan con la modalidad de trabajo
+    // Consultar vacantes activas que coincidan con la modalidad de trabajo
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -77,7 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        WHERE vacante.Modalidad = '$idModalidad_Trabajo'
+        WHERE vacante.Modalidad = '$idModalidad_Trabajo' 
+        AND vacante.Estatus = 'activa'  -- Filtrar solo vacantes activas
         GROUP BY vacante.ID
     ";
 
