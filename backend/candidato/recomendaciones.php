@@ -98,9 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Inicializar un array para almacenar las vacantes recomendadas
     $vacantesRecomendadas = [];
+    $vacantesIDs = []; // Array para verificar duplicados por ID
 
     while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
-        $vacantesRecomendadas[] = $vacante;
+        // Verificar si la vacante ya fue añadida (por su ID)
+        if (!in_array($vacante['ID'], $vacantesIDs)) {
+            $vacantesRecomendadas[] = $vacante;
+            $vacantesIDs[] = $vacante['ID']; // Agregar ID al array para evitar duplicados
+        }
     }
 
     // Retornar las vacantes recomendadas
