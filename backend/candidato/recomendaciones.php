@@ -28,16 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 5;  // Número de vacantes a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
-    // Consultar modalidad de trabajo del candidato y el estado
-    $consultaModalidadCandidato = "SELECT Modalidad_Trabajo, Estado FROM candidato WHERE ID = '$idCandidato'";
-    $resultadoModalidadCandidato = mysqli_query($conexion, $consultaModalidadCandidato);
+    // Consultar modalidad de trabajo y estado del candidato
+    $consultaModalidadYEstadoCandidato = "
+        SELECT Modalidad_Trabajo, Estado 
+        FROM candidato 
+        WHERE ID = '$idCandidato'";
+    $resultadoModalidadYEstadoCandidato = mysqli_query($conexion, $consultaModalidadYEstadoCandidato);
 
-    if ($resultadoModalidadCandidato && mysqli_num_rows($resultadoModalidadCandidato) > 0) {
-        $candidato = mysqli_fetch_assoc($resultadoModalidadCandidato);
+    if ($resultadoModalidadYEstadoCandidato && mysqli_num_rows($resultadoModalidadYEstadoCandidato) > 0) {
+        $candidato = mysqli_fetch_assoc($resultadoModalidadYEstadoCandidato);
         $idModalidad_Trabajo = $candidato['Modalidad_Trabajo'];
-        $estadoCandidato = $candidato['Estado'];
+        $idEstadoCandidato = $candidato['Estado'];
     } else {
-        $response['error'] = 'No se encontró la modalidad de trabajo o estado del candidato.';
+        $response['error'] = 'No se encontró la modalidad de trabajo o estado para el candidato.';
         echo json_encode($response);
         exit();
     }
@@ -57,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Consultar vacantes activas y filtrar según modalidad y ubicación
+    // Consultar vacantes activas que coincidan con la modalidad de trabajo y estado
     $consultaVacantes = "
         SELECT 
             vacante.ID AS ID,
@@ -78,19 +81,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        WHERE vacante.Estatus = 'activa'"; // Filtrar solo vacantes activas
-    
-    // Filtrar según modalidad y estado
-    if ($idModalidad_Trabajo == 'Presencial') {
-        $consultaVacantes .= " AND vacante.Modalidad = 'Presencial' AND vacante.Estado = '$estadoCandidato'"; // Vacantes presenciales en el mismo estado
-    } elseif ($idModalidad_Trabajo == 'Remoto') {
-        $consultaVacantes .= " AND vacante.Modalidad = 'Remoto'"; // Solo vacantes remotas
-    } elseif ($idModalidad_Trabajo == 'Hibrido') {
-        $consultaVacantes .= " AND (vacante.Modalidad = 'Remoto' OR (vacante.Modalidad = 'Presencial' AND vacante.Estado = '$estadoCandidato'))"; // Vacantes híbridas
+        WHERE vacante.Estatus = 'activa' 
+    ";
+
+    // Filtrar por modalidad
+    if ($idModalidad_Trabajo == "Presencial") {
+        $consultaVacantes .= " AND vacante.Modalidad = 'Presencial'";
+    } elseif ($idModalidad_Trabajo == "Remoto") {
+        $consultaVacantes .= " AND vacante.Modalidad = 'Remoto'";
+    } elseif ($idModalidad_Trabajo == "Híbrido") {
+        $consultaVacantes .= " AND vacante.Modalidad = 'Híbrido'";
     }
 
-    // Paginación
-    $consultaVacantes .= " GROUP BY vacante.ID LIMIT $limit OFFSET $offset";
+    // Filtrar por estado si la modalidad es presencial
+    if ($idModalidad_Trabajo == "Presencial") {
+        $consultaVacantes .= " AND vacante.Estado = '$idEstadoCandidato'";
+    }
+
+    // Añadir paginación a la consulta
+    $consultaVacantes .= " LIMIT $limit OFFSET $offset";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
 
