@@ -17,7 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-
+    if (!isset($data['idVacante']) || !isset($data['idCandidato']) || !isset($data['idEmpresa']) || !isset($data['calificacion']) || !isset($data['comentarioCalifiacion'])) {
+        echo json_encode(['error' => 'Faltan parámetros necesarios.']);
+        http_response_code(400); // Bad Request
+        exit();
+    }
 
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
