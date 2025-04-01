@@ -29,11 +29,22 @@ try {
     $calificacion = mysqli_real_escape_string($conexion, $data['calificacion']);
     $comentarioCalificacion = mysqli_real_escape_string($conexion, $data['comentarioCalificacion']);
     $fechaActual = date('Y-m-d H:i:s');
-  
+
+    // Verificamos si ya existe una calificación para esta vacante, candidato y empresa
+    $consultaExistente = "SELECT * FROM calificaciones_candidato WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
+    $resultadoExistente = mysqli_query($conexion, $consultaExistente);
+
+    if (mysqli_num_rows($resultadoExistente) > 0) {
+        // Si ya existe una calificación, la eliminamos
+        $consultaEliminar = "DELETE FROM calificaciones_candidato WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
+        mysqli_query($conexion, $consultaEliminar);
+    }
+
+    // Insertamos la nueva calificación
     $consultaAgregar = "INSERT INTO calificaciones_candidato (Vacante_ID, Candidato_ID, Empresa_ID, Calificacion, Comentario, Fecha_Calificacion) VALUES ('$idVacante', '$idCandidato', '$idEmpresa', '$calificacion', '$comentarioCalificacion', '$fechaActual')";
 
-    if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => 'Calificacion agregada corrctamente']);
+    if (mysqli_query($conexion, $consultaAgregar)) {
+        echo json_encode(['success' => 'Calificación agregada correctamente']);
     } else {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
     }
