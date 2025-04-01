@@ -17,21 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) || !isset($data['idVacante']) || !isset($data['estadoNuevo'])) {
+    if (!isset($data['idVacante']) || !isset($data['idCandidato']) || !isset($data['idEmpresa']) || !isset($data['calificacion']) || !isset($data['comentarioCalificacion'])) {
         echo json_encode(['error' => 'Faltan parámetros necesarios.']);
         http_response_code(400); // Bad Request
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
-    $estadoNuevo = mysqli_real_escape_string($conexion, $data['estadoNuevo']);
-
+    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $calificacion = mysqli_real_escape_string($conexion, $data['calificacion']);
+    $comentarioCalificacion = mysqli_real_escape_string($conexion, $data['comentarioCalificacion']);
+    $fechaActual = date('Y-m-d H:i:s');
   
-    $consulta = "UPDATE postulaciones SET Estado_Candidato = '$estadoNuevo' WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato'";
+    $consultaAgregar = "INSERT INTO calificaciones_candidato (Vacante_ID, Candidato_ID, Empresa_ID, Calificacion, Comentario, Fecha_Calificacion) VALUES ('$idVacante', '$idCandidato', '$idEmpresa', '$calificacion', '$comentarioCalificacion', '$fechaActual')";
 
     if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => 'Estado cambiado corrctamente']);
+        echo json_encode(['success' => 'Calificacion agregada corrctamente']);
     } else {
         die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
     }
