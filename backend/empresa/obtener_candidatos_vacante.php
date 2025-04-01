@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
 
     $consulta = "
-        SELECT postulaciones.ID AS Postulacion_ID, candidato.ID, candidato.Nombre, candidato.Apellido, candidato.Fotografia, universidad.Nombre AS Universidad, postulaciones.Fecha_Postulacion
+        SELECT candidato.ID, candidato.Nombre, candidato.Apellido, candidato.Fotografia, universidad.Nombre AS Universidad, postulaciones.Fecha_Postulacion
         FROM postulaciones
         INNER JOIN candidato ON postulaciones.Candidato_ID = candidato.ID
         INNER JOIN universidad ON candidato.Universidad = universidad.ID 
