@@ -17,17 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idVacante']) || !isset($data['idCandidato']) || !isset($data['idEmpresa']) || !isset($data['calificacion']) || !isset($data['comentarioCalificacion'])) {
-        echo json_encode(['error' => 'Faltan parámetros necesarios.']);
-        http_response_code(400); // Bad Request
-        exit();
-    }
+
 
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $calificacion = mysqli_real_escape_string($conexion, $data['calificacion']);
-    $comentarioCalificacion = mysqli_real_escape_string($conexion, $data['comentarioCalificacion']);
+    $comentarioCalifiacion = mysqli_real_escape_string($conexion, $data['comentarioCalifiacion']);
     $fechaActual = date('Y-m-d H:i:s');
 
     // Verificamos si ya existe una calificación para esta vacante, candidato y empresa
@@ -41,7 +37,7 @@ try {
     }
 
     // Insertamos la nueva calificación
-    $consultaAgregar = "INSERT INTO calificaciones_candidato (Vacante_ID, Candidato_ID, Empresa_ID, Calificacion, Comentario, Fecha_Calificacion) VALUES ('$idVacante', '$idCandidato', '$idEmpresa', '$calificacion', '$comentarioCalificacion', '$fechaActual')";
+    $consultaAgregar = "INSERT INTO calificaciones_candidato (Vacante_ID, Candidato_ID, Empresa_ID, Calificacion, Comentario, Fecha_Calificacion) VALUES ('$idVacante', '$idCandidato', '$idEmpresa', '$calificacion', '$comentarioCalifiacion', '$fechaActual')";
 
     if (mysqli_query($conexion, $consultaAgregar)) {
         echo json_encode(['success' => 'Calificación agregada correctamente']);
