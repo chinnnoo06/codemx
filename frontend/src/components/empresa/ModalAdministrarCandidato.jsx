@@ -7,6 +7,9 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
   const [showModalConfirmacion, setShowModalConfirmacion] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
   const [actionType, setActionType] = useState(null);
+  const [calificacion, setCalificacion] = useState(0); 
+  const [comentarioCalifiacion, setComentarioCalificacion] = useState('');
+  const [existeCalificacion, setExisteCalificacion] = useState(false);
   const navigate = useNavigate(); // Hook para redirigir a otra página
 
   const fetchData = useCallback(async () => {
@@ -49,9 +52,37 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
 
         const estadoData = await estadoResponse.json();
 
+
+        // Fetch para obtener la calificacion del candidato
+        const califiacionResponse = await fetch(
+          'https://www.codemx.net/codemx/backend/empresa/obtener_calificacionVacante_candidato.php',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idCandidato: candidato.ID, idVacante }),
+          }
+        );
+
+        if (!califiacionResponse.ok) {
+          const errorDataCalificacion = await califiacionResponse.json();
+          throw new Error(errorDataCalificacion.error || 'Error desconocido al obtener estado del candidato');
+        }
+
+        const califiacionData = await califiacionResponse.json();
+
         // Guardamos las tecnologías dominadas por el candidato y el estado del candidato
         setTecnologiasDominadas(tecnologiasDominadasData.tecnologias_dominadas);
         setEstadoCandidato(estadoData.estado_candidato);
+        // Si ya existe una calificación, establece los valores en los estados correspondientes
+        if (califiacionData.calificacion !== null) {
+          setCalificacion(califiacionData.calificacion);
+          setComentarioCalificacion(califiacionData.comentarioCalificacion);
+          setExisteCalificacion(true); // Marca que existe una calificación previa
+        } else {
+          setExisteCalificacion(false);
+        }
 
       } catch (error) {
         // Manejo de errores
@@ -189,6 +220,47 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
     }
   };
 
+  const manejarEstrellasClick = (index) => {
+    setCalificacion(index + 1); // Actualizamos la calificación según la estrella seleccionada
+  };
+
+  const enviarCalificacion = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        'https://www.codemx.net/codemx/backend/empresa/agregar_calificacion_candidato.php',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            idVacante,
+            idCandidato: candidato.ID,
+            idEmpresa,
+            calificacion,
+            comentarioCalifiacion,
+          }),
+        }
+      );
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        fetchData(); // Vuelve a obtener los datos del candidato actualizado
+        alert('Calificación enviada correctamente');
+      } else {
+        console.log(`Hubo un error al enviar la calificación: ${result.error || 'Error desconocido'}`);
+      }
+    } catch (error) {
+      console.error('Error al enviar la calificación:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  console.log(comentarioCalifiacion); // Agrega esto para verificar el valor
+
+
   return (
     <div className="container container-modal">
       {/* Información del usuario */}
@@ -256,6 +328,59 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
           )}
         </div>
       </div>
+
+      {(estadoCandidato === "No contratado" || estadoCandidato === "Contratado") && (
+        <div className="calificar">
+          <div className="d-flex gap-2 align-items-center ">
+            <h4>Califica al Candidato: </h4>
+            <div className="d-flex gap-2 mb-2">
+              {[0, 1, 2, 3, 4].map((index) => (
+                <i
+                  key={index}
+                  className={`fa fa-star ${calificacion > index ? 'text-warning' : 'text-muted'}`}
+                  aria-hidden="true"
+                  onClick={() => manejarEstrellasClick(index)}
+                  style={{ cursor: 'pointer' }}
+                ></i>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group mt-2">
+            <textarea
+              className="form-control"
+              rows="3"
+              placeholder="Deja un comentario sobre el candidato"
+              value={comentarioCalifiacion}
+              onChange={(e) => setComentarioCalificacion(e.target.value)}
+            />
+          </div>
+
+          <div className="d-flex gap-2 mt-2">
+            {existeCalificacion ? (
+                <button 
+                  className="btn btn-estado-candidato" 
+                  disabled={!calificacion || !comentarioCalifiacion || isLoading} 
+                  onClick={enviarCalificacion}
+                >
+                  {isLoading ? 'Cargando...' : 'Cambiar Calificación'}
+                </button>
+
+            ) : (
+                <button 
+                  className="btn btn-estado-candidato" 
+                  disabled={!calificacion || !comentarioCalifiacion || isLoading} 
+                  onClick={enviarCalificacion}
+                >
+                  {isLoading ? 'Cargando...' : 'Enviar Calificación'}
+                </button>
+            )}
+
+          </div>
+
+        </div>
+      )}
+
 
       {/*Modal Confirmacion*/}
       {showModalConfirmacion && (

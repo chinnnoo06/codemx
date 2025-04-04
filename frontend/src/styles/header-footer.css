@@ -161,6 +161,18 @@ footer li {
     transform: scale(1.1);
 }
 
+@media (min-width: 1280px) and (max-width: 1450px) {
+    .contenedor-seccion-vacantes{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .contenedor-header header nav{
+        gap: 1.5rem
+    }
+
+    
+}
+
 
 @media (max-width: 1280px) { 
     .contenedor-header header {

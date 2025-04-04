@@ -155,7 +155,7 @@ export const RutasCandidato = () => {
                 <Routes>
                     <Route path="/" element={<PageInicioCandidato />} />
                     <Route path="/inicio-candidato" element={<PageInicioCandidato />} />
-                    <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato />} />
+                    <Route path="/recomendaciones-candidato" element={<PageRecomendacionesCandidato candidato={candidato}/>} />
                     <Route path="/miperfil-candidato" element={<PageMiPerfilCandidato candidato={candidato} />} />
                     <Route path="/perfil-candidato/" element={<PagePerfilCandidato  candidatoActivo={candidato}/>} />
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  candidato={candidato}/>} />

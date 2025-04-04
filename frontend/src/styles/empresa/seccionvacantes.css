@@ -5,6 +5,10 @@
     margin: 0 auto; 
 }
 
+.titulo-seccion{
+    font-weight: 600;
+}
+
 .fila-foto img{
     width: 6rem;
     height: 6rem;
@@ -154,8 +158,18 @@
 .mostrar-tecnologias span:hover{
     color: #504e4efe;
 }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
 
 @media (min-width: 767px) and (max-width: 1280px) {
+    .contenedor-seccion-vacantes{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
     .btn-header-vacantes{
         height: 2rem; 
         width: 9rem;
@@ -184,6 +198,7 @@
     .fila-info .datos span {
         font-size: 0.8rem;
     }
+    
 }
 
 
@@ -271,6 +286,12 @@
     .btn-cancelar-vacante{
         font-size: 0.7rem;
         width: 7rem; 
+    }
+    .descripcion-seccion{
+        font-size: 0.8rem;
+    }
+    .titulo-seccion{
+        font-size: 1.3rem;
     }
 
 }

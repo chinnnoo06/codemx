@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante}) => {
+export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, recomendaciones=null}) => {
   return (
     <>
         {vacantes && vacantes.length > 0 ? (
@@ -28,15 +28,18 @@ export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante}) =
                                     <span className="text-muted">{vacante.Cantidad_Postulados} postulados</span>
                                 </div>
                             </div>
-                            
+
                             <h5 className='nombre-empresa'>{vacante.Empresa_Nombre}</h5>
-                            
+
                             <div className='datos d-flex'>
                                 <span className='estado-vacante text-muted'>{vacante.Estado_Vacante}, México</span>
                                 <span className='direccion-vacante text-muted'>{vacante.Ubicacion}</span>
                                 <span className='modalidad-vacante text-muted'>({vacante.Modalidad_Vacante})</span>
-                                {vacante.Estatus == "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
-                                {vacante.Estatus == "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
+                                {vacante.Estatus === "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
+                                {vacante.Estatus === "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
+                                {recomendaciones != null && (
+                                    <span className="coincidencias-vacante text-muted">Coincidencias: {vacante.coincidencias}</span>
+                                )}
                             </div>
                         </div>
 
