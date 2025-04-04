@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo json_encode([
             'cantidad' => $contador,
-            'vacantes' => $listaDeCalificaciones,
+            'calificaciones' => $listaDeCalificaciones,
             'promedio' => $promedio
         ]);
     } else {
