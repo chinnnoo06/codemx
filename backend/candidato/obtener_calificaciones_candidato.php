@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
     $consulta = "SELECT Calificacion, Comentario, empresa.Nombre, empresa.Logo FROM calificaciones_candidato
-        INNER JOIN empresa ON calificaciones_candidato.Empresa_ID = emprsa.ID
+        INNER JOIN empresa ON calificaciones_candidato.Empresa_ID = empresa.ID
         WHERE Candidato_ID = '$idCandidato'";
 
     $resultado = mysqli_query($conexion, $consulta);
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'promedio' => $promedio
         ]);
     } else {
-        echo json_encode(['cantidad' => 0, 'vacantes' => [], 'promedio' => 0, 'error' => 'No hay calificaciones disponibles.']);
+        echo json_encode(['cantidad' => 0, 'calificaciones' => [], 'promedio' => 0, 'error' => 'No hay calificaciones disponibles.']);
     }
 } else {
     // Método no permitido
