@@ -27,23 +27,7 @@ try {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
-
-    // Consulta para verificar si existe un chat entre el candidato y la empresa
-    $consultaChat = "SELECT ID FROM chats WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
-
-    $resultadoChat = mysqli_query($conexion, $consultaChat);
     
-    // Si existe un chat, eliminamos el chat
-    if (mysqli_num_rows($resultadoChat) > 0) {
-        $eliminarChat = "DELETE FROM chats WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
-
-        if (!mysqli_query($conexion, $eliminarChat)) {
-            echo json_encode(['error' => 'Error al eliminar el chat: ' . mysqli_error($conexion)]);
-            http_response_code(500);
-            exit();
-        }
-    }
-
     $consultaEliminarPostulacion = "DELETE FROM postulaciones WHERE Vacante_ID = '$idVacante' AND Candidato_ID = '$idCandidato'";
 
     if (mysqli_query($conexion, $consultaEliminarPostulacion)) {
