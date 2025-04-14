@@ -66,6 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Actualizar el estatus de la vacante a "inactiva"
                 $updateQuery = "UPDATE vacante SET Estatus = 'inactiva' WHERE ID = '{$fila['ID']}'";
                 mysqli_query($conexion, $updateQuery); // Ejecutar la actualización
+
+                // Eliminar todas las postulaciones relacionadas a esa vacante
+                $deletePostulaciones = "DELETE FROM postulaciones WHERE Vacante_ID = '{$fila['ID']}'";
+                mysqli_query($conexion, $deletePostulaciones); // Ejecutar el borrado
+
                 $fila['Estatus'] = 'inactiva';  // Actualizar en la respuesta también
             }
 
