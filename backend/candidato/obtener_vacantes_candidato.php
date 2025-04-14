@@ -1,16 +1,16 @@
 <?php
 require_once '../config/conexion.php';
 
-// Encabezados para CORS
+// Encabezados para habilitar CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Preflight
+// Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
+    http_response_code(204); // No Content
     exit();
 }
 
@@ -19,67 +19,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!isset($data['idCandidato'])) {
         echo json_encode(['error' => 'Falta el ID del candidato.']);
-        http_response_code(400);
+        http_response_code(400); 
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Obtener todos los chats del candidato con datos de empresa
-    $queryChats = "
-        SELECT 
-            chats.ID AS Chat_ID,
-            chats.Fecha_Creacion,
-            empresa.ID AS Empresa_ID,
-            empresa.Nombre AS Empresa_Nombre,
-            empresa.Logo AS Empresa_Logo
-        FROM chats
-        INNER JOIN empresa ON chats.Empresa_ID = empresa.ID
-        WHERE chats.Candidato_ID = '$idCandidato'
-        ORDER BY chats.Fecha_Creacion DESC
+    // Consulta para obtener las vacantes postuladas
+    $consultaPostuladas = "
+    SELECT 
+        vacante.ID AS ID,
+        postulaciones.Estado_Candidato,
+        vacante.Titulo AS Titulo,
+        vacante.Descripcion AS Descripcion,
+        modalidad_trabajo.Modalidad AS Modalidad_Vacante,
+        estado.Nombre AS Estado_Vacante,
+        vacante.Ubicacion AS Ubicacion,
+        vacante.Fecha_Limite AS Fecha_Limite,
+        vacante.Estatus AS Estatus,
+        vacante.Fecha_Creacion AS Fecha_Creacion,
+        (SELECT COUNT(*) FROM postulaciones WHERE postulaciones.Vacante_ID = vacante.ID) AS Cantidad_Postulados, 
+        empresa.ID AS Empresa_ID,
+        empresa.Nombre AS Empresa_Nombre,
+        empresa.Logo AS Empresa_Logo
+    FROM vacante
+    INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
+    INNER JOIN estado ON vacante.Estado = estado.ID
+    INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
+    LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
+    WHERE postulaciones.Candidato_ID = '$idCandidato' 
+    GROUP BY vacante.ID
     ";
 
-    $resultadoChats = mysqli_query($conexion, $queryChats);
 
-    if (!$resultadoChats) {
-        echo json_encode(['error' => 'Error al obtener los chats: ' . mysqli_error($conexion)]);
-        http_response_code(500);
+    $resultadoPostuladas = mysqli_query($conexion, $consultaPostuladas);
+
+    if (!$resultadoPostuladas) {
+        echo json_encode(['error' => 'Error en la consulta SQL de Postuladas: ' . mysqli_error($conexion)]);
+        http_response_code(500); 
         exit();
     }
 
-    $chats = [];
-
-    while ($chat = mysqli_fetch_assoc($resultadoChats)) {
-        $chatID = $chat['Chat_ID'];
-
-        // Obtener el último mensaje del chat (ordenado descendente por fecha)
-        $queryUltimoMensaje = "
-            SELECT 
-                ID AS Mensaje_ID,
-                Usuario,
-                Mensaje,
-                Fecha_Envio
-            FROM mensajes
-            WHERE Chat_ID = '$chatID'
-            ORDER BY Fecha_Envio DESC
-            LIMIT 1
-        ";
-
-        $resultadoUltimoMensaje = mysqli_query($conexion, $queryUltimoMensaje);
-        $ultimoMensaje = null;
-
-        if ($resultadoUltimoMensaje && mysqli_num_rows($resultadoUltimoMensaje) > 0) {
-            $ultimoMensaje = mysqli_fetch_assoc($resultadoUltimoMensaje);
-        }
-
-        $chat['Ultimo_Mensaje'] = $ultimoMensaje;
-        $chats[] = $chat;
+    $postuladas = [];
+    while ($fila = mysqli_fetch_assoc($resultadoPostuladas)) {
+        $postuladas[] = $fila;
     }
 
-    echo json_encode(['chats' => $chats]);
+    // Consulta para obtener las vacantes guardadas
+    $consultaGuardadas = "
+        SELECT 
+            vacantes_guardadas.Vacante_ID AS ID,
+            vacante.Titulo AS Titulo,
+            vacante.Descripcion AS Descripcion,
+            modalidad_trabajo.Modalidad AS Modalidad_Vacante,
+            estado.Nombre AS Estado_Vacante,
+            vacante.Ubicacion AS Ubicacion,
+            vacante.Fecha_Limite AS Fecha_Limite,
+            vacante.Estatus AS Estatus,
+            vacante.Fecha_Creacion AS Fecha_Creacion,
+            COALESCE(COUNT(postulaciones.ID), 0) AS Cantidad_Postulados,
+            empresa.ID AS Empresa_ID,
+            empresa.Nombre AS Empresa_Nombre,
+            empresa.Logo AS Empresa_Logo
+        FROM vacantes_guardadas
+        INNER JOIN vacante ON vacantes_guardadas.Vacante_ID = vacante.ID
+        INNER JOIN modalidad_trabajo ON vacante.Modalidad = modalidad_trabajo.ID
+        INNER JOIN estado ON vacante.Estado = estado.ID
+        LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID
+        INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
+        WHERE vacantes_guardadas.Candidato_ID = '$idCandidato'
+        GROUP BY vacante.ID
+    ";
+
+    $resultadoGuardadas = mysqli_query($conexion, $consultaGuardadas);
+
+    if (!$resultadoGuardadas) {
+        echo json_encode(['error' => 'Error en la consulta SQL de Guardadas: ' . mysqli_error($conexion)]);
+        http_response_code(500); 
+        exit();
+    }
+
+    $guardadas = [];
+    while ($fila = mysqli_fetch_assoc($resultadoGuardadas)) {
+        $guardadas[] = $fila;
+    }
+
+    // Devolver las vacantes postuladas y guardadas
+    echo json_encode([
+        'postuladas' => $postuladas,
+        'guardadas' => $guardadas
+    ]);
 
 } else {
-    http_response_code(405);
+    http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
 }
 ?>
