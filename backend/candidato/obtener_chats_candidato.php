@@ -1,7 +1,7 @@
 <?php
 require_once '../config/conexion.php';
 
-// Encabezados para CORS
+// Encabezados para habilitar CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
@@ -25,18 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Obtener todos los chats del candidato con datos de empresa
+    // Obtener todos los chats del candidato con datos de empresa, ordenados por el último mensaje
     $queryChats = "
         SELECT 
             chats.ID AS Chat_ID,
             chats.Fecha_Creacion,
             empresa.ID AS Empresa_ID,
             empresa.Nombre AS Empresa_Nombre,
-            empresa.Logo AS Empresa_Logo
+            empresa.Logo AS Empresa_Logo,
+            (SELECT Fecha_Envio FROM mensajes WHERE Chat_ID = chats.ID ORDER BY Fecha_Envio DESC LIMIT 1) AS Ultimo_Mensaje_Fecha
         FROM chats
         INNER JOIN empresa ON chats.Empresa_ID = empresa.ID
         WHERE chats.Candidato_ID = '$idCandidato'
-        ORDER BY chats.Fecha_Creacion DESC
+        ORDER BY Ultimo_Mensaje_Fecha DESC
     ";
 
     $resultadoChats = mysqli_query($conexion, $queryChats);
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     while ($chat = mysqli_fetch_assoc($resultadoChats)) {
         $chatID = $chat['Chat_ID'];
 
-        // Obtener el último mensaje del chat (ordenado descendente por fecha)
+        // Obtener el último mensaje del chat
         $queryUltimoMensaje = "
             SELECT 
                 ID AS Mensaje_ID,
