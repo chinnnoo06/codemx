@@ -9,6 +9,7 @@ import { PagePerfilCandidato } from '../pages/candidato/PagePerfilCandidato';
 import { PagePerfilEmpresa } from '../pages/candidato/PagePerfilEmpresa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageMisVacantes } from '../pages/candidato/PageMisVacantes';
+import { PageChatsCandidato } from '../pages/candidato/PageChatsCandidato';
 
 
 export const RutasCandidato = () => {
@@ -160,6 +161,7 @@ export const RutasCandidato = () => {
                     <Route path="/perfil-candidato/" element={<PagePerfilCandidato  candidatoActivo={candidato}/>} />
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  candidato={candidato}/>} />
                     <Route path="/vacantes-candidato/" element={<PageMisVacantes  candidato={candidato}/>} />
+                    <Route path="/chats-candidato/" element={<PageChatsCandidato  candidato={candidato}/>} />
                 </Routes> 
             </section>
 

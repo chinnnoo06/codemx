@@ -152,7 +152,7 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idCandidato: candidato.ID, idVacante, estadoNuevo }),
+          body: JSON.stringify({ idCandidato: candidato.ID, idVacante, idEmpresa, estadoNuevo }),
         }
       );
 

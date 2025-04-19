@@ -18,25 +18,29 @@ const renderStars = (rating) => {
 };
 
 return (
-    <div className="modal-calificaciones">
-        <h3>Calificaciones del Candidato</h3>
+    <div className="container containr-modal">
+        <h5 className="mb-3 text-center titulo-modal">Califiaciones del Candidato</h5>
         {calificaciones && calificaciones.length > 0 ? (
             <div className="calificaciones-list">
                 {calificaciones.map((calificacion, index) => (
-                    <div key={index} className="calificacion-item">
-                        <div className="empresa-info d-flex align-items-center">
+                    <div key={index} className="calificacion-item mb-3">
+                        <div className='header-calificacion d-flex align-items-center'>
                             <img
                                 src={calificacion.Logo}
-                                alt={`${calificacion.Nombre} logo`}
-                                className="empresa-logo"
+                                alt={calificacion.Nombre}
+                                className="usuario-reaccion-foto rounded-circle me-3"
                             />
-                            <span className="empresa-nombre">{calificacion.Nombre}</span>
+            
+                            <span className="usuario-reaccion-nombre">{calificacion.Nombre}</span>
                         </div>
                         <div className="calificacion-info">
                             <div className="stars">{renderStars(calificacion.Calificacion)}</div>
                             <p>{calificacion.Comentario}</p>
                         </div>
+
+
                     </div>
+                    
                 ))}
             </div>
         ) : (

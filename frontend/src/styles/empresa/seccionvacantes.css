@@ -1,6 +1,7 @@
 
 .contenedor-seccion-vacantes {
     width: 100%;
+    min-height: 80vh;
     max-width: 1000px;
     margin: 0 auto; 
 }
@@ -25,7 +26,7 @@
 
 .contenedor-vacantes,
 .contenedor-sin-vacantes{
-    min-height: 60vh;
+    min-height: 70vh;
     width: 100%;
 }
 
@@ -101,8 +102,7 @@
 
 .texto-no-vacantes {
     font-size: 1.5rem; 
-    color: #0B1C26; 
-    font-weight: 600; 
+    color: #0B1C26;  
 }
 
 .mostrar-tecnologias{
