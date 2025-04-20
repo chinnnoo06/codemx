@@ -7,8 +7,8 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
     const mensajesEndRef = useRef(null);
     const mensajesBodyRef = useRef(null);
     const intervalRef = useRef(null);
-    const [firstLoad, setFirstLoad] = useState(true);
-
+    const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+    const prevScrollHeight = useRef(0);
 
     const obtenerEtiquetaFecha = (fechaISO) => {
         const fecha = new Date(fechaISO);
@@ -30,6 +30,21 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
             month: 'long',
             year: 'numeric',
         });
+    };
+
+     // Función para manejar el scroll manual
+     const handleScroll = () => {
+        const element = mensajesBodyRef.current;
+        if (!element) return;
+        
+        // Verificamos si el usuario ha hecho scroll hacia arriba
+        const isScrolledUp = element.scrollTop + element.clientHeight < element.scrollHeight - 50;
+        
+        // Si el scroll no está cerca del final, desactivamos el auto-scroll
+        setShouldAutoScroll(!isScrolledUp);
+        
+        // Guardamos la posición actual del scroll para comparaciones futuras
+        prevScrollHeight.current = element.scrollHeight;
     };
 
     useEffect(() => {
@@ -59,20 +74,35 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
     
         fetchMensajes();
         intervalRef.current = setInterval(fetchMensajes, 3000);
-        setFirstLoad(true); // <-- reset al cambiar de chat
     
         return () => clearInterval(intervalRef.current);
     }, [chat?.Chat_ID]);
 
     useEffect(() => {
-        if (firstLoad && mensajesBodyRef.current && mensajesEndRef.current) {
+        // Hacer scroll al final solo al cargar el chat o cuando shouldAutoScroll es true
+        if (mensajesBodyRef.current && shouldAutoScroll) {
             mensajesBodyRef.current.scrollTop = mensajesBodyRef.current.scrollHeight;
-            setFirstLoad(false);
         }
-    }, [mensajes, firstLoad]);
+    }, [chat, shouldAutoScroll]);
+
+    useEffect(() => {
+        const element = mensajesBodyRef.current;
+        if (!element) return;
+
+        // Solo hacer scroll si shouldAutoScroll es true y hay nuevos mensajes
+        if (shouldAutoScroll) {
+            element.scrollTop = element.scrollHeight;
+        } else {
+            // Mantener la posición relativa cuando llegan nuevos mensajes pero el usuario está scrolleando
+            const prevScrollPosition = element.scrollHeight - prevScrollHeight.current;
+            if (prevScrollPosition > 0) {
+                element.scrollTop += element.scrollHeight - prevScrollHeight.current;
+            }
+        }
+        
+        prevScrollHeight.current = element.scrollHeight;
+    }, [mensajes, shouldAutoScroll]);
     
-
-
     const handleEnviarMensaje = async () => {
         if (!nuevoMensaje.trim()) return;
 
@@ -101,6 +131,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
 
             setMensajes((prev) => [...prev, mensajeNuevo]);
             setNuevoMensaje('');
+
         } catch (error) {
             console.error('Error al enviar el mensaje:', error);
         }
@@ -128,7 +159,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                 <h5>{chat.Empresa_Nombre}</h5>
             </div>
 
-            <div className="mensajes-body" ref={mensajesBodyRef}>
+            <div className="mensajes-body" ref={mensajesBodyRef}  onScroll={handleScroll}>
                 {(() => {
                     let fechaAnterior = null;
 
