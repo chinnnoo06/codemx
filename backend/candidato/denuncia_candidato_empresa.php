@@ -8,48 +8,64 @@ header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Manejo del método OPTIONS (Preflight)
+// Manejo del método OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204); // No Content
+    http_response_code(204);
     exit();
 }
 
 try {
-    // Obtén el cuerpo de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
     $fechaActual = date('Y-m-d H:i:s');
 
-    if ((!isset($data['idDenunciante'])) || !isset($data['idDenunciado']) || !isset($data['motivo']) || !isset($data['descripcion'])) {
-        echo json_encode(['success' => false, 'error' => 'Falta datos importantes para realizar la denuncia.']);
+    if (
+        !isset($data['idDenunciante']) ||
+        !isset($data['idDenunciado']) ||
+        !isset($data['motivo']) ||
+        !isset($data['descripcion'])
+    ) {
+        echo json_encode(['success' => false, 'error' => 'Faltan datos importantes para realizar la denuncia.']);
         http_response_code(400);
         exit();
     }
 
     $idDenunciante = mysqli_real_escape_string($conexion, $data['idDenunciante']);
-    $idDenunciado= mysqli_real_escape_string($conexion, $data['idDenunciado']);
-    $idMotivo = mysqli_real_escape_string($conexion, $data['motivo']);
-    $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
-    $estado = 1;
+    $idDenunciado  = mysqli_real_escape_string($conexion, $data['idDenunciado']);
+    $idMotivo      = mysqli_real_escape_string($conexion, $data['motivo']);
+    $descripcion   = mysqli_real_escape_string($conexion, $data['descripcion']);
+    $estado        = 1;
 
-    $idComentario = isset($data['idComentario']) && !empty($data['idComentario']) 
-        ? "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'" 
-        : "NULL";
+    // Por defecto todos NULL
+    $idComentario = "NULL";
+    $idMensaje = "NULL";
+    $idPublicacion = "NULL";
+    $idVacante = "NULL";
 
-    $idMensaje = isset($data['idMensaje']) && !empty($data['idMensaje']) 
-    ? "'" . mysqli_real_escape_string($conexion, $data['idMensaje']) . "'" 
-    : "NULL";
+    // Solo se permite uno activo
+    if (!empty($data['idComentario'])) {
+        $idComentario = "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'";
+    } elseif (!empty($data['idMensaje'])) {
+        $idMensaje = "'" . mysqli_real_escape_string($conexion, $data['idMensaje']) . "'";
+    } elseif (!empty($data['idPublicacion'])) {
+        $idPublicacion = "'" . mysqli_real_escape_string($conexion, $data['idPublicacion']) . "'";
+    } elseif (!empty($data['idVacante'])) {
+        $idVacante = "'" . mysqli_real_escape_string($conexion, $data['idVacante']) . "'";
+    }
 
-    $idPublicacion = isset($data['idPublicacion']) && !empty($data['idPublicacion']) 
-    ? "'" . mysqli_real_escape_string($conexion, $data['idPublicacion']) . "'" 
-    : "NULL";
-
-    $idVacante = isset($data['idVacante']) && !empty($data['idVacante']) 
-    ? "'" . mysqli_real_escape_string($conexion, $data['idVacante']) . "'" 
-    : "NULL";
-
-    // Consulta para insertar el nuevo comentario
-    $consulta = "INSERT INTO denuncia_candidato_empresa (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Mensaje_ID, Publicacion_ID, Vacante_ID)
-                VALUES ('$idDenunciante', '$idDenunciado', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idChat, $idMensaje, $idPublicacion, $idVacante)";
+    $consulta = "INSERT INTO denuncia_candidato_empresa 
+    (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Mensaje_ID, Publicacion_ID, Vacante_ID)
+    VALUES (
+        '$idDenunciante', 
+        '$idDenunciado', 
+        '$idMotivo', 
+        '$estado', 
+        '$descripcion', 
+        '$fechaActual', 
+        $idComentario, 
+        $idMensaje, 
+        $idPublicacion, 
+        $idVacante
+    )";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Denuncia agregada.']);
