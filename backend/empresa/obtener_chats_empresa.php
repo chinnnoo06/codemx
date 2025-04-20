@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             chats.ID AS Chat_ID,
             chats.Fecha_Creacion,
             candidato.ID AS Candidato_ID,
-            candidaro.Nombre AS Candidato_Nombre,
+            candidato.Nombre AS Candidato_Nombre,
             candidato.Apellido AS Candidato_Apellido,
             candidato.Fotografia AS Candidato_Fotografia,
             (SELECT Fecha_Envio FROM mensajes WHERE Chat_ID = chats.ID ORDER BY Fecha_Envio DESC LIMIT 1) AS Ultimo_Mensaje_Fecha
