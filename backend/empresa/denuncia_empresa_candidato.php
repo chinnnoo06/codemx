@@ -32,27 +32,16 @@ try {
     $estado = 1;
 
     $idComentario = isset($data['idComentario']) && !empty($data['idComentario']) 
-    ? mysqli_real_escape_string($conexion, $data['idComentario']) 
-    : null;
+        ? "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'" 
+        : "NULL";
 
     $idMensaje = isset($data['idMensaje']) && !empty($data['idMensaje']) 
-        ? mysqli_real_escape_string($conexion, $data['idMensaje']) 
-        : null;
-
+    ? "'" . mysqli_real_escape_string($conexion, $data['idMensaje']) . "'" 
+    : "NULL";
 
     // Consulta para insertar el nuevo comentario
-    $consulta = "INSERT INTO denuncia_empresa_candidato 
-    (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Mensaje_ID)
-    VALUES (
-        '$idDenunciante', 
-        '$idDenunciado', 
-        '$idMotivo', 
-        '$estado', 
-        '$descripcion', 
-        '$fechaActual', 
-        " . ($idComentario !== null ? "'$idComentario'" : "NULL") . ", 
-        " . ($idMensaje !== null ? "'$idMensaje'" : "NULL") . "
-    )";
+    $consulta = "INSERT INTO denuncia_empresa_candidato (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Mensaje_ID)
+                VALUES ('$idDenunciante', '$idDenunciado', '$idMotivo', '$estado', '$descripcion', '$fechaActual', $idComentario, $idMensaje)";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Denuncia agregadaaa.']);
