@@ -83,6 +83,33 @@ export const PageChatsCandidato = ({ candidato }) => {
         return () => window.removeEventListener("resize", manejarCambioPantalla);
       }, []);
       
+
+      // Agrega este useEffect para manejar el scroll en móvil
+    useEffect(() => {
+        if (seccionActiva === "pantalla-pequenia") {
+            const handleScroll = (e) => {
+                // Prevenir el comportamiento por defecto del scroll
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            };
+
+            // Selecciona el contenedor principal
+            const mainContainer = document.querySelector('.contenedor-seccion-chats');
+            
+            if (mainContainer) {
+                mainContainer.addEventListener('touchmove', handleScroll, { passive: false });
+                mainContainer.addEventListener('scroll', handleScroll, { passive: false });
+            }
+
+            return () => {
+                if (mainContainer) {
+                    mainContainer.removeEventListener('touchmove', handleScroll);
+                    mainContainer.removeEventListener('scroll', handleScroll);
+                }
+            };
+        }
+    }, [seccionActiva]);
       
     
 

@@ -4,6 +4,7 @@
     width: 100%;
     max-width: 1000px;
     margin: 0 auto; 
+    overflow: hidden; /* Añade esta línea */
 }
 
 .col-chats{
@@ -249,6 +250,17 @@
 
 
 @media (min-width: 767px) and (max-width: 1000px) {
+    .contenedor-seccion-chats {
+        overflow: visible; /* Permite scroll interno en los subcomponentes */
+        touch-action: pan-y; /* Permite scroll vertical pero previene scroll horizontal */
+    }
+    
+    .contenedor-lista-chats-scroll,
+    .mensajes-body {
+        -webkit-overflow-scrolling: touch; /* Mejor scroll en iOS */
+        overscroll-behavior: contain; /* Previene el efecto de rebote que causa el cambio de vista */
+    }
+
     .icono-volver-lista{
         display: block;
     }
@@ -315,6 +327,17 @@
 
 @media (max-width: 767px) {
 
+    .contenedor-seccion-chats {
+        overflow: visible; /* Permite scroll interno en los subcomponentes */
+        touch-action: pan-y; /* Permite scroll vertical pero previene scroll horizontal */
+    }
+    
+    .contenedor-lista-chats-scroll,
+    .mensajes-body {
+        -webkit-overflow-scrolling: touch; /* Mejor scroll en iOS */
+        overscroll-behavior: contain; /* Previene el efecto de rebote que causa el cambio de vista */
+    }
+    
     .col-chats {
         width: 100% !important;
         max-width: 100%;
