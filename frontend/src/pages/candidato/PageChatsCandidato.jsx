@@ -68,49 +68,33 @@ export const PageChatsCandidato = ({ candidato }) => {
 
     useEffect(() => {
         const manejarCambioPantalla = () => {
-          const ancho = window.innerWidth;
-          if (ancho < 1000) {
-            setSeccionActiva("pantalla-pequenia");
-            setSeccionActivaPequenia("lista-chats"); // mostrará solo la lista al inicio
-          } else {
-            setSeccionActiva("pantalla-grande");
-          }
-        };
-      
-        manejarCambioPantalla();
-        window.addEventListener("resize", manejarCambioPantalla);
-      
-        return () => window.removeEventListener("resize", manejarCambioPantalla);
-      }, []);
-      
-
-      // Agrega este useEffect para manejar el scroll en móvil
-    useEffect(() => {
-        if (seccionActiva === "pantalla-pequenia") {
-            const handleScroll = (e) => {
-                // Prevenir el comportamiento por defecto del scroll
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            };
-
-            // Selecciona el contenedor principal
-            const mainContainer = document.querySelector('.contenedor-seccion-chats');
-            
-            if (mainContainer) {
-                mainContainer.addEventListener('touchmove', handleScroll, { passive: false });
-                mainContainer.addEventListener('scroll', handleScroll, { passive: false });
+            const ancho = window.innerWidth;
+    
+            if (ancho < 1000) {
+                setSeccionActiva((prev) => {
+                    if (prev !== "pantalla-pequenia") {
+                        setSeccionActivaPequenia("lista-chats"); // solo si antes era otra vista
+                        return "pantalla-pequenia";
+                    }
+                    return prev;
+                });
+            } else {
+                setSeccionActiva("pantalla-grande");
             }
-
-            return () => {
-                if (mainContainer) {
-                    mainContainer.removeEventListener('touchmove', handleScroll);
-                    mainContainer.removeEventListener('scroll', handleScroll);
-                }
-            };
-        }
-    }, [seccionActiva]);
-      
+        };
+    
+        manejarCambioPantalla();
+    
+        // Usa debounce para evitar spam en móviles
+        let resizeTimeout;
+        const debouncedResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(manejarCambioPantalla, 200);
+        };
+    
+        window.addEventListener("resize", debouncedResize);
+        return () => window.removeEventListener("resize", debouncedResize);
+    }, []);
     
 
     // Función para filtrar chats por la barra de búsqueda
