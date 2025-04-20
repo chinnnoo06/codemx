@@ -105,7 +105,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
     
     const handleEnviarMensaje = async () => {
         if (!nuevoMensaje.trim()) return;
-
+    
         try {
             const response = await fetch('https://www.codemx.net/codemx/backend/config/agregar_mensaje.php', {
                 method: 'POST',
@@ -116,27 +116,36 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                     mensaje: nuevoMensaje,
                 }),
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Error al enviar el mensaje');
             }
-
+    
             const mensajeNuevo = {
                 Mensaje_ID: Date.now(),
                 Mensaje: nuevoMensaje,
                 Usuario: 'candidato',
                 Fecha_Envio: new Date().toISOString(),
             };
-
+    
+            // Forzar el auto-scroll al enviar un mensaje
+            setShouldAutoScroll(true);
             setMensajes((prev) => [...prev, mensajeNuevo]);
             setNuevoMensaje('');
-
+    
+            // Esperar un momento para que se actualice el DOM y luego hacer scroll
+            setTimeout(() => {
+                if (mensajesBodyRef.current) {
+                    mensajesBodyRef.current.scrollTop = mensajesBodyRef.current.scrollHeight;
+                }
+            }, 0);
+    
         } catch (error) {
             console.error('Error al enviar el mensaje:', error);
         }
     };
-
+    
     if (!chat) {
         return (
             <div className="contenedor-nochat text-center text-muted d-flex justify-content-center align-items-center flex-column">
