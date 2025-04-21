@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idCandidato']) || !isset($data['idEmpresa'])) {
+        echo json_encode(['success' => false, 'error' => 'Faltan datos requeridos.']);
         http_response_code(400); 
         exit();
     }
@@ -26,18 +26,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
+    // Consulta para saber si lo sigue
     $consultaSiguiendo = "SELECT COUNT(*) as sigue FROM seguidores WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
     $resultadoSiguiendo = mysqli_query($conexion, $consultaSiguiendo);
     $filaSiguiendo = mysqli_fetch_assoc($resultadoSiguiendo);
 
-    $consultaChat = "SELECT COUNT(*) as haychat FROM chats WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa'";
-    $resultadoChat= mysqli_query($conexion, $consultaChat);
-    $filaChat = mysqli_fetch_assoc($resultadoChat);
+    // Consulta para saber si hay chat y cuál es
+    $consultaChat = "SELECT ID FROM chats WHERE Candidato_ID = '$idCandidato' AND Empresa_ID = '$idEmpresa' LIMIT 1";
+    $resultadoChat = mysqli_query($conexion, $consultaChat);
+
+    $hayChat = false;
+    $idChat = null;
+
+    if ($resultadoChat && mysqli_num_rows($resultadoChat) > 0) {
+        $filaChat = mysqli_fetch_assoc($resultadoChat);
+        $hayChat = true;
+        $idChat = $filaChat['ID'];
+    }
 
     echo json_encode([
-        'success' => true, 
+        'success' => true,
         'sigue' => $filaSiguiendo['sigue'] > 0,
-        'haychat' => $filaChat['haychat'] > 0
+        'haychat' => $hayChat,
+        'idChat' => $idChat
     ]);
 } else {
     http_response_code(405); 
