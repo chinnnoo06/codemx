@@ -64,9 +64,34 @@ try {
     if (!mysqli_query($conexion, $consultaNotificacion)) {
         throw new Exception("Error al guardar la notificación: " . mysqli_error($conexion));
     }
-    
-    echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
 
+    
+    $mail = new PHPMailer(true);
+    try {
+        // Configuración del servidor SMTP
+        $mail->isSMTP();
+        $mail->Host = getenv('SMTP_HOST'); 
+        $mail->SMTPAuth = true;
+        $mail->Username = getenv('SMTP_USERNAME'); 
+        $mail->Password = getenv('SMTP_PASSWORD'); 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = getenv('SMTP_PORT');
+
+        // Configuración del correo
+        $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
+        $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace, te mandará a la pagína de iniciar sesión y ya podras utilizar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$token'>Verificar Cuenta</a>";
+
+        $mail->send();
+        echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
+    } catch (Exception $e) {
+        die(json_encode(['error' => 'No se pudo enviar el correo de notificacion: ' . $mail->ErrorInfo]));
+    }
+    
+   
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
 }
