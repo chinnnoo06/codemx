@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ID AS Mensaje_ID,
                 Usuario,
                 Mensaje,
+                Lectura,
                 Fecha_Envio
             FROM mensajes
             WHERE Chat_ID = '$chatID'
