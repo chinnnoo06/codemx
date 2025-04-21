@@ -58,7 +58,8 @@ try {
     $emailDestino = $filaCorreo['Email'];
 
     $consultaNotificacion = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion)
-    VALUES ('$idCandidato', '$tipoEvento', '$descripcion', '$fechaCreacion'";
+                             VALUES ('$idCandidato', '$tipoEvento', '$descripcion', '$fechaCreacion')";
+
 
     if (!mysqli_query($conexion, $consultaNotificacion)) {
         throw new Exception("Error al guardar la notificación: " . mysqli_error($conexion));
