@@ -33,7 +33,7 @@ try {
     // Obtén el cuerpo de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) && !isset($data['candidatoNombre']) || !isset($data['candidatoApellido'])) {
+    if (!isset($data['idCandidato']) && !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['nombreVacante']) || !isset($data['nombreEmpresa'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
@@ -42,8 +42,10 @@ try {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $candidatoNombre = mysqli_real_escape_string($conexion, $data['candidatoNombre']);
     $candidatoApellido = mysqli_real_escape_string($conexion, $data['candidatoApellido']);
+    $nombreVacante = mysqli_real_escape_string($conexion, $data['nombreVacante']);
+    $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
     $tipoEvento = 'postulacion';
-    $descripcion = "Hola $candidatoNombre $candidatoApellido, se ha actualizado el estado de tu postulación a una vacante. Te invitamos a revisar los detalles en la plataforma para conocer el nuevo estatus y los siguientes pasos.";
+    $descripcion = "Hola $candidatoNombre $candidatoApellido, se ha actualizado el estado de tu postulación de la vacante: $nombreVacante, de la empresa $nombreEmpresa. Te invitamos a revisar los detalles en la plataforma para conocer el nuevo estatus y los siguientes pasos.";
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener correo del candidato
