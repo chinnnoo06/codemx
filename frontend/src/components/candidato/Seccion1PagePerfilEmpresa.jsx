@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import img from '../../resources/fondo.png';
 import '../../styles/empresa/miperfil.css';
 import { ModalSeguidoresPerfilEmpresa } from './ModalSeguidoresPerfilEmpresa';
@@ -17,8 +18,9 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
     const [menuVisible, setMenuVisible] = useState(false);
     const [siguiendo, setSiguiendo] = useState(false); 
     const [hayChat, setHayChat] = useState(false); 
+    const [chatId, setChatId] = useState(null);
     const [isLoading, setIsLoading] = useState(false); 
-
+    const navigate = useNavigate();
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -60,6 +62,7 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
             const result = await response.json();
             setSiguiendo(result.sigue);
             setHayChat(result.haychat);
+            setChatId(result.idChat);
         } catch (error) {
             console.error("Error al verificar si sigue a la empresa:", error);
         }
@@ -179,6 +182,12 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
         }
       };
 
+    const manejarRedireccionMensaje = () => {
+        navigate('/usuario-candidato/chats-candidato', {
+            state: { chatId }
+        });
+    };
+
 
   return (
       <div className="perfil-container-empresa">
@@ -259,7 +268,7 @@ export const Seccion1PagePerfilEmpresa = ({ empresa, numPublicaciones, idCandida
                             {siguiendo ? 'Dejar de seguir' : 'Seguir'}
                         </button>
                         {hayChat && (
-                            <button className="btn btn-tipodos btn-sm">
+                            <button className="btn btn-tipodos btn-sm" onClick={manejarRedireccionMensaje}>
                                 Mandar Mensaje
                             </button>
                         )}

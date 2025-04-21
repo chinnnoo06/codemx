@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../../styles/seccionchats.css';
 
-export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes }) => {
+export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes, manejarMostrarOpcionesEliminar, idEmpresa }) => {
     const [mensajes, setMensajes] = useState([]);
     const [nuevoMensaje, setNuevoMensaje] = useState('');
     const mensajesEndRef = useRef(null);
@@ -9,6 +9,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
     const intervalRef = useRef(null);
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
     const prevScrollHeight = useRef(0);
+    const [permitirEliminarChat, setPermitirEliminarChat] = useState(null);
 
     const obtenerEtiquetaFecha = (fechaISO) => {
         const fecha = new Date(fechaISO);
@@ -102,6 +103,39 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
         
         prevScrollHeight.current = element.scrollHeight;
     }, [mensajes, shouldAutoScroll]);
+
+    useEffect(() => {
+        const verificarPermisoEliminarChat = async () => {
+            if (!chat || !chat.Candidato_ID || !idEmpresa) return;
+    
+            try {
+                const response = await fetch('https://www.codemx.net/codemx/backend/empresa/verificar_eliminar_chat.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        idCandidato: chat.Candidato_ID,
+                        idEmpresa: idEmpresa,
+                    }),
+                });
+    
+                const resultado = await response.json();
+    
+                if (typeof resultado.resultado === 'boolean') {
+                    setPermitirEliminarChat(resultado.resultado);
+                } else {
+                    console.error("Respuesta inesperada del backend:", resultado);
+                    setPermitirEliminarChat(false);
+                }
+            } catch (error) {
+                console.error("Error al verificar permiso de eliminación del chat:", error);
+                setPermitirEliminarChat(false);
+            }
+        };
+    
+        verificarPermisoEliminarChat();
+    }, [chat?.Candidato_ID, idEmpresa]);    
     
     const handleEnviarMensaje = async () => {
         if (!nuevoMensaje.trim()) return;
@@ -112,7 +146,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chatID: chat.Chat_ID,
-                    usuario: 'candidato',
+                    usuario: 'empresa',
                     mensaje: nuevoMensaje,
                 }),
             });
@@ -125,7 +159,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
             const mensajeNuevo = {
                 Mensaje_ID: Date.now(),
                 Mensaje: nuevoMensaje,
-                Usuario: 'candidato',
+                Usuario: 'empresa',
                 Fecha_Envio: new Date().toISOString(),
             };
     
@@ -159,16 +193,22 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
         <div className="chat-mensajes">
             <div className="mensajes-header d-flex justify-content-between align-items-center pb-2 mb-4">
                 <img
-                    src={`${chat.Empresa_Logo}?t=${new Date().getTime()}`}
+                    src={`${chat.Candidato_Fotografia}?t=${new Date().getTime()}`}
                     alt="Perfil"
                     className={origen === 'modal' ? 'chat-logo-modal' : 'chat-logo'}
                     loading="lazy"
-                    onClick={() => irAlPerfilEmpresa(chat.Empresa_ID)}
+                    onClick={() => irAlPerfilCandidato(chat.Candidato_ID)}
                 />
                 <div className="contenedor-nombre-boton d-flex align-items-center gap-2">
                     <h5 className={origen === 'modal' ? 'empresa-nombre-chat-modal' : 'empresa-nombre-chat'}>
-                        {chat.Empresa_Nombre}
+                        {chat.Candidato_Nombre} {chat.Candidato_Apellido}
                     </h5>
+
+                    {permitirEliminarChat === true && origen === "normal" && (
+                        <button className="btn-bajar-modal" onClick={() => manejarMostrarOpcionesEliminar(chat.Chat_ID)}>
+                            <i className="fa-solid fa-ellipsis"></i>
+                        </button>
+                    )} 
 
                     {origen === "modal" && (
                         <button className="btn-bajar-modal" onClick={manejarCloseModalChatMensajes}>
@@ -197,17 +237,17 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                                     </div>
                                 )}
 
-                                <div className={`mensaje ${mensaje.Usuario === 'empresa' ? 'mensaje-empresa-usuariocandidato' : 'mensaje-candidato-usuariocandidato'}`}>
+                                <div className={`mensaje ${mensaje.Usuario === 'empresa' ? 'mensaje-empresa-usuarioempresa' : 'mensaje-candidato-usuarioempresa'}`}>
                                     <div className={origen === 'modal' ? 'contenedor-mensaje-modal' : 'contenedor-mensaje'}>
                                         {origen === "normal" && (
                                             <i
                                             className="fa-solid fa-ellipsis icono-opciones"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                if (mensaje.Usuario === 'candidato') {
-                                                    onMostrarOpcionesAutor(mensaje.Mensaje_ID);  
+                                                if (mensaje.Usuario === 'empresa') {
+                                                    onMostrarOpcionesAutor(mensaje.Mensaje_ID);  //PARA ELIMINAR COMENTARIO
                                                 } else {
-                                                    onMostrarOpcionesNoAutor(mensaje.Mensaje_ID, chat.Empresa_ID); 
+                                                    onMostrarOpcionesNoAutor(mensaje.Mensaje_ID, chat.Candidato_ID); 
                                                 }
                                             }}
                                             ></i>

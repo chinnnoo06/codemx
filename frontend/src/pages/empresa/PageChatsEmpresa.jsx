@@ -1,11 +1,12 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { SeccionListaChats } from '../../components/candidato/SeccionListaChats';
 import '../../styles/seccionchats.css';
-import { SeccionChatsMensajes } from '../../components/candidato/SeccionChatsMensajes';
+import { SeccionListaChats } from '../../components/empresa/SeccionListaChats';
+import { SeccionChatsMensajes } from '../../components/empresa/SeccionChatsMensajes';
 
-export const PageChatsCandidato = ({ candidato }) => {
+
+export const PageChatsEmpresa = ({ empresa }) => {
 
     const [chats, setChats] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,19 +23,22 @@ export const PageChatsCandidato = ({ candidato }) => {
     const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
     const [descripcionReporte, setDescripcionReporte] = useState("");
     const [mensajeSeleccionado, setMensajeSeleccionado] = useState(null);
-    const [empresaDelMensaje, setEmpresaDelMensaje] = useState(null);
-    const navigate = useNavigate(); 
+    const [candidatoDelMensaje, setCandidatoDelMensaje] = useState(null);
+    const [showModalOpciones, setShowModalOpciones] = useState(false);
+    const [showModalConfirmacionEliminarChat, setShowModalConfirmacionEliminarChat] = useState(false);
+    const [chatAEliminar, setChatAEliminar] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate(); 
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
         try {
-            const Response = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_chats_candidato.php', {
+            const Response = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_chats_empresa.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ idCandidato: candidato.id }),
+                body: JSON.stringify({ idEmpresa: empresa.id }),
             });
 
             if (!Response.ok) {
@@ -50,7 +54,7 @@ export const PageChatsCandidato = ({ candidato }) => {
             console.error('Error al obtener los datos de chats:', error);
             setIsLoading(false);
         }
-    }, [candidato.id]);
+    }, [empresa.id]);
 
     useEffect(() => {
         fetchData();
@@ -96,7 +100,7 @@ export const PageChatsCandidato = ({ candidato }) => {
         window.addEventListener("resize", debouncedResize);
         return () => window.removeEventListener("resize", debouncedResize);
     }, []);
-    
+
     useEffect(() => {
         if (location.state?.chatId && chats) {
             const chatEncontrado = chats.find(c => c.Chat_ID === location.state.chatId);
@@ -105,6 +109,7 @@ export const PageChatsCandidato = ({ candidato }) => {
             }
         }
     }, [location.state?.chatId, chats]);
+    
 
     // Función para filtrar chats por la barra de búsqueda
     const buscar = (searchQuery) => {
@@ -120,9 +125,9 @@ export const PageChatsCandidato = ({ candidato }) => {
     };
 
     
-    const irAlPerfilEmpresa = (idEmpresaPerfil) => {
-        navigate(`/usuario-candidato/perfil-empresa`, { 
-            state: { idEmpresa: idEmpresaPerfil}
+    const irAlPerfilCandidato = (idCandidatoPerfil) => {
+        navigate(`/usuario-empresa/perfil-candidato`, { 
+            state: { idEmpresa: idCandidatoPerfil}
         });
     };
 
@@ -139,6 +144,18 @@ export const PageChatsCandidato = ({ candidato }) => {
         setShowModalConfirmacion(false);
         setShowModalOpcionesAutor(true);
     };
+
+    
+    const manejarShowModalConfirmacionElinarChat = () => {
+        setShowModalConfirmacionEliminarChat(true);
+        setShowModalOpciones(false);
+    };
+
+    const manejarCloseModalConfirmacionEliminarChat = () => {
+        setShowModalConfirmacionEliminarChat(false);
+        setShowModalOpciones(true);
+    };
+
 
     
     const eliminarMensaje = async () => {
@@ -161,6 +178,35 @@ export const PageChatsCandidato = ({ candidato }) => {
                 setShowModalOpcionesAutor(false);
             } else {
                 console.error("Error al eliminar publicacion:", result.message);
+            }
+        } catch (error) {
+            console.error("Error en la petición:", error);
+        }finally {
+            setIsLoadingOpciones(false);
+        }
+    };
+
+    const eliminarChat = async () => {
+        if (isLoadingOpciones) return;
+        setIsLoadingOpciones(true);
+        try {
+            const response = await fetch("https://www.codemx.net/codemx/backend/config/eliminar_chat.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ idChat: chatAEliminar }),
+            });
+    
+            const result = await response.json();
+    
+            if (result.success) {
+                fetchData();
+                manejarCloseModalConfirmacionEliminarChat();
+                setShowModalOpciones(false);
+                setChatActivo(null);
+            } else {
+                console.error("Error al eliminar chat:", result.message);
             }
         } catch (error) {
             console.error("Error en la petición:", error);
@@ -191,15 +237,15 @@ export const PageChatsCandidato = ({ candidato }) => {
         setIsLoadingOpciones(true);
 
         try {
-            const response = await fetch("https://www.codemx.net/codemx/backend/candidato/denuncia_candidato_empresa.php", {
+            const response = await fetch("https://www.codemx.net/codemx/backend/empresa/denuncia_empresa_candidato.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     motivo: motivoSeleccionado,
                     descripcion: descripcionReporte,
                     idMensaje: mensajeSeleccionado,
-                    idDenunciante: candidato.id, 
-                    idDenunciado: empresaDelMensaje,
+                    idDenunciante: empresa.id, 
+                    idDenunciado: candidatoDelMensaje,
                 }),
             });
 
@@ -217,6 +263,12 @@ export const PageChatsCandidato = ({ candidato }) => {
             setIsLoadingOpciones(false);
         }
     };
+
+    const manejarMostrarOpcionesEliminar = (idChat) => {
+        setChatAEliminar(idChat);
+        setShowModalOpciones(true);
+    };
+
 
     return (
         <div className='contenedor-seccion-chats w-100 py-4'>
@@ -242,11 +294,12 @@ export const PageChatsCandidato = ({ candidato }) => {
                                     />
                                 </div>
                             </div>
+                            
                             <SeccionListaChats
                                 chats={chats}
                                 setChatActivo={seleccionarChat}
                                 query={query}
-                                irAlPerfilEmpresa={irAlPerfilEmpresa}
+                                irAlPerfilCandidato={irAlPerfilCandidato}
                             />
                         </div>
 
@@ -254,16 +307,18 @@ export const PageChatsCandidato = ({ candidato }) => {
                         <div className="col-md-8 ">
                             <SeccionChatsMensajes 
                                 chat={chatActivo} 
-                                irAlPerfilEmpresa={irAlPerfilEmpresa}
+                                irAlPerfilCandidato={irAlPerfilCandidato}
                                 onMostrarOpcionesAutor={(idMensaje) => {
                                     setMensajeSeleccionado(idMensaje);
                                     setShowModalOpcionesAutor(true);
                                 }}
-                                onMostrarOpcionesNoAutor={(idMensaje, idEmpresa) => {
+                                onMostrarOpcionesNoAutor={(idMensaje, idCandidato) => {
                                     setMensajeSeleccionado(idMensaje);
-                                    setEmpresaDelMensaje(idEmpresa);
+                                    setCandidatoDelMensaje(idCandidato);
                                     setShowModalOpcionesNoAutor(true);
                                 }}
+                                manejarMostrarOpcionesEliminar={manejarMostrarOpcionesEliminar}
+                                idEmpresa={empresa.id}
                             />
                         </div>
 
@@ -292,11 +347,11 @@ export const PageChatsCandidato = ({ candidato }) => {
                                     />
                                 </div>
                             </div>
-                            <SeccionListaChats
+                            <SeccionListaChats          
                                 chats={chats}
                                 setChatActivo={seleccionarChat}
                                 query={query}
-                                irAlPerfilEmpresa={irAlPerfilEmpresa}
+                                irAlPerfilCandidato={irAlPerfilCandidato}
                             />
                         </div>
                     )}
@@ -308,20 +363,42 @@ export const PageChatsCandidato = ({ candidato }) => {
                         </button>
                             <SeccionChatsMensajes 
                                 chat={chatActivo} 
-                                irAlPerfilEmpresa={irAlPerfilEmpresa}
+                                irAlPerfilCandidato={irAlPerfilCandidato}
                                 onMostrarOpcionesAutor={(idMensaje) => {
                                     setMensajeSeleccionado(idMensaje);
                                     setShowModalOpcionesAutor(true);
                                 }}
-                                onMostrarOpcionesNoAutor={(idMensaje, idEmpresa) => {
+                                onMostrarOpcionesNoAutor={(idMensaje, idCandidato) => {
                                     setMensajeSeleccionado(idMensaje);
-                                    setEmpresaDelMensaje(idEmpresa);
+                                    setCandidatoDelMensaje(idCandidato);
                                     setShowModalOpcionesNoAutor(true);
                                 }}
+                                setShowModalOpciones={setShowModalOpciones}
+                                idEmpresa={empresa.id}
                             />
                         </div>
                     )}
                 </>
+            )}
+
+            {/*Modal opciones*/}
+            {showModalOpciones && (
+                <div className="modal-overlay-opciones" onClick={() => setShowModalOpciones(false)}>
+                    <div className="modal-content-opciones" onClick={(e) => e.stopPropagation()}>
+                        <div className="botones d-flex flex-column align-items-center">
+        
+                            <button className="btn-opciones btn-eliminar" onClick={() => manejarShowModalConfirmacionElinarChat()}>
+                                Eliminar
+                            </button>
+                            <div className="divider"></div> 
+                            <button className="btn-opciones" onClick={() => setShowModalOpciones(false)}>
+                                Cancelar
+                            </button>
+                    
+        
+                        </div>
+                    </div>
+                </div>
             )}
 
             
@@ -391,6 +468,31 @@ export const PageChatsCandidato = ({ candidato }) => {
                 </div>
             )}
 
+             {/*Modal Confirmacion*/}
+             {showModalConfirmacionEliminarChat && (
+                <div className="modal-overlay-confirmacion" onClick={() => manejarCloseModalConfirmacionEliminarChat()}>
+                    <div className="modal-content-confirmacion" onClick={(e) => e.stopPropagation()}>
+            
+                        <p>¿Seguro que quieres eliminar el chat?</p>
+
+                        <div className="d-flex justify-content-between mt-3">
+                        <button
+                            className="btn btn-tipodos btn-sm"
+                            onClick={() => manejarCloseModalConfirmacionEliminarChat()}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            className="btn btn-danger btn-sm"
+                        onClick={() => eliminarChat()}
+                        >
+                                {isLoadingOpciones ? 'Cargando...' : 'Confirmar'}
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             
         <div className='modal-reportar'>
           {showModalDenuncia && (
@@ -417,17 +519,22 @@ export const PageChatsCandidato = ({ candidato }) => {
                               {/* Opciones de reporte a candidato*/}
                               <div className="modal-body-reportar">
                                   <button className="btn-opciones" onClick={() => manejarSeleccionReporte(2)}>
-                                    Comportamiento Inapropiado
+                                    Falta de Profesionalismo
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(4)}>
+                                    Conducta Inapropiada u Ofensiva
+                                  </button>
+                                  <div className="divider"></div>
+
+                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(6)}>
+                                    Spam o Mensajes No Deseados
                                   </button>
                                   <div className="divider"></div>
 
                                   <button className="btn-opciones" onClick={() => manejarSeleccionReporte(7)}>
-                                    Conducta Profesional No Ética
-                                  </button>
-                                  <div className="divider"></div>
-
-                                  <button className="btn-opciones" onClick={() => manejarSeleccionReporte(8)}>
-                                    Acoso Laboral o Sexual
+                                    Acoso o Discriminación
                                   </button>
                                   <div className="divider"></div>
 

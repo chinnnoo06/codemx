@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
 import '../styles/header-footer.css';
 import CryptoJS from "crypto-js";
@@ -7,11 +8,14 @@ import { PagePerfilCandidato } from '../pages/empresa/PagePerfilCandidato';
 import { PagePerfilEmpresa } from '../pages/empresa/PagePerfilEmpresa';
 import { PageVacantesEmpresa } from '../pages/empresa/PageVacantesEmpresa';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { PageChatsEmpresa } from '../pages/empresa/PageChatsEmpresa';
+import ListaChatFlotante from '../components/empresa/ListaChatFlotante';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true); 
+    const location = useLocation();
 
   useEffect(() => {
         const fetchData = async () => {
@@ -132,6 +136,7 @@ export const RutasEmpresa = () => {
                     <Route path="/perfil-candidato/" element={<PagePerfilCandidato empresa={empresa}/>} />
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  empresaActiva={empresa.id}/>} />
                     <Route path="/vacantes-empresa/" element={<PageVacantesEmpresa  empresa={empresa}/>} />
+                    <Route path="/chats-empresa/" element={<PageChatsEmpresa  empresa={empresa}/>} />
                 </Routes>
             </section>
 
@@ -218,6 +223,15 @@ export const RutasEmpresa = () => {
                     </div>
                 </div>
             </footer>
+
+            
+            {location.pathname !== '/usuario-empresa/chats-empresa' && (
+                <>
+                    <ListaChatFlotante
+                        empresa={empresa}
+                    />
+                </>
+            )}
 
         </>
     );

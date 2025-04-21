@@ -177,8 +177,8 @@
 }
 
 .empresa-logo {
-    width: 35px;
-    height: 35px;
+    width: 2.5em;
+    height: 2.5rem;
     border-radius: 50%;
     object-fit: cover;
 }

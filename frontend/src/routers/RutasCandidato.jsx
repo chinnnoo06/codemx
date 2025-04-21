@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
 import '../styles/header-footer.css';
 import { PageRecomendacionesCandidato } from '../pages/candidato/PageRecomendacionesCandidato';
@@ -10,13 +11,14 @@ import { PagePerfilEmpresa } from '../pages/candidato/PagePerfilEmpresa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageMisVacantes } from '../pages/candidato/PageMisVacantes';
 import { PageChatsCandidato } from '../pages/candidato/PageChatsCandidato';
-
+import ListaChatFlotante from '../components/candidato/ListaChatFlotante';
 
 export const RutasCandidato = () => {
     const [candidato, setCandidato] = useState(null);
     const [fotoPerfil, setFotoPerfil] = useState('');
     const [menuVisible, setMenuVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true); 
+    const location = useLocation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -253,6 +255,15 @@ export const RutasCandidato = () => {
                     </div>
                 </div>
             </footer>
+
+            {location.pathname !== '/usuario-candidato/chats-candidato' && (
+                <>
+                    <ListaChatFlotante
+                        candidato={candidato}
+                    />
+                </>
+            )}
+
         </>
     );
 };

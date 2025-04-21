@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { ModalSeguidosCandidato } from './ModalSeguidosCandidato';
 import { ModalDetallesCandidato } from './ModalDetallesCandidato';
 import img from '../../resources/fondo.png';
@@ -18,9 +19,10 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
     const [hayChat, setHayChat] = useState(false); 
     const [calificaciones, setCalificaciones] = useState(null);
     const [promedioCalificacion, setPromedioCalificacion] = useState(null);
-    const [cantidadCalificaciones, setCantidadCalificaciones] = useState(null);
     const [showModalCalificaciones, setShowModalCalificaciones] = useState(false);
+    const [chatId, setChatId] = useState(null);
     const [isLoading, setIsLoading] = useState(false); 
+    const navigate = useNavigate();
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -62,7 +64,6 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
             setEmpresas(seguidosData.empresas);
             setCalificaciones(califiacionData.calificaciones);
             setPromedioCalificacion(califiacionData.promedio);
-            setCantidadCalificaciones(califiacionData.cantidad);
         } catch (error) {
             console.error('Error al obtener los datos:', error);
         }
@@ -83,6 +84,7 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
 
             const result = await response.json();
             setHayChat(result.haychat);
+            setChatId(result.idChat);
         } catch (error) {
             console.error("Error al verificar si sigue a la empresa:", error);
         }
@@ -163,8 +165,12 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
             setIsLoading(false);
         }
       };
-    
 
+    const manejarRedireccionMensaje = () => {
+        navigate('/usuario-empresa/chats-empresa', {
+            state: { chatId }
+        });
+    };
 
   return (
      <div className="perfil-container-candidato">
@@ -250,7 +256,7 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
                             )}
             
                             {hayChat && (
-                                <button className="btn btn-tipodos btn-sm">
+                                <button className="btn btn-tipodos btn-sm" onClick={manejarRedireccionMensaje}>
                                     Mandar Mensaje
                                 </button>
                             )}

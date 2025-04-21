@@ -2,11 +2,13 @@ import React from 'react';
 import '../../styles/seccionchats.css';
 import '../../styles/modalflotante.css';
 
-export const SeccionListaChats = ({ chats, setChatActivo, query, irAlPerfilEmpresa, origen = 'normal' }) => {
+export const SeccionListaChats = ({ chats, setChatActivo, query, irAlPerfilCandidato, origen = 'normal' }) => {
   const chatsFiltrados = chats.filter(chat =>
-    chat.Empresa_Nombre.toLowerCase().includes(query.toLowerCase())
+    (chat.Candidato_Nombre + ' ' + chat.Candidato_Apellido)
+      .toLowerCase()
+      .includes(query.toLowerCase())
   );
-
+  
   return (
     <div className="lista-chats-candidato w-100">
       <div className={origen === 'modal' ? 'contenedor-lista-chats-scroll-modal' : 'contenedor-lista-chats-scroll'}>
@@ -20,18 +22,18 @@ export const SeccionListaChats = ({ chats, setChatActivo, query, irAlPerfilEmpre
             <div className='contenedor-chat' key={chat.Chat_ID} onClick={() => setChatActivo(chat)}>
               <div className="chat-preview">
                 <img
-                  src={`${chat.Empresa_Logo}?t=${new Date().getTime()}`}
+                  src={`${chat.Candidato_Fotografia}?t=${new Date().getTime()}`}
                   alt="Perfil"
                   className={origen === 'modal' ? 'chat-logo-modal' : 'chat-logo'}
-                  onClick={() => irAlPerfilEmpresa(chat.Empresa_ID)}
+                  onClick={() => irAlPerfilCandidato(chat.Candidato_ID)}
                 />
                 <div className="chat-info">
                   <div className="chat-header">
                     <div className='contenedor-nombre-chat'>
-                        <span className={origen === 'modal' ? 'chat-nombre-modal' : 'chat-nombre'}>
-                          {chat.Empresa_Nombre}
-                        </span>
-                    </div>
+                      <span className={origen === 'modal' ? 'chat-nombre-modal' : 'chat-nombre'}>
+                        {chat.Candidato_Nombre} {chat.Candidato_Apellido}
+                      </span>
+                   </div>
                     {chat.Ultimo_Mensaje && (
                       <span className={origen === 'modal' ? 'chat-hora-modal' : 'chat-hora'}>
                         {new Date(chat.Ultimo_Mensaje.Fecha_Envio).toLocaleTimeString([], {

@@ -1,0 +1,255 @@
+@keyframes bajar {
+  0% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes subir {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+.animar-apertura {
+  animation: subir 0.3s ease-out forwards;
+}
+
+.animar-cierre {
+  animation: bajar 0.3s ease-in forwards;
+}
+
+
+.chat-flotante-container {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  z-index: 9998;
+}
+
+.chat-flotante-boton {
+  background-color: #3e4143;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 25px;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.chat-flotante-wrapper {
+  display: flex;
+  position: fixed;
+  bottom: 0px;
+  right: 20px;
+  gap: 1rem;
+  z-index: 9999;
+}
+
+/* Modal de lista de chats */
+.chat-flotante-modal {
+  width: 320px;
+  height: 55vh;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-self: flex-end;
+}
+
+/* Modal de mensajes */
+.chat-flotante-mensajes-modal {
+  width: 500px;
+  height: 65vh;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-self: flex-start;
+}
+
+.chat-modal-header {
+  border-bottom: 1px solid #eee;
+}
+
+.chat-header-bar {
+  border-bottom: 1px solid #eee;
+}
+
+.btn-bajar-modal {
+  background: none;       
+  border: none;          
+  color: #0B1C26;         
+  font-size: 15px;        
+  cursor: pointer;       
+  padding: 5px;           
+  outline: none;          
+}
+
+.btn-bajar-modal:hover {
+  color: #555;
+}
+
+.contenedor-lista-chats-scroll-modal {
+  height: 44vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.chat-logo-modal {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.chat-nombre-modal {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chat-hora-modal {
+  font-size: 0.65rem;
+  color: #888;
+}
+
+.chat-ultimo-mensaje-modal {
+  font-size: 0.7rem;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 230px;
+}
+
+.barra-busqueda-lista-chat-modal input {
+  font-size: 0.7rem;
+}
+
+.barra-busqueda-lista-chat-modal span{
+  font-size: 0.8rem;
+}
+
+.empresa-nombre-chat-modal {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+
+.contenedor-mensaje-modal {
+  position: relative;
+  min-width: 70px;
+  max-width: 250px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #3e4143; /* Empresa */
+  color: white;
+  font-size: 0.85rem;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+.mensaje-candidato-usuariocandidato .contenedor-mensaje-modal,
+.mensaje-empresa-usuarioempresa .contenedor-mensaje-modal {
+    background-color: #2f77d0; /* Candidato */
+}
+
+
+.mensaje-texto-modal {
+  font-size: 0.7rem;
+  display: block;
+  padding-top: 8px;
+  padding-bottom: 8px; /* espacio para la hora */
+}
+
+.mensaje-hora-modal {
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  font-size: 0.52rem;
+  opacity: 0.8;
+}
+
+/* Estilo para el input de mensaje */
+.mensajes-input-modal {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  background-color: #fff;
+}
+
+.mensajes-input-modal input {
+  flex-grow: 1;
+  padding: 5px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background-color: #f1f3f4;
+  margin-right: 10px;
+  color: #202c33;
+  font-size: 0.7rem;
+}
+
+.mensajes-input-modal input:focus {
+  border: 1px solid #0B1C26;
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-enviar-modal {
+  background-color: #0B1C26;
+  color: #dde1e9;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+  border: none;
+  padding: 5px;
+  font-size: 0.7rem;
+}
+
+.btn-enviar-modal:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #dde1e9;
+  border: 1px solid #0B1C26;
+}
+
+.etiqueta-fecha-modal {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.etiqueta-fecha-modal span {
+  background-color: #e4e6eb;
+  color: #555;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+
+@media (max-width: 767px) {
+
+ .chat-flotante-container{
+    display: none;
+ }
+
+}
