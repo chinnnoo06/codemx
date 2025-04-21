@@ -87,8 +87,7 @@ try {
         $mail->Subject = 'ACTUALIZACION DE POSTULACION';
         $mail->Body = nl2br($descripcion);
         $mail->Body = "
-            <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong>,</p>
-            <p style='font-size: 15px;'>Se ha actualizado el estado de tu postulación a una vacante. Te invitamos a revisar los detalles en la plataforma para conocer el nuevo estatus y próximos pasos.</p>
+            <p style='font-size: 15px;'>$descripcion</p>
             
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
