@@ -79,7 +79,7 @@ try {
 
         // Configuración del correo
         $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-        $mail->addAddress($email);
+        $mail->addAddress($emailDestino);
 
         $mail->isHTML(true);
         $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
