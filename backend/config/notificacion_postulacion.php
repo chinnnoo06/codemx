@@ -33,7 +33,7 @@ try {
     // Obtén el cuerpo de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) && !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['nombreVacante']) || !isset($data['nombreEmpresa']) || !isset($data['idVacante'])) {
+    if (!isset($data['idCandidato']) || !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['nombreVacante']) || !isset($data['nombreEmpresa']) || !isset($data['idVacante'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
