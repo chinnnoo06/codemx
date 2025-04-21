@@ -38,9 +38,10 @@ try {
     $tipoEvento = 'mensaje';
     $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido te ha enviado nuevos mensajes. ¡No dejes pasar la oportunidad de responder y seguir avanzando en el proceso!";
     $fechaCreacion = date('Y-m-d H:i:s');
+    $fechaActual = date('Y-m-d H:i:s');
 
     // Revisar si la empresa NO tiene sesiones activas (vigentes)
-    $consultaSesion = "SELECT Session_ID FROM sesiones WHERE Empresa_ID = '$idEmpresa' AND Expira_En > NOW()";
+    $consultaSesion = "SELECT Session_ID FROM sesiones WHERE Empresa_ID = '$idEmpresa' AND Expira_En > '$fechaActual'";
     $resultadoSesion = mysqli_query($conexion, $consultaSesion);
 
     if (mysqli_num_rows($resultadoSesion) === 0) {
@@ -58,8 +59,8 @@ try {
         $emailDestino = $filaCorreo['Email'];
 
         // Insertar en la tabla de notificaciones
-        $consultaNotificacion = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Chat_ID)
-                                 VALUES ('$idCandidato', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idChat')";
+        $consultaNotificacion = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Chat_ID)
+                                 VALUES ('$idEmpresa', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idChat')";
 
         if (!mysqli_query($conexion, $consultaNotificacion)) {
             throw new Exception("Error al guardar la notificación: " . mysqli_error($conexion));
