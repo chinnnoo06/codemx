@@ -82,8 +82,9 @@ try {
         $mail->addAddress($emailDestino);
 
         $mail->isHTML(true);
-        $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
-        $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace, te mandará a la pagína de iniciar sesión y ya podras utilizar tu cuenta: <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$token'>Verificar Cuenta</a>";
+        $mail->Subject = 'Actualización de tu postulación';
+        $mail->Body = nl2br($descripcion);
+        $mail->AltBody = $descripcion;
 
         $mail->send();
         echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
