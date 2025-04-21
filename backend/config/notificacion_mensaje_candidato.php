@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa'], $data['empresaNombre'], $data['candidatoNombre'], $data['candidatoApellido'], $data['idChat'], $data['idCandidato'])) {
+    if (!isset($data['idEmpresa']) && !isset($data['empresaNombre']) || !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['idChat'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400);
         exit();
@@ -35,7 +35,6 @@ try {
     $candidatoNombre = mysqli_real_escape_string($conexion, $data['candidatoNombre']);
     $candidatoApellido = mysqli_real_escape_string($conexion, $data['candidatoApellido']);
     $idChat = mysqli_real_escape_string($conexion, $data['idChat']);
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $tipoEvento = 'mensaje';
     $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido te ha enviado nuevos mensajes. ¡No dejes pasar la oportunidad de responder y seguir avanzando en el proceso!";
     $fechaCreacion = date('Y-m-d H:i:s');
