@@ -82,9 +82,21 @@ try {
         $mail->addAddress($emailDestino);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Actualización de tu postulación';
+        $mail->Subject = 'ACTUALIZACION DE POSTULACION';
         $mail->Body = nl2br($descripcion);
-        $mail->AltBody = $descripcion;
+        $mail->Body = "
+            <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong>,</p>
+            <p style='font-size: 15px;'>Se ha actualizado el estado de tu postulación a una vacante. Te invitamos a revisar los detalles en la plataforma para conocer el nuevo estatus y próximos pasos.</p>
+            
+            <p style='margin-top: 20px;'>
+                <a href='https://www.codemx.net/codemx/frontend/build/usuario-candidato/vacantes-candidato' 
+                style='display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Ver mis postulaciones
+                </a>
+            </p>
+
+            <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
+        ";
 
         $mail->send();
         echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
