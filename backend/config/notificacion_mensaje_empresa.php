@@ -102,7 +102,7 @@ try {
         $mail->isHTML(true);
         $mail->Subject = 'MENSAJES NUEVOS';
         $mail->Body = "
-            <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong>,</p>
+            <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong></p>
             <p style='font-size: 15px;'>Has recibido nuevos mensajes de <strong>$empresaNombre</strong>. Entra a la plataforma para responder.</p>
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
