@@ -58,6 +58,26 @@ try {
         $filaCorreo = mysqli_fetch_assoc($resultadoCorreo);
         $emailDestino = $filaCorreo['Email'];
 
+        // Verificar si ya se envió una notificación recientemente (últimos 3 minutos)
+        $consultaReciente = "
+        SELECT ID 
+        FROM notificaciones 
+        WHERE Empresa_ID = '$idEmpresa' 
+        AND Chat_ID = '$idChat'
+        AND Tipo_Evento = 'mensaje'
+        AND TIMESTAMPDIFF(MINUTE, Fecha_Creacion, '$fechaActual') < 3
+        LIMIT 1
+        ";
+
+        $resultadoReciente = mysqli_query($conexion, $consultaReciente);
+
+        if (mysqli_num_rows($resultadoReciente) > 0) {
+        // Ya hay una notificación reciente, no se envía otra
+        echo json_encode(['success' => true, 'message' => 'Ya existe una notificación reciente.']);
+        exit();
+        }
+
+
         // Insertar en la tabla de notificaciones
         $consultaNotificacion = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Chat_ID)
                                  VALUES ('$idEmpresa', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idChat')";
