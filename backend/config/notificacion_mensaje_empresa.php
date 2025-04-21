@@ -24,35 +24,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa']) || !isset($data['empresaNombre']) || !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['idChat'])) {
+    if (!isset($data['idCandidato']) || !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['empresaNombre']) || !isset($data['idChat'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400);
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
-    $empresaNombre = mysqli_real_escape_string($conexion, $data['empresaNombre']);
+    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $candidatoNombre = mysqli_real_escape_string($conexion, $data['candidatoNombre']);
     $candidatoApellido = mysqli_real_escape_string($conexion, $data['candidatoApellido']);
+    $empresaNombre = mysqli_real_escape_string($conexion, $data['empresaNombre']);
     $idChat = mysqli_real_escape_string($conexion, $data['idChat']);
     $tipoEvento = 'mensaje';
-    $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido te ha enviado nuevos mensajes. ¡No dejes pasar la oportunidad de responder y seguir avanzando en el proceso!";
+    $descripcion = "Hola $candidatoNombre $candidatoApellido, $empresaNombre te ha enviado nuevos mensajes. ¡No dejes pasar la oportunidad de responder y seguir avanzando en el proceso!";
     $fechaCreacion = date('Y-m-d H:i:s');
     $fechaActual = date('Y-m-d H:i:s');
 
     // Revisar si la empresa NO tiene sesiones activas (vigentes)
-    $consultaSesion = "SELECT Session_ID FROM sesiones WHERE Empresa_ID = '$idEmpresa' AND Expira_En > '$fechaActual'";
+    $consultaSesion = "SELECT Session_ID FROM sesiones WHERE Candidato_ID = '$idCandidato' AND Expira_En > '$fechaActual'";
     $resultadoSesion = mysqli_query($conexion, $consultaSesion);
 
     if (mysqli_num_rows($resultadoSesion) === 0) {
         // No tiene sesión activa → enviar notificación y correo
 
         // Obtener correo del candidato (quien envió el mensaje)
-        $consultaCorreo = "SELECT Email FROM empresa WHERE ID = '$idEmpresa' LIMIT 1";
+        $consultaCorreo = "SELECT Email FROM candidato WHERE ID = '$idCandidato' LIMIT 1";
         $resultadoCorreo = mysqli_query($conexion, $consultaCorreo);
 
         if (!$resultadoCorreo || mysqli_num_rows($resultadoCorreo) === 0) {
-            throw new Exception("No se encontró el correo de la empresa.");
+            throw new Exception("No se encontró el correo del candidato.");
         }
 
         $filaCorreo = mysqli_fetch_assoc($resultadoCorreo);
@@ -62,7 +62,7 @@ try {
         $consultaReciente = "
         SELECT ID 
         FROM notificaciones 
-        WHERE Empresa_ID = '$idEmpresa' 
+        WHERE Candidato_ID = '$idCandidato' 
         AND Chat_ID = '$idChat'
         AND Tipo_Evento = 'mensaje'
         AND TIMESTAMPDIFF(MINUTE, Fecha_Creacion, '$fechaActual') < 3
@@ -79,8 +79,8 @@ try {
 
 
         // Insertar en la tabla de notificaciones
-        $consultaNotificacion = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Chat_ID)
-                                 VALUES ('$idEmpresa', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idChat')";
+        $consultaNotificacion = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Chat_ID)
+                                 VALUES ('$idCandidato', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idChat')";
 
         if (!mysqli_query($conexion, $consultaNotificacion)) {
             throw new Exception("Error al guardar la notificación: " . mysqli_error($conexion));
@@ -102,8 +102,8 @@ try {
         $mail->isHTML(true);
         $mail->Subject = 'MENSAJES NUEVOS';
         $mail->Body = "
-            <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
-            <p style='font-size: 15px;'>Has recibido nuevos mensajes de <strong>$candidatoNombre $candidatoApellido</strong>. Entra a la plataforma para responder.</p>
+            <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong>,</p>
+            <p style='font-size: 15px;'>Has recibido nuevos mensajes de <strong>$empresaNombre</strong>. Entra a la plataforma para responder.</p>
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                 style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
