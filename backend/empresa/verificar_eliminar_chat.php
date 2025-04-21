@@ -20,20 +20,16 @@ try {
 
     // Validar que los datos requeridos estén presentes
     if (!isset($datosRecibidos['idCandidato']) || !isset($datosRecibidos['idEmpresa'])) {
-        echo json_encode([
-            'success' => false,
-            'mensaje' => 'Faltan datos: se requiere idCandidato e idEmpresa'
-        ]);
-        http_response_code(400); 
+        echo json_encode(['resultado' => false]);
+        http_response_code(400);
         exit();
     }
 
-    // Escapar datos para prevenir inyecciones SQL
+    // Escapar los valores para mayor seguridad
     $idCandidato = mysqli_real_escape_string($conexion, $datosRecibidos['idCandidato']);
     $idEmpresa = mysqli_real_escape_string($conexion, $datosRecibidos['idEmpresa']);
 
-    // Consulta SQL para verificar si el candidato tiene una postulación activa (Estado_Candidato = 3)
-    // a alguna vacante perteneciente a la empresa dada
+    // Consulta para verificar si hay alguna postulación activa del candidato en vacantes de esa empresa
     $consultaSQL = "
         SELECT postulaciones.ID
         FROM postulaciones
@@ -44,30 +40,18 @@ try {
         LIMIT 1
     ";
 
-    // Ejecutar la consulta
     $resultadoConsulta = mysqli_query($conexion, $consultaSQL);
 
     if (!$resultadoConsulta) {
-        throw new Exception('Error al ejecutar la consulta SQL: ' . mysqli_error($conexion));
+        throw new Exception('Error al ejecutar la consulta: ' . mysqli_error($conexion));
     }
 
-    // Verificar si se encontró alguna postulación activa
-    $tienePostulacionActiva = mysqli_num_rows($resultadoConsulta) > 0;
-
-    // Devolver el resultado: disponible será true si NO tiene una postulación activa
-    echo json_encode([
-        'success' => true,
-        'disponible' => !$tienePostulacionActiva,
-        'mensaje' => $tienePostulacionActiva
-            ? 'El candidato ya tiene una postulación activa en esta empresa.'
-            : 'El candidato puede postularse, no tiene una postulación activa en esta empresa.'
-    ]);
+    // Si encontró al menos una postulación activa, devolver false; si no, true
+    $existePostulacionActiva = mysqli_num_rows($resultadoConsulta) > 0;
+    echo json_encode(['resultado' => !$existePostulacionActiva]);
 
 } catch (Exception $excepcion) {
-    // En caso de error del servidor
-    echo json_encode([
-        'success' => false,
-        'mensaje' => 'Error del servidor: ' . $excepcion->getMessage()
-    ]);
+    // En caso de error, asumimos que no puede postularse
+    echo json_encode(['resultado' => false]);
 }
 ?>
