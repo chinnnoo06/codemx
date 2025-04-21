@@ -33,19 +33,19 @@ try {
     // Obtén el cuerpo de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) && !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['nombreVacante']) || !isset($data['nombreEmpresa'])) {
+    if (!isset($data['idEmpresa']) && !isset($data['empresaNombre']) || !isset($data['candidatoNombre']) || !isset($data['candidatoApellido']) || !isset($data['idChat'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $empresaNombre = mysqli_real_escape_string($conexion, $data['empresaNombre']);
     $candidatoNombre = mysqli_real_escape_string($conexion, $data['candidatoNombre']);
     $candidatoApellido = mysqli_real_escape_string($conexion, $data['candidatoApellido']);
-    $nombreVacante = mysqli_real_escape_string($conexion, $data['nombreVacante']);
-    $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
-    $tipoEvento = 'postulacion';
-    $descripcion = "Hola $candidatoNombre $candidatoApellido, se ha actualizado el estado de tu postulación de la vacante: $nombreVacante, de la empresa $nombreEmpresa. Te invitamos a revisar los detalles en la plataforma para conocer el nuevo estatus y los siguientes pasos.";
+    $idChat = mysqli_real_escape_string($conexion, $data['idChat']);
+    $tipoEvento = 'mensaje';
+    $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido te ha enviado nuevos mensajes. ¡No dejes pasar la oportunidad de responder y seguir avanzando en el proceso!";
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener correo del candidato

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Limpiar sesiones vencidas
-                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$$fechaActual'";
+                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$fechaActual'";
 
                 if (!mysqli_query($conexion, $consultaEliminar)) {
                     echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
