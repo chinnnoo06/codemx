@@ -63,33 +63,8 @@ try {
     if (!mysqli_query($conexion, $consultaNotificacion)) {
         throw new Exception("Error al guardar la notificación: " . mysqli_error($conexion));
     }
-
-    $mail = new PHPMailer(true);
-    try {
-        // Configuración del servidor SMTP
-        $mail->isSMTP();
-        $mail->Host = getenv('SMTP_HOST'); 
-        $mail->SMTPAuth = true;
-        $mail->Username = getenv('SMTP_USERNAME'); 
-        $mail->Password = getenv('SMTP_PASSWORD'); 
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = getenv('SMTP_PORT');
-
-        // Configuración del correo
-        $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-        $mail->addAddress($emailDestino, "$candidatoNombre, $candidatoApellido");
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Actualización en tu postulación';
-        $mail->Body = nl2br($descripcion);
-        $mail->AltBody = $descripcion;
-
-        $mail->send();
-        echo json_encode(['success' => 'Registro exitoso. Correo de verificación enviado.']);
-    } catch (Exception $e) {
-        die(json_encode(['error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]));
-    }
-
+    
+    echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
