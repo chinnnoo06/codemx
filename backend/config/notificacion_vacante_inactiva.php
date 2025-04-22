@@ -33,9 +33,8 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $empresaNombre = mysqli_real_escape_string($conexion, $data['empresaNombre']);
     $tipoEvento = 'vacante_inactiva';
-    $fechaLimiteComparacion = date('Y-m-d', strtotime('-30 days')); // Solo la fecha
+    $fechaLimiteComparacion = date('Y-m-d', strtotime('-30 days'));
 
-    // Obtener correo de la empresa
     $consultaCorreo = "SELECT Email FROM empresa WHERE ID = '$idEmpresa' LIMIT 1";
     $resultadoCorreo = mysqli_query($conexion, $consultaCorreo);
 
@@ -46,7 +45,6 @@ try {
     $filaCorreo = mysqli_fetch_assoc($resultadoCorreo);
     $emailDestino = $filaCorreo['Email'];
 
-    // Buscar vacantes inactivas con fecha límite mayor a 30 días
     $consultaVacantes = "SELECT ID, Titulo FROM vacante 
                          WHERE Empresa_ID = '$idEmpresa' 
                          AND Estatus = 'inactiva' 
@@ -55,52 +53,78 @@ try {
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
 
     if ($resultadoVacantes && mysqli_num_rows($resultadoVacantes) > 0) {
+        $notificacionesEnviadas = 0;
+
         while ($vacante = mysqli_fetch_assoc($resultadoVacantes)) {
             $idVacante = $vacante['ID'];
             $tituloVacante = $vacante['Titulo'];
-            $fechaCreacion = date('Y-m-d H:i:s');
-            $descripcion = "Hola $empresaNombre, la vacante \"$tituloVacante\" ha estado inactiva por más de 30 días. Te sugerimos actualizarla o crear una nueva para atraer a más candidatos.";
 
-            // Guardar notificación
-            $consultaNotificacion = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Vacante_ID)
-                                     VALUES ('$idEmpresa', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idVacante')";
+            // Verificar si ya se envió una notificación reciente
+            $consultaUltima = "SELECT Fecha_Creacion FROM notificaciones 
+                               WHERE Empresa_ID = '$idEmpresa' 
+                               AND Vacante_ID = '$idVacante' 
+                               AND Tipo_Evento = '$tipoEvento' 
+                               ORDER BY Fecha_Creacion DESC LIMIT 1";
 
-            mysqli_query($conexion, $consultaNotificacion); // No detenemos en error aquí para seguir con otras
+            $resultadoUltima = mysqli_query($conexion, $consultaUltima);
+            $fechaHoy = new DateTime();
 
-            // Enviar correo
-            $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->Host = getenv('SMTP_HOST');
-            $mail->SMTPAuth = true;
-            $mail->Username = getenv('SMTP_USERNAME');
-            $mail->Password = getenv('SMTP_PASSWORD');
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = getenv('SMTP_PORT');
+            $enviar = true;
+            if ($resultadoUltima && mysqli_num_rows($resultadoUltima) > 0) {
+                $fila = mysqli_fetch_assoc($resultadoUltima);
+                $ultimaNotificacion = new DateTime($fila['Fecha_Creacion']);
+                $diferencia = $fechaHoy->diff($ultimaNotificacion)->days;
 
-            $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-            $mail->addAddress($emailDestino);
+                if ($diferencia < 1) {
+                    $enviar = false;
+                }
+            }
 
-            $mail->isHTML(true);
-            $mail->Subject = 'Vacante Inactiva - Acción Recomendada';
-            $mail->Body = "
-                <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
-                <p style='font-size: 15px;'>Detectamos que la vacante <strong>$tituloVacante</strong> lleva más de 30 días inactiva desde su fecha límite. 
-                Te recomendamos revisarla, actualizar su información o publicar una nueva para mejorar tus oportunidades de encontrar candidatos.</p>
+            if ($enviar) {
+                $fechaCreacion = $fechaHoy->format('Y-m-d H:i:s');
+                $descripcion = "Hola $empresaNombre, la vacante \"$tituloVacante\" ha estado inactiva por más de 30 días. Te sugerimos actualizarla o crear una nueva para atraer a más candidatos.";
 
-                <p style='margin-top: 20px;'>
-                    <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
-                    style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
-                    Ir a CODEMX
-                    </a>
-                </p>
+                // Guardar notificación
+                $consultaNotificacion = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion, Vacante_ID)
+                                         VALUES ('$idEmpresa', '$tipoEvento', '$descripcion', '$fechaCreacion', '$idVacante')";
+                mysqli_query($conexion, $consultaNotificacion);
 
-                <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
-            ";
+                // Enviar correo
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host = getenv('SMTP_HOST');
+                $mail->SMTPAuth = true;
+                $mail->Username = getenv('SMTP_USERNAME');
+                $mail->Password = getenv('SMTP_PASSWORD');
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = getenv('SMTP_PORT');
 
-            $mail->send();
+                $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
+                $mail->addAddress($emailDestino);
+
+                $mail->isHTML(true);
+                $mail->Subject = 'Vacante Inactiva - Acción Recomendada';
+                $mail->Body = "
+                    <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
+                    <p style='font-size: 15px;'>Detectamos que la vacante <strong>$tituloVacante</strong> lleva más de 30 días inactiva desde su fecha límite. 
+                    Te recomendamos revisarla, actualizar su información o publicar una nueva para mejorar tus oportunidades de encontrar candidatos.</p>
+
+                    <p style='margin-top: 20px;'>
+                        <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
+                        style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                        Ir a CODEMX
+                        </a>
+                    </p>
+
+                    <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
+                ";
+
+                $mail->send();
+                $notificacionesEnviadas++;
+            }
         }
 
-        echo json_encode(['success' => true, 'message' => 'Se enviaron notificaciones por vacantes inactivas.']);
+        echo json_encode(['success' => true, 'message' => "Proceso completado. Notificaciones enviadas: $notificacionesEnviadas"]);
     } else {
         echo json_encode(['success' => true, 'message' => 'No hay vacantes inactivas con más de 30 días.']);
     }
