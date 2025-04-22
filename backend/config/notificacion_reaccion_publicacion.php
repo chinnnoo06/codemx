@@ -51,7 +51,7 @@ try {
     $resultadoCorreo = mysqli_query($conexion, $consultaCorreo);
 
     if (!$resultadoCorreo || mysqli_num_rows($resultadoCorreo) === 0) {
-        throw new Exception("No se encontró el correo del candidato.");
+        throw new Exception("No se encontró el correo de la empresa.");
     }
 
     $filaCorreo = mysqli_fetch_assoc($resultadoCorreo);
