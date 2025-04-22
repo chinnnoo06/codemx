@@ -33,7 +33,7 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $empresaNombre = mysqli_real_escape_string($conexion, $data['empresaNombre']);
     $tipoEvento = 'vacante_inactiva';
-    $fechaLimiteComparacion = date('Y-m-d H:i:s', strtotime('-30 days'));
+    $fechaLimiteComparacion = date('Y-m-d', strtotime('-30 days')); // Solo la fecha
 
     // Obtener correo de la empresa
     $consultaCorreo = "SELECT Email FROM empresa WHERE ID = '$idEmpresa' LIMIT 1";
