@@ -49,7 +49,7 @@ try {
     // Buscar vacantes inactivas con fecha límite mayor a 30 días
     $consultaVacantes = "SELECT ID, Titulo FROM vacante 
                          WHERE Empresa_ID = '$idEmpresa' 
-                         AND Estado = 'inactiva' 
+                         AND Estatus = 'inactiva' 
                          AND Fecha_Limite < '$fechaLimiteComparacion'";
 
     $resultadoVacantes = mysqli_query($conexion, $consultaVacantes);
