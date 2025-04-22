@@ -47,7 +47,7 @@ try {
     $fechaActual = date('Y-m-d H:i:s');
 
     // Obtener correo del candidato (quien envió el mensaje)
-    $consultaCorreo = "SELECT Email FROM candidato WHERE ID = '$idCandidato' LIMIT 1";
+    $consultaCorreo = "SELECT Email FROM empresa WHERE ID = '$idEmpresa' LIMIT 1";
     $resultadoCorreo = mysqli_query($conexion, $consultaCorreo);
 
     if (!$resultadoCorreo || mysqli_num_rows($resultadoCorreo) === 0) {
