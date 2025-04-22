@@ -37,7 +37,7 @@ try {
     $vacanteNombre = mysqli_real_escape_string($conexion, $data['vacanteNombre']);
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
     $tipoEvento = 'postulacion_nueva';
-    $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido se ha postulado a tu vacante: $vacanteNombre. ¡Entra a la vacane para poder administrar su postulación!";
+    $descripcion = "Hola $empresaNombre, $candidatoNombre $candidatoApellido se ha postulado a tu vacante: $vacanteNombre. ¡Entra a la vacante para poder administrar su postulación!";
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener correo del candidato (quien envió el mensaje)
@@ -80,7 +80,7 @@ try {
         $mail->Body = nl2br($descripcion);
         $mail->Body = "
             <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong></p>
-            <p style='font-size: 15px;'><strong>$candidatoNombre $candidatoApellido</strong> se ha postulado a tu vacante: $vacanteNombre. ¡Entra a la vacane para poder administrar su postulación!</p>
+            <p style='font-size: 15px;'><strong>$candidatoNombre $candidatoApellido</strong> se ha postulado a tu vacante: $vacanteNombre. ¡Entra a la vacante para poder administrar su postulación!</p>
             
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
