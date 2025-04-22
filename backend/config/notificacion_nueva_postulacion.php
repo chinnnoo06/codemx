@@ -79,7 +79,7 @@ try {
         $mail->Subject = 'NUEVA POSTULACION';
         $mail->Body = nl2br($descripcion);
         $mail->Body = "
-            <p style='font-size: 16px;'>Hola <strong>$nombreEmpresa</strong>,</p>
+            <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong></p>
             <p style='font-size: 15px;'><strong>$candidatoNombre $candidatoApellido</strong> se ha postulado a tu vacante: $vacanteNombre. ¡Entra a la vacane para poder administrar su postulación!</p>
             
             <p style='margin-top: 20px;'>
