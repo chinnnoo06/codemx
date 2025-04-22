@@ -63,8 +63,8 @@ try {
     FROM notificaciones 
     WHERE Empresa_ID = '$idEmpresa' 
     AND Chat_ID = '$idChat'
-    AND Tipo_Evento = 'mensaje'
-    AND TIMESTAMPDIFF(MINUTE, Fecha_Creacion, '$fechaActual') < 3
+    AND Tipo_Evento = 'reaccion'
+    AND TIMESTAMPDIFF(MINUTE, Fecha_Creacion, '$fechaActual') < 5
     LIMIT 1
     ";
 
@@ -98,18 +98,36 @@ try {
     $mail->addAddress($emailDestino);
 
     $mail->isHTML(true);
-    $mail->Subject = 'MENSAJES NUEVOS';
-    $mail->Body = "
-        <p style='font-size: 16px;'>Hola <strong>$candidatoNombre $candidatoApellido</strong></p>
-        <p style='font-size: 15px;'>Has recibido nuevos mensajes de <strong>$empresaNombre</strong>. Entra a la plataforma para responder.</p>
-        <p style='margin-top: 20px;'>
-            <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
-            style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
-            Ir a CODEMX
-            </a>
-        </p>
-        <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
-    ";
+
+    if ($esLike === "1" || $esLike === 1 || $esLike === true || $esLike === "true") {
+        $mail->Subject = 'NUEVO LIKE EN TU PUBLICACION';
+        $mail->Body = "
+            <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
+            <p style='font-size: 15px;'>$candidatoNombre $candidatoApellido le ha dado like a una de tus publicaciones en CODEMX.</p>
+            <p style='font-size: 15px;'>¡Ingresa ahora y revisa su interacción!</p>
+            <p style='margin-top: 20px;'>
+                <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
+                style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Ir a CODEMX
+                </a>
+            </p>
+            <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
+        ";
+    } else {
+        $mail->Subject = 'NUEVO COMENTARIO EN TU PUBLICACION';
+        $mail->Body = "
+            <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
+            <p style='font-size: 15px;'>$candidatoNombre $candidatoApellido ha comentado en una de tus publicaciones en CODEMX.</p>
+            <p style='font-size: 15px;'>¡Ingresa ahora y revisa su mensaje!</p>
+            <p style='margin-top: 20px;'>
+                <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
+                style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Ir a CODEMX
+                </a>
+            </p>
+            <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
+        ";
+    }
 
     $mail->send();
     echo json_encode(['success' => true, 'message' => 'Notificación registrada y correo enviado.']);
