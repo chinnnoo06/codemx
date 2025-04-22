@@ -103,7 +103,7 @@ try {
         $mail->Subject = 'NUEVO LIKE EN TU PUBLICACION';
         $mail->Body = "
             <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
-            <p style='font-size: 15px;'>$candidatoNombre $candidatoApellido le ha dado like a una de tus publicaciones en CODEMX.</p>
+            <p style='font-size: 15px;'><strong>$candidatoNombre $candidatoApellido</strong> le ha dado like a una de tus publicaciones en CODEMX.</p>
             <p style='font-size: 15px;'>¡Ingresa ahora y revisa su interacción!</p>
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
@@ -117,7 +117,7 @@ try {
         $mail->Subject = 'NUEVO COMENTARIO EN TU PUBLICACION';
         $mail->Body = "
             <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
-            <p style='font-size: 15px;'>$candidatoNombre $candidatoApellido ha comentado en una de tus publicaciones en CODEMX.</p>
+            <p style='font-size: 15px;'><strong>$candidatoNombre $candidatoApellido</strong> ha comentado en una de tus publicaciones en CODEMX.</p>
             <p style='font-size: 15px;'>¡Ingresa ahora y revisa su mensaje!</p>
             <p style='margin-top: 20px;'>
                 <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
