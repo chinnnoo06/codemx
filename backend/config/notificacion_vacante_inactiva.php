@@ -103,7 +103,7 @@ try {
                 $mail->addAddress($emailDestino);
 
                 $mail->isHTML(true);
-                $mail->Subject = 'Vacante Inactiva - Acción Recomendada';
+                $mail->Subject = 'VACANTE INACTIVA - ACCION RECOMENDADA';
                 $mail->Body = "
                     <p style='font-size: 16px;'>Hola <strong>$empresaNombre</strong>,</p>
                     <p style='font-size: 15px;'>Detectamos que la vacante <strong>$tituloVacante</strong> lleva más de 30 días inactiva desde su fecha límite. 
