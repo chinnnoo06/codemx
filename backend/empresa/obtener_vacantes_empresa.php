@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         WHERE vacante.Empresa_ID = '$idEmpresa'
         GROUP BY vacante.ID
+        ORDER BY vacante.Fecha_Creacion DESC
     ";
 
     $resultado = mysqli_query($conexion, $consulta);
