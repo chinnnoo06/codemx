@@ -99,7 +99,7 @@ try {
                 '$tipoEvento', 
                 '$descripcion', 
                 '$fechaCreacion', 
-                2, 
+                '$idPublicacionReciente', 
                 '$idEmpresa'
             )
         ";
