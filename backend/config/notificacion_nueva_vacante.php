@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $datos = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($datos['idEmpresa']) || !isset($datos['nombreEmpresa']) || !isset($datos['idPublicacion'])) {
+    if (!isset($datos['idEmpresa']) || !isset($datos['nombreEmpresa']) || !isset($datos['idVacante'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400);
         exit();
@@ -38,7 +38,7 @@ try {
 
     $idEmpresa = mysqli_real_escape_string($conexion, $datos['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $datos['nombreEmpresa']);
-    $idPublicacion = mysqli_real_escape_string($conexion, $datos['idPublicacion']);
+    $idVacante = mysqli_real_escape_string($conexion, $datos['idVacante']);
     $tipoEvento = 'nueva_post';
     $fechaCreacion = date('Y-m-d H:i:s');
 
@@ -68,7 +68,7 @@ try {
         $nombreCandidato = $fila['Nombre_Candidato'];
         $apellidoCandidato = $fila['Apellido_Candidato'];
 
-        $descripcion = "¡Hola $nombreCandidato $apellidoCandidato! Queremos informarte que $nombreEmpresa ha agregado una nueva publicación. Te invitamos a revisarla cuanto antes!";
+        $descripcion = "¡Hola $nombreCandidato $apellidoCandidato! Queremos informarte que $nombreEmpresa ha agregado una nueva vacante. Te invitamos a revisarla cuanto antes!";
 
         // Insertar notificación
         $consultaNotificacion = "
@@ -77,14 +77,14 @@ try {
                 Tipo_Evento, 
                 Descripcion, 
                 Fecha_Creacion,
-                Publicacion_ID, 
+                Vacante_ID, 
                 Perfil_Empresa
             ) VALUES (
                 '$idCandidato', 
                 '$tipoEvento', 
                 '$descripcion', 
                 '$fechaCreacion', 
-                '$idPublicacion',
+                '$idVacante',
                 '$idEmpresa'
             )
         ";
@@ -109,10 +109,10 @@ try {
             $mail->addAddress($emailDestino);
 
             $mail->isHTML(true);
-            $mail->Subject = 'NUEVA PUBLICACIÓN DE EMPRESA';
+            $mail->Subject = 'NUEVA VACANTE DE EMPRESA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreCandidato $apellidoCandidato</strong>,</p>
-                <p style='font-size: 15px;'>$nombreEmpresa ha agregado una nueva publicación en CODEMX. ¡Te invitamos a revisarla!</p>
+                <p style='font-size: 15px;'>$nombreEmpresa ha agregado una nueva vacante en CODEMX. ¡Te invitamos a revisarla!</p>
                 <p style='margin-top: 20px;'>
                     <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                     style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
