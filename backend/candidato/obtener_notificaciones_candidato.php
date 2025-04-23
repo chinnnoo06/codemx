@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Fecha_Creacion,
             Vacante_ID,
             Chat_ID,
-            Publicacion_ID
+            Publicacion_ID,
+            Perfil_Empresa
         FROM notificaciones
         WHERE Candidato_ID = '$idCandidato'
         ORDER BY Fecha_Creacion DESC
