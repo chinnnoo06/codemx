@@ -8,14 +8,12 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Cargar variables de entorno
 loadEnv(__DIR__ . '/../../.env');
 
 if (!getenv('SMTP_HOST')) {
     die('Error: No se pudieron cargar las variables de entorno');
 }
 
-// Encabezados CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
@@ -40,6 +38,24 @@ try {
     $nombreEmpresa = mysqli_real_escape_string($conexion, $datos['nombreEmpresa']);
     $tipoEvento = 'nueva_post';
     $fechaCreacion = date('Y-m-d H:i:s');
+
+    // Obtener ID de la publicación más reciente
+    $consultaPublicacion = "
+        SELECT ID 
+        FROM publicacion 
+        WHERE Empresa_ID = '$idEmpresa' 
+        ORDER BY Fecha_Creacion DESC 
+        LIMIT 1
+    ";
+
+    $resultadoPublicacion = mysqli_query($conexion, $consultaPublicacion);
+
+    if (!$resultadoPublicacion || mysqli_num_rows($resultadoPublicacion) === 0) {
+        throw new Exception("No se encontró ninguna publicación reciente de la empresa.");
+    }
+
+    $filaPublicacion = mysqli_fetch_assoc($resultadoPublicacion);
+    $idPublicacionReciente = $filaPublicacion['ID'];
 
     // Obtener todos los candidatos que siguen a esta empresa
     $consultaSeguidores = "
@@ -69,19 +85,21 @@ try {
 
         $descripcion = "¡Hola $nombreCandidato $apellidoCandidato! Queremos informarte que $nombreEmpresa ha agregado una nueva publicación. Te invitamos a revisarla cuanto antes!";
 
-        // Insertar notificación
+        // Insertar notificación con Publicacion_ID
         $consultaNotificacion = "
             INSERT INTO notificaciones (
                 Candidato_ID, 
                 Tipo_Evento, 
                 Descripcion, 
                 Fecha_Creacion, 
+                Publicacion_ID,
                 Perfil_Empresa
             ) VALUES (
                 '$idCandidato', 
                 '$tipoEvento', 
                 '$descripcion', 
                 '$fechaCreacion', 
+                '$idPublicacionReciente', 
                 '$idEmpresa'
             )
         ";
