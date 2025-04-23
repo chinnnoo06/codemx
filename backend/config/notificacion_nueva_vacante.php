@@ -38,25 +38,25 @@ try {
 
     $idEmpresa = mysqli_real_escape_string($conexion, $datos['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $datos['nombreEmpresa']);
-    $tipoEvento = 'nueva_vacante';
+    $tipoEvento = 'nueva_post';
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener ID de la publicación más reciente de la empresa
-    $consultaVacante = "
+    $consultaPublicacion = "
         SELECT ID 
-        FROM vacante 
+        FROM publicacion 
         WHERE Empresa_ID = '$idEmpresa' 
         ORDER BY Fecha_Creacion DESC 
         LIMIT 1
     ";
-    $resultadoVacante = mysqli_query($conexion, $consultaVacante);
+    $resultadoPublicacion = mysqli_query($conexion, $consultaPublicacion);
 
-    if (!$resultadoVacante || mysqli_num_rows($resultadoVacante) === 0) {
-        throw new Exception("No se encontró una vacante reciente de esta empresa.");
+    if (!$resultadoPublicacion || mysqli_num_rows($resultadoPublicacion) === 0) {
+        throw new Exception("No se encontró una publicación reciente de esta empresa.");
     }
 
-    $filaVacante = mysqli_fetch_assoc($resultadoVacante);
-    $idVacante = $filaVacante['ID'];
+    $filaPublicacion = mysqli_fetch_assoc($resultadoPublicacion);
+    $idPublicacion = $filaPublicacion['ID'];
 
     // Obtener todos los candidatos que siguen a esta empresa
     $consultaSeguidores = "
@@ -84,7 +84,7 @@ try {
         $nombreCandidato = $fila['Nombre_Candidato'];
         $apellidoCandidato = $fila['Apellido_Candidato'];
 
-        $descripcion = "¡Hola $nombreCandidato $apellidoCandidato! Queremos informarte que $nombreEmpresa ha agregado una nueva vacante de empleo. Te invitamos a revisarla cuanto antes!";
+        $descripcion = "¡Hola $nombreCandidato $apellidoCandidato! Queremos informarte que $nombreEmpresa ha agregado una nueva publicación. Te invitamos a revisarla cuanto antes!";
 
         // Insertar notificación
         $consultaNotificacion = "
@@ -93,14 +93,14 @@ try {
                 Tipo_Evento, 
                 Descripcion, 
                 Fecha_Creacion, 
-                Vacante_ID,
+                Publiciacion_ID,
                 Perfil_Empresa
             ) VALUES (
                 '$idCandidato', 
                 '$tipoEvento', 
                 '$descripcion', 
                 '$fechaCreacion', 
-                '$idVacante',
+                '$idPublicacion',
                 '$idEmpresa'
             )
         ";
@@ -128,7 +128,7 @@ try {
             $mail->Subject = 'NUEVA PUBLICACIÓN DE EMPRESA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreCandidato $apellidoCandidato</strong></p>
-                <p style='font-size: 15px;'>$nombreEmpresa ha agregado una nueva vacante en CODEMX. ¡Te invitamos a revisarla!</p>
+                <p style='font-size: 15px;'>$nombreEmpresa ha agregado una nueva publicación en CODEMX. ¡Te invitamos a revisarla!</p>
                 <p style='margin-top: 20px;'>
                     <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                     style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
