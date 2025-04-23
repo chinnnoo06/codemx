@@ -24,7 +24,7 @@ try {
     }
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    $consulta = "DELETE FROM notificaciones WHERE ID = $idCandidato";
+    $consulta = "DELETE FROM notificaciones WHERE Candidato_ID = $idCandidato";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Notificaciones eliminadas.']);
