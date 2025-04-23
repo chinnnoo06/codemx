@@ -93,7 +93,7 @@ try {
                 Tipo_Evento, 
                 Descripcion, 
                 Fecha_Creacion, 
-                Publiciacion_ID,
+                Publicacion_ID,
                 Perfil_Empresa
             ) VALUES (
                 '$idCandidato', 
