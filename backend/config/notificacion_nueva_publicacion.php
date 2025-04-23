@@ -8,6 +8,7 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Cargar variables de entorno
 loadEnv(__DIR__ . '/../../.env');
 
 if (!getenv('SMTP_HOST')) {
@@ -39,22 +40,6 @@ try {
     $nombreEmpresa = mysqli_real_escape_string($conexion, $datos['nombreEmpresa']);
     $tipoEvento = 'nueva_post';
     $fechaCreacion = date('Y-m-d H:i:s');
-
-    // Obtener la publicación más reciente de la empresa
-    $consultaUltimaPublicacion = "
-        SELECT ID FROM publicacion 
-        WHERE Empresa_ID = '$idEmpresa' 
-        ORDER BY Fecha_Creacion DESC 
-        LIMIT 1
-    ";
-    $resultadoPublicacion = mysqli_query($conexion, $consultaUltimaPublicacion);
-
-    if (!$resultadoPublicacion || mysqli_num_rows($resultadoPublicacion) === 0) {
-        throw new Exception("No se encontró una publicación reciente de la empresa.");
-    }
-
-    $filaPublicacion = mysqli_fetch_assoc($resultadoPublicacion);
-    $idPublicacion = $filaPublicacion['ID'];
 
     // Obtener todos los candidatos que siguen a esta empresa
     $consultaSeguidores = "
@@ -91,14 +76,12 @@ try {
                 Tipo_Evento, 
                 Descripcion, 
                 Fecha_Creacion, 
-                Publicacion_ID,
                 Perfil_Empresa
             ) VALUES (
                 '$idCandidato', 
                 '$tipoEvento', 
                 '$descripcion', 
                 '$fechaCreacion', 
-                '$idPublicacion',
                 '$idEmpresa'
             )
         ";
