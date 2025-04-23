@@ -39,7 +39,7 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $datos['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $datos['nombreEmpresa']);
     $idVacante = mysqli_real_escape_string($conexion, $datos['idVacante']);
-    $tipoEvento = 'nueva_post';
+    $tipoEvento = 'nueva_vacante';
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener todos los candidatos que siguen a esta empresa
