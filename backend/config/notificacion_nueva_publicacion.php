@@ -8,7 +8,6 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Cargar variables de entorno
 loadEnv(__DIR__ . '/../../.env');
 
 if (!getenv('SMTP_HOST')) {
@@ -41,18 +40,17 @@ try {
     $tipoEvento = 'nueva_post';
     $fechaCreacion = date('Y-m-d H:i:s');
 
-    // Obtener ID de la publicación más reciente de la empresa
-    $consultaPublicacion = "
-        SELECT ID 
-        FROM publicacion 
+    // Obtener la publicación más reciente de la empresa
+    $consultaUltimaPublicacion = "
+        SELECT ID FROM publicacion 
         WHERE Empresa_ID = '$idEmpresa' 
         ORDER BY Fecha_Creacion DESC 
         LIMIT 1
     ";
-    $resultadoPublicacion = mysqli_query($conexion, $consultaPublicacion);
+    $resultadoPublicacion = mysqli_query($conexion, $consultaUltimaPublicacion);
 
     if (!$resultadoPublicacion || mysqli_num_rows($resultadoPublicacion) === 0) {
-        throw new Exception("No se encontró una publicación reciente de esta empresa.");
+        throw new Exception("No se encontró una publicación reciente de la empresa.");
     }
 
     $filaPublicacion = mysqli_fetch_assoc($resultadoPublicacion);
@@ -110,7 +108,7 @@ try {
             continue;
         }
 
-        // Enviar correo personalizado
+        // Enviar correo
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
