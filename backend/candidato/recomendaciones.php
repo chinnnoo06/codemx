@@ -145,9 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
+    // Ordenar vacantes por una combinación de número de coincidencias y porcentaje de compatibilidad
     usort($vacantesRecomendadas, function($a, $b) {
-        return $b['coincidencias'] - $a['coincidencias'];
+        // Asignamos ponderación: 30% para coincidencias y 70% para compatibilidad
+        $pesoCoincidencias = 0.3;
+        $pesoCompatibilidad = 0.7;
+
+        // Calculamos la puntuación de cada vacante basada en la combinación de ambos factores
+        $puntajeA = ($a['coincidencias'] * $pesoCoincidencias) + ($a['compatibilidad'] * $pesoCompatibilidad);
+        $puntajeB = ($b['coincidencias'] * $pesoCoincidencias) + ($b['compatibilidad'] * $pesoCompatibilidad);
+
+        return $puntajeB - $puntajeA; // Ordenar de mayor a menor
     });
 
     // Ahora, hacemos la paginación: traemos solo las vacantes correspondientes a la página solicitada
