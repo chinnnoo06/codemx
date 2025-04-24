@@ -17,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato.']);
+    if (!isset($data['idEmpresa'])) {
+        echo json_encode(['error' => 'Falta el ID de la empresa.']);
         http_response_code(400);
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
     // Obtener la fecha actual menos una semana
     $fechaLimite = date('Y-m-d H:i:s', strtotime('-1 week'));
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Publicacion_ID,
             Perfil_Empresa
         FROM notificaciones
-        WHERE Candidato_ID = '$idCandidato'
+        WHERE Empresa_ID = '$idEmpresa'
         ORDER BY Fecha_Creacion DESC
     ";
 
