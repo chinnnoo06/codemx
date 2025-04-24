@@ -38,7 +38,7 @@ export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, re
                                 {vacante.Estatus === "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
                                 {vacante.Estatus === "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
                                 {recomendaciones != null && (
-                                    <span className="coincidencias-vacante text-muted">Coincidencias: {vacante.coincidencias}</span>
+                                    <span className="coincidencias-vacante text-muted">Compatibilidad: {vacante.compatibilidad}%</span>
                                 )}
                             </div>
                         </div>
