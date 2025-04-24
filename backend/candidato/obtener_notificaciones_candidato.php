@@ -24,9 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $page = (int)$data['page'];
-    $limit = 8; // Número de notificaciones a devolver por página
-    $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Obtener la fecha actual menos una semana
     $fechaLimite = date('Y-m-d H:i:s', strtotime('-1 week'));
@@ -60,9 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM notificaciones
         WHERE Candidato_ID = '$idCandidato'
         ORDER BY Fecha_Creacion DESC
-        LIMIT $limit OFFSET $offset
     ";
-
 
     $resultadoNotificaciones = mysqli_query($conexion, $queryNotificaciones);
 
