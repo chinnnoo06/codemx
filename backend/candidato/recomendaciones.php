@@ -136,26 +136,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $porcentajeCompatibilidad = round(($coincidencias / count($tecnologiasRequeridas)) * 100, 2); // Porcentaje con dos decimales
         }
 
-        // Si hay coincidencias, agregar la vacante a las recomendaciones
+        // Calcular la puntuación combinada
+        $pesoCoincidencias = 0.3;
+        $pesoCompatibilidad = 0.7;
+        $puntaje = ($coincidencias * $pesoCoincidencias) + ($porcentajeCompatibilidad * $pesoCompatibilidad);
+
+        // Si hay coincidencias, agregar la vacante a las recomendaciones con la puntuación
         if ($coincidencias > 0) {
             $vacantesRecomendadas[] = array_merge($vacante, [
                 'coincidencias' => $coincidencias,
-                'compatibilidad' => $porcentajeCompatibilidad
+                'compatibilidad' => $porcentajeCompatibilidad,
+                'puntaje' => $puntaje // Agregamos la puntuación calculada
             ]);
         }
     }
 
-    // Ordenar vacantes por una combinación de número de coincidencias y porcentaje de compatibilidad
+    // Ordenar vacantes por la puntuación combinada (de mayor a menor)
     usort($vacantesRecomendadas, function($a, $b) {
-        // Asignamos ponderación: 30% para coincidencias y 70% para compatibilidad
-        $pesoCoincidencias = 0.3;
-        $pesoCompatibilidad = 0.7;
-
-        // Calculamos la puntuación de cada vacante basada en la combinación de ambos factores
-        $puntajeA = ($a['coincidencias'] * $pesoCoincidencias) + ($a['compatibilidad'] * $pesoCompatibilidad);
-        $puntajeB = ($b['coincidencias'] * $pesoCoincidencias) + ($b['compatibilidad'] * $pesoCompatibilidad);
-
-        return $puntajeB - $puntajeA; // Ordenar de mayor a menor
+        return $b['puntaje'] - $a['puntaje']; // Ordenar por puntuación
     });
 
     // Ahora, hacemos la paginación: traemos solo las vacantes correspondientes a la página solicitada
