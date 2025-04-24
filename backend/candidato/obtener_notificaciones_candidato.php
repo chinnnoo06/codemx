@@ -25,6 +25,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
+    // Obtener la fecha actual menos una semana
+    $fechaLimite = date('Y-m-d H:i:s', strtotime('-1 week'));
+
+    // Eliminar las notificaciones con fecha mayor a una semana
+    $queryEliminarNotificaciones = "
+        DELETE FROM notificaciones
+        WHERE Candidato_ID = '$idCandidato' 
+        AND Fecha_Creacion < '$fechaLimite'
+    ";
+
+    $resultadoEliminarNotificaciones = mysqli_query($conexion, $queryEliminarNotificaciones);
+
+    if (!$resultadoEliminarNotificaciones) {
+        echo json_encode(['error' => 'Error al eliminar las notificaciones: ' . mysqli_error($conexion)]);
+        http_response_code(500);
+        exit();
+    }
+
+    // Consulta para obtener las notificaciones actuales
     $queryNotificaciones = "
         SELECT 
             ID,
