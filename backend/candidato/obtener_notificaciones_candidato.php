@@ -17,16 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) || !isset($data['page'])) {
-        echo json_encode(['error' => 'Faltan parámetros en la solicitud.']);
+    if (!isset($data['idCandidato'])) {
+        echo json_encode(['error' => 'Falta el ID del candidato.']);
         http_response_code(400);
         exit();
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-    $page = (int)$data['page'];
-    $limit = 8; // Número de notificaciones a devolver por página
-    $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     $queryNotificaciones = "
         SELECT 
@@ -42,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM notificaciones
         WHERE Candidato_ID = '$idCandidato'
         ORDER BY Fecha_Creacion DESC
-        LIMIT $limit OFFSET $offset
     ";
 
     $resultadoNotificaciones = mysqli_query($conexion, $queryNotificaciones);
