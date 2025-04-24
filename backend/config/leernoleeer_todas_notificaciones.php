@@ -16,16 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Falta el ID del candidato']);
-        exit();
+    $idCandidato = isset($data['idCandidato']) ? mysqli_real_escape_string($conexion, $data['idCandidato']) : null;
+    $idEmpresa = isset($data['idEmpresa']) ? mysqli_real_escape_string($conexion, $data['idEmpresa']) : null;
+
+    if (!$idCandidato && !$idEmpresa) {
+        throw new Exception("No se proporcionó ni idCandidato ni idEmpresa.");
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    // Determinar el tipo de usuario y construir la consulta correspondiente
+    if ($idCandidato) {
+        $consultaEstado = "SELECT COUNT(*) as total_no_leidas FROM notificaciones WHERE Candidato_ID = '$idCandidato' AND Leida = 0";
+    } else {
+        $consultaEstado = "SELECT COUNT(*) as total_no_leidas FROM notificaciones WHERE Empresa_ID = '$idEmpresa' AND Leida = 0";
+    }
 
-    // Verifica si hay notificaciones no leídas
-    $consultaEstado = "SELECT COUNT(*) as total_no_leidas FROM notificaciones WHERE Candidato_ID = '$idCandidato' AND Leida = 0";
     $resultadoEstado = mysqli_query($conexion, $consultaEstado);
 
     if (!$resultadoEstado) {
@@ -36,7 +40,11 @@ try {
     $hayNoLeidas = $fila['total_no_leidas'] > 0;
     $nuevoEstado = $hayNoLeidas ? 1 : 0;
 
-    $consultaActualizar = "UPDATE notificaciones SET Leida = '$nuevoEstado' WHERE Candidato_ID = '$idCandidato'";
+    if ($idCandidato) {
+        $consultaActualizar = "UPDATE notificaciones SET Leida = '$nuevoEstado' WHERE Candidato_ID = '$idCandidato'";
+    } else {
+        $consultaActualizar = "UPDATE notificaciones SET Leida = '$nuevoEstado' WHERE Empresa_ID = '$idEmpresa'";
+    }
 
     if (mysqli_query($conexion, $consultaActualizar)) {
         echo json_encode([
