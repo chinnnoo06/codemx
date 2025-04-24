@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $limit = isset($data['limit']) ? intval($data['limit']) : 10; // Número de notificaciones a cargar
+    $offset = isset($data['offset']) ? intval($data['offset']) : 0;
 
     // Obtener la fecha actual menos una semana
     $fechaLimite = date('Y-m-d H:i:s', strtotime('-1 week'));
@@ -44,19 +46,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consulta para obtener las notificaciones actuales
     $queryNotificaciones = "
-        SELECT 
-            ID,
-            Tipo_Evento,
-            Descripcion,
-            Leida,
-            Fecha_Creacion,
-            Vacante_ID,
-            Chat_ID,
-            Publicacion_ID,
-            Perfil_Empresa
-        FROM notificaciones
-        WHERE Candidato_ID = '$idCandidato'
-        ORDER BY Fecha_Creacion DESC
+    SELECT 
+        ID,
+        Tipo_Evento,
+        Descripcion,
+        Leida,
+        Fecha_Creacion,
+        Vacante_ID,
+        Chat_ID,
+        Publicacion_ID,
+        Perfil_Empresa
+    FROM notificaciones
+    WHERE Candidato_ID = '$idCandidato'
+    ORDER BY Fecha_Creacion DESC
+    LIMIT $limit OFFSET $offset
     ";
 
     $resultadoNotificaciones = mysqli_query($conexion, $queryNotificaciones);
