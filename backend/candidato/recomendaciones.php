@@ -136,10 +136,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $porcentajeCompatibilidad = round(($coincidencias / count($tecnologiasRequeridas)) * 100, 2); // Porcentaje con dos decimales
         }
 
+        // Normalizar el número de coincidencias para hacerlo proporcional al porcentaje de compatibilidad
+        $porcentajeCoincidencias = 0;
+        if (count($tecnologiasRequeridas) > 0) {
+            $porcentajeCoincidencias = round(($coincidencias / count($tecnologiasRequeridas)) * 100, 2); // Normalización a porcentaje
+        }
+
         // Calcular la puntuación combinada
         $pesoCoincidencias = 0.3;
         $pesoCompatibilidad = 0.7;
-        $puntaje = ($coincidencias * $pesoCoincidencias) + ($porcentajeCompatibilidad * $pesoCompatibilidad);
+        $puntaje = ($porcentajeCoincidencias * $pesoCoincidencias) + ($porcentajeCompatibilidad * $pesoCompatibilidad);
 
         // Si hay coincidencias, agregar la vacante a las recomendaciones con la puntuación
         if ($coincidencias > 0) {
