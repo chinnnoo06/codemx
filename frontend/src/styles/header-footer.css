@@ -1,8 +1,14 @@
-
 .contenedor-header {
     background-color: #0B1C26;
-    z-index: 99; 
-    width: 100%; 
+    z-index: 9999;
+    width: 100%;
+    position: fixed; /* <-- HACE QUE SE QUEDE FIJO */
+    top: 0;
+    left: 0;
+}
+
+.contenido-principal {
+    padding-top: 4.5rem; /* <-- espacio para que no se oculte bajo el header */
 }
 
 .contenedor-header header {
@@ -113,7 +119,21 @@
     display: none;
 }
 
-
+.icono-notificaciones-wrapper {
+    position: relative;
+    display: inline-block;
+}
+  
+.punto-rojo-notificacion {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 1;
+}
 
 footer {
     background-color: #0B1C26;

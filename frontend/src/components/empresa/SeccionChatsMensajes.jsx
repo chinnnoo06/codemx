@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../../styles/seccionchats.css';
 
-export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes, manejarMostrarOpcionesEliminar, idEmpresa }) => {
+export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes, manejarMostrarOpcionesEliminar, idEmpresa, empresa }) => {
     const [mensajes, setMensajes] = useState([]);
     const [nuevoMensaje, setNuevoMensaje] = useState('');
     const mensajesEndRef = useRef(null);
@@ -48,6 +48,18 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcio
         prevScrollHeight.current = element.scrollHeight;
     };
 
+    const marcarMensajesLeidos = async () => {
+        try {
+            await fetch('https://www.codemx.net/codemx/backend/empresa/marcar_mensajes_leidos_empresa.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chatID: chat.Chat_ID }),
+            });
+        } catch (error) {
+            console.error('Error al marcar mensajes como leídos:', error);
+        }
+    };
+
     useEffect(() => {
         if (!chat) return;
     
@@ -67,6 +79,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcio
                 const data = await response.json();
                 if (JSON.stringify(data.mensajes) !== JSON.stringify(mensajes)) {
                     setMensajes(data.mensajes);
+                    marcarMensajesLeidos();
                 }
             } catch (error) {
                 console.error('Error al obtener mensajes:', error);
@@ -174,6 +187,22 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilCandidato, onMostrarOpcio
                     mensajesBodyRef.current.scrollTop = mensajesBodyRef.current.scrollHeight;
                 }
             }, 0);
+
+             // Segundo fetch: enviar notificación
+             const notifResponse = await fetch(
+                'https://www.codemx.net/codemx/backend/config/notificacion_mensaje_empresa.php',
+                {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idCandidato: chat.Candidato_ID, candidatoNombre: chat.Candidato_Nombre, candidatoApellido: chat.Candidato_Apellido, empresaNombre: empresa.nombre, idChat: chat.Chat_ID}),
+                }
+            );
+    
+            const notifResult = await notifResponse.json();
+    
+            if (!notifResponse.ok || !notifResult.success) {
+                console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+            }
     
         } catch (error) {
             console.error('Error al enviar el mensaje:', error);

@@ -43,10 +43,20 @@ export const SeccionListaChats = ({ chats, setChatActivo, query, irAlPerfilCandi
                       </span>
                     )}
                   </div>
-                  <div className={origen === 'modal' ? 'chat-ultimo-mensaje-modal' : 'chat-ultimo-mensaje'}>
+                  <div
+                    className={
+                      `${origen === 'modal' ? 'chat-ultimo-mensaje-modal' : 'chat-ultimo-mensaje'} 
+                      ${
+                        (chat.Ultimo_Mensaje?.Lectura === 0 || chat.Ultimo_Mensaje?.Lectura === "0") &&
+                        chat.Ultimo_Mensaje?.Usuario === 'candidato'
+                          ? 'mensaje-no-leido'
+                          : ''
+                      }`
+                    }
+                  >
                     {chat.Ultimo_Mensaje ? (
                       <>
-                        {chat.Ultimo_Mensaje.Usuario === 'candidato' && <span>Tú: </span>}
+                        {chat.Ultimo_Mensaje.Usuario === 'empresa' && <span>Tú: </span>}
                         {chat.Ultimo_Mensaje.Mensaje}
                       </>
                     ) : (

@@ -6,7 +6,7 @@ import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios} from './ModalComentarios';
 import LoadingSpinner from '../LoadingSpinner';
 
-export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarOcultarSeccion}) => {
+export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacion, manejarOcultarSeccion}) => {
     const [likes, setLikes] = useState(0);
     const [numLikes, setNumLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
@@ -132,6 +132,27 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
                 setReaccion(nuevoEstado);
                 setNumLikes((prev) => (nuevoEstado === "like" ? prev + 1 : reaccion === "like" ? prev - 1 : prev));
                 setNumDislikes((prev) => (nuevoEstado === "dislike" ? prev + 1 : reaccion === "dislike" ? prev - 1 : prev));
+
+                
+                // ✅ Enviar notificación solo si se dio "like"
+                if (nuevoEstado === "like") {
+                    // Segundo fetch: enviar notificación
+                    const notifResponse = await fetch(
+                        'https://www.codemx.net/codemx/backend/config/notificacion_reaccion_publicacion.php',
+                        {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ idEmpresa: empresa.id,  empresaNombre: empresa.nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: true}),
+                        }
+                    );
+
+                    const notifResult = await notifResponse.json();
+
+                    if (!notifResponse.ok || !notifResult.success) {
+                        console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+                    }
+                }
+
             } else {
                 alert(`Error al actualizar la reacción: ${result.error || "Error desconocido"}`);
             }
@@ -140,8 +161,7 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
         } finally {
             isProcessing.current = false;
         }
-    };
-    
+    };    
 
     const manejarShowModalDenuncia = () => {
         setShowModalDenuncia(true);
@@ -298,7 +318,7 @@ export const SeccionPublicacion = ({ empresa, idCandidato, publicacion, manejarO
                     <button className="close-button btn" onClick={() => manejarCloseModalComentarios()}>
                             <i className="fa-solid fa-x"></i>
                     </button>
-                    <ModalComentarios comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfilCandidato={irAlPerfilCandidato} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfil={irAMiPerfil} idCandidato={idCandidato}/>
+                    <ModalComentarios comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfilCandidato={irAlPerfilCandidato} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfil={irAMiPerfil} idCandidato={idCandidato} empresa={empresa} candidato={candidato}/>
                 </div>
             </div>
         )}

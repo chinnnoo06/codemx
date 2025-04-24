@@ -61,7 +61,7 @@ export const PageChatsCandidato = ({ candidato }) => {
     
         const interval = setInterval(() => {
             fetchData(); // actualiza lista de chats
-        }, 2000); 
+        }, 1000); 
     
         return () => clearInterval(interval); 
     }, [fetchData]);
@@ -99,12 +99,16 @@ export const PageChatsCandidato = ({ candidato }) => {
     
     useEffect(() => {
         if (location.state?.chatId && chats) {
-            const chatEncontrado = chats.find(c => c.Chat_ID === location.state.chatId);
-            if (chatEncontrado) {
-                setChatActivo(chatEncontrado);
+          const chatEncontrado = chats.find(c => c.Chat_ID === location.state.chatId);
+          if (chatEncontrado) {
+            setChatActivo(chatEncontrado);
+            if (window.innerWidth < 1000) {
+              setSeccionActiva("pantalla-pequenia");
+              setSeccionActivaPequenia("conversacion-chat");
             }
+          }
         }
-    }, [location.state?.chatId, chats]);
+      }, [location.state?.chatId, chats]);
 
     // Función para filtrar chats por la barra de búsqueda
     const buscar = (searchQuery) => {
@@ -264,6 +268,7 @@ export const PageChatsCandidato = ({ candidato }) => {
                                     setEmpresaDelMensaje(idEmpresa);
                                     setShowModalOpcionesNoAutor(true);
                                 }}
+                                candidato={candidato}
                             />
                         </div>
 
@@ -318,6 +323,7 @@ export const PageChatsCandidato = ({ candidato }) => {
                                     setEmpresaDelMensaje(idEmpresa);
                                     setShowModalOpcionesNoAutor(true);
                                 }}
+                                candidato={candidato}
                             />
                         </div>
                     )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
-export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, idVacante, idEmpresa, setShowModalAdministrar, fetchDataVacante, actualizarFetch, vacante, setVacanteSeleccionada }) => {
+export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, idVacante, idEmpresa, setShowModalAdministrar, fetchDataVacante, actualizarFetch, vacante, setVacanteSeleccionada, nombreEmpresa }) => {
   const [tecnologiasDominadas, setTecnologiasDominadas] = useState([]);
   const [estadoCandidato, setEstadoCandidato] = useState(null);
   const [showModalConfirmacion, setShowModalConfirmacion] = useState(false);
@@ -160,12 +160,27 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
 
       if (result.success) {
         fetchData();
+        // Segundo fetch: enviar notificación
+        const notifResponse = await fetch(
+          'https://www.codemx.net/codemx/backend/config/notificacion_postulacion.php',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idCandidato: candidato.ID, candidatoNombre: candidato.Nombre, candidatoApellido: candidato.Apellido, nombreVacante: vacante.Titulo, nombreEmpresa, idVacante}),
+          }
+        );
+
+        const notifResult = await notifResponse.json();
+
+        if (!notifResponse.ok || !notifResult.success) {
+          console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+        }
       } else {
         // Mostrar el mensaje de error desde el backend
-        console.log(`Hubo un error al eliminar cambiar el estado del candidato: ${result.error || 'Error desconocido'}`);
+        console.log(`Hubo un error al cambiar el estado del candidato: ${result.error || 'Error desconocido'}`);
       }
     } catch (error) {
-      console.error('Error al eliminar al cambiar estado del cnadidato:', error);
+      console.error('Error al cambiar estado del cnadidato:', error);
     }finally {
       setIsLoading(false);
     }
@@ -247,7 +262,23 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
   
       if (result.success) {
         fetchData(); // Vuelve a obtener los datos del candidato actualizado
-        alert('Calificación enviada correctamente');
+
+        // Segundo fetch: enviar notificación
+        const notifResponse = await fetch(
+            'https://www.codemx.net/codemx/backend/config/notificacion_calificacion_candidato.php',
+            {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idCandidato: candidato.ID, candidatoNombre: candidato.Nombre, candidatoApellido: candidato.Apellido, nombreEmpresa}),
+            }
+        );
+
+        const notifResult = await notifResponse.json();
+
+        if (!notifResponse.ok || !notifResult.success) {
+            console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+        }
+
       } else {
         console.log(`Hubo un error al enviar la calificación: ${result.error || 'Error desconocido'}`);
       }
@@ -257,9 +288,6 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
       setIsLoading(false);
     }
   };
-
-  console.log(comentarioCalifiacion); // Agrega esto para verificar el valor
-
 
   return (
     <div className="container container-modal">

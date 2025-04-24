@@ -93,13 +93,15 @@ export const PageRecomendacionesCandidato = ({candidato}) => {
   const manejarMostrarSeccionVacante = (vacante) => {
       setVacanteSeleccionada(vacante);
       setSeccionActiva("detalles-vacante");
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth" 
+    });
   };
 
   if (isLoading && page === 1) {
     return <LoadingSpinner></LoadingSpinner>; 
   }
-
-  console.log(vacantes)
 
   return (
      <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
@@ -132,6 +134,7 @@ export const PageRecomendacionesCandidato = ({candidato}) => {
                   manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} 
                   setVacanteSeleccionada={setVacanteSeleccionada} 
                   actualizarFetch={fetchData}
+                  candidato={candidato}
                 />
             </div>
         )}

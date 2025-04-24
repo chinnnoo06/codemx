@@ -5,7 +5,7 @@ import { ModalTecnologiasRequeridas } from './ModalTecnologiasRequeridas';
 import LoadingSpinner from '../LoadingSpinner';
 
  
-export const SeccionVacante = ({idCandidato, vacante, manejarOcultarSeccionVacante, setVacanteSeleccionada, actualizarFetch}) => {
+export const SeccionVacante = ({idCandidato, vacante, manejarOcultarSeccionVacante, setVacanteSeleccionada, actualizarFetch, candidato}) => {
     const [requisitos, setRequisitos] = useState([]);
     const [responsabilidades, setResponsabilidades] = useState([]);
     const [candidatos, setCandidatos] = useState([]);
@@ -209,8 +209,23 @@ export const SeccionVacante = ({idCandidato, vacante, manejarOcultarSeccionVacan
                 vacante.Cantidad_Postulados = parseInt(vacante.Cantidad_Postulados, 10); // Convertimos a número
                 vacante.Cantidad_Postulados += 1;
                 setVacanteSeleccionada(vacante); 
-
                 actualizarFetch(); 
+
+                // Segundo fetch: enviar notificación
+                const notifResponse = await fetch(
+                'https://www.codemx.net/codemx/backend/config/notificacion_nueva_postulacion.php',
+                {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idEmpresa: vacante.Empresa_ID,  empresaNombre: vacante.Empresa_Nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, vacanteNombre: vacante.Titulo, idVacante: vacante.ID}),
+                }
+            );
+
+            const notifResult = await notifResponse.json();
+
+            if (!notifResponse.ok || !notifResult.success) {
+                console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+            }
             } else {
                 console.error("Error al guardar o desguardar la vacante:", result.message);
             }

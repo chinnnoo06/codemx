@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../../styles/seccionchats.css';
 
-export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes }) => {
+export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcionesAutor, onMostrarOpcionesNoAutor, origen = 'normal', manejarCloseModalChatMensajes, candidato }) => {
     const [mensajes, setMensajes] = useState([]);
     const [nuevoMensaje, setNuevoMensaje] = useState('');
     const mensajesEndRef = useRef(null);
@@ -47,6 +47,18 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
         prevScrollHeight.current = element.scrollHeight;
     };
 
+    const marcarMensajesLeidos = async () => {
+        try {
+            await fetch('https://www.codemx.net/codemx/backend/candidato/marcar_mensajes_leidos_candidato.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chatID: chat.Chat_ID }),
+            });
+        } catch (error) {
+            console.error('Error al marcar mensajes como leídos:', error);
+        }
+    };
+    
     useEffect(() => {
         if (!chat) return;
     
@@ -66,6 +78,7 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                 const data = await response.json();
                 if (JSON.stringify(data.mensajes) !== JSON.stringify(mensajes)) {
                     setMensajes(data.mensajes);
+                    marcarMensajesLeidos();
                 }
             } catch (error) {
                 console.error('Error al obtener mensajes:', error);
@@ -140,6 +153,22 @@ export const SeccionChatsMensajes = ({ chat, irAlPerfilEmpresa, onMostrarOpcione
                     mensajesBodyRef.current.scrollTop = mensajesBodyRef.current.scrollHeight;
                 }
             }, 0);
+
+            // Segundo fetch: enviar notificación
+            const notifResponse = await fetch(
+                'https://www.codemx.net/codemx/backend/config/notificacion_mensaje_candidato.php',
+                {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idEmpresa: chat.Empresa_ID, empresaNombre: chat.Empresa_Nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idChat: chat.Chat_ID}),
+                }
+            );
+    
+            const notifResult = await notifResponse.json();
+    
+            if (!notifResponse.ok || !notifResult.success) {
+                console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+            }
     
         } catch (error) {
             console.error('Error al enviar el mensaje:', error);

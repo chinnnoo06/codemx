@@ -3,6 +3,7 @@ import { Seccion1PageInicio } from '../../components/empresa/Seccion1PageInicio'
 import { Seccion2PageInicio } from '../../components/empresa/Seccion2PageInicio'
 import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { useLocation } from 'react-router-dom';
 
 export const PageInicioEmpresa = ({empresa}) => {
     const [numPublicaciones, setNumPublicaciones] = useState(0);
@@ -11,6 +12,7 @@ export const PageInicioEmpresa = ({empresa}) => {
     const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
     const empresaActiva = empresa.id;
     const [isLoading, setIsLoading] = useState(true); 
+    const location = useLocation();
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -41,6 +43,18 @@ export const PageInicioEmpresa = ({empresa}) => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    
+    useEffect(() => {
+        if (location.state?.seccionActiva === "publicacion" && location.state?.idPublicacion && publicaciones.length > 0) {
+            const publicacionEncontrada = publicaciones.find(publi => publi.ID === location.state.idPublicacion);
+            if (publicacionEncontrada) {
+                setPublicacionSeleccionada(publicacionEncontrada);
+                setSeccionActiva("publicacion");
+            }
+        }
+
+    }, [location.state, publicaciones]);
 
     const manejarMostrarSeccion = (publicacion) =>{
         setPublicacionSeleccionada(publicacion);

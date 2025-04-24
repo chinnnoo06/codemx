@@ -70,6 +70,22 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
           setSinComentarios(0);
           fetchData();
           setSeccionActiva('ver-publicaciones');
+          const idPublicacion = result.idPublicacion;
+          // Segundo fetch: enviar notificación
+          const notifResponse = await fetch(
+            'https://www.codemx.net/codemx/backend/config/notificacion_nueva_publicacion.php',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idEmpresa: empresa.id, nombreEmpresa: empresa.nombre, idPublicacion: idPublicacion} ),
+            }
+          );
+
+          const notifResult = await notifResponse.json();
+
+          if (!notifResponse.ok || !notifResult.success) {
+            console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+          }
         } else if (result.error) {
           alert("Error al subir publicacion");
         }

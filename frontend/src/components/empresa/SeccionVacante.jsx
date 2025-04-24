@@ -651,7 +651,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                 <button className="close-button btn" onClick={() => setShowModalAdministrar(false)}>
                                         <i className="fa-solid fa-x"></i>
                                 </button>
-                                <ModalAdministrarCandidato candidato={candidatoSeleccionado} tecnologiasRequeridas={tecnologiasRequeridas} idVacante={vacante.ID} idEmpresa={empresa.id} setShowModalAdministrar={setShowModalAdministrar} fetchDataVacante={fetchData} actualizarFetch={actualizarFetch} vacante={vacante} setVacanteSeleccionada={setVacanteSeleccionada}></ModalAdministrarCandidato>
+                                <ModalAdministrarCandidato candidato={candidatoSeleccionado} tecnologiasRequeridas={tecnologiasRequeridas} idVacante={vacante.ID} idEmpresa={empresa.id} setShowModalAdministrar={setShowModalAdministrar} fetchDataVacante={fetchData} actualizarFetch={actualizarFetch} vacante={vacante} setVacanteSeleccionada={setVacanteSeleccionada} nombreEmpresa={empresa.nombre}></ModalAdministrarCandidato>
                             </div>
                         </div>
                     )}
@@ -833,6 +833,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                         seleccionadas={tecnologiasRequeridasEditar}
                                         onSeleccionChange={manejarCambioTecnologias}
                                         tecnologiasVacante={1}
+                                        esperarConfirmacion={true} 
                                         /> 
                             </form>
                         </>

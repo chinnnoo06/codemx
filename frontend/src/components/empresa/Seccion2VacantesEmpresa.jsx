@@ -157,8 +157,6 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
             //Agregar tecnologias requeridad al formdata para enviar
             const tecnologiasFiltradas = tecnologiasRequeridas.filter(tecnologia => tecnologia.trim() !== '');
             formDataToSend.append('tecnologias', JSON.stringify(tecnologiasFiltradas));
-
-            console.log("Enviando datos:", Object.fromEntries(formDataToSend));
       
             const response = await fetch('https://www.codemx.net/codemx/backend/empresa/agregar_vacante_empresa.php', {
               method: 'POST',
@@ -174,8 +172,24 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
             if (result.success) {
                 fetchData();
                 manejarOcultarSeccion();
+                const idVacante = result.idVacante;
+                // Segundo fetch: enviar notificación
+                const notifResponse = await fetch(
+                    'https://www.codemx.net/codemx/backend/config/notificacion_nueva_vacante.php',
+                    {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idEmpresa: empresa.id, nombreEmpresa: empresa.nombre, idVacante: idVacante} ),
+                    }
+                );
+
+                const notifResult = await notifResponse.json();
+
+                if (!notifResponse.ok || !notifResult.success) {
+                    console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+                }
             } else {
-                alert(result.error || 'Hubo un error al actualizar.');
+                alert('Hubo un error al enviar los datos.');
             }
         } catch (error) {
             console.error('Error al actualizar:', error);
@@ -353,6 +367,7 @@ export const Seccion2VacantesEmpresa = ({empresa, manejarOcultarSeccion, fetchDa
                 seleccionadas={tecnologiasRequeridas}
                 onSeleccionChange={manejarCambioTecnologias}
                 tecnologiasVacante={1}
+                esperarConfirmacion={true} 
                 />
 
 

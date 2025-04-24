@@ -2,37 +2,63 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ModalSeguidosCandidato } from './ModalSeguidosCandidato';
 import img from '../../resources/fondo.png';
 import '../../styles/candidato/miperfil.css';
+import { ModalCalifiaciones } from './ModalCalifiaciones';
 
 export const Seccion1PagePerfilCandidato = ({candidato, candidatoActivo}) => {
 
-  const [numSeguidos, setNumSeguidos] = useState(0);
-  const[empresas, setEmpresas]=useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [showModalSeguidos, setShowModalSeguidos] = useState(false);
-  const [showModalDenuncia, setShowModalDenuncia] = useState(false);
-  const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
-  const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
-  const [descripcionReporte, setDescripcionReporte] = useState("");
+    const [numSeguidos, setNumSeguidos] = useState(0);
+    const[empresas, setEmpresas]=useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [showModalSeguidos, setShowModalSeguidos] = useState(false);
+    const [showModalDenuncia, setShowModalDenuncia] = useState(false);
+    const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
+    const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
+    const [descripcionReporte, setDescripcionReporte] = useState("");
+    const [calificaciones, setCalificaciones] = useState(null);
+    const [promedioCalificacion, setPromedioCalificacion] = useState(null);
+    const [showModalCalificaciones, setShowModalCalificaciones] = useState(false);
 
   // Función para obtener datos del backend
   const fetchData = useCallback(async () => {
       try {
-          const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ idCandidato: candidato.id }),
-          });
+        const seguidosResponse = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_seguidos.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idCandidato: candidato.id }),
+        });
 
-          if (!seguidosResponse.ok) {
-              throw new Error('Error al obtener los datos');
-          }
-          const seguidosData = await seguidosResponse.json();
+        if (!seguidosResponse.ok) {
+            throw new Error('Error al obtener los datos');
+        }
+        const seguidosData = await seguidosResponse.json();
 
-          // Actualizar estados
-          setNumSeguidos(seguidosData.cantidad);
-          setEmpresas(seguidosData.empresas);
+          
+        // Fetch para obtener la calificacion del candidato
+        const califiacionResponse = await fetch(
+            'https://www.codemx.net/codemx/backend/candidato/obtener_calificaciones_candidato.php',
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idCandidato: candidato.id}),
+            }
+        );
+
+        if (!califiacionResponse.ok) {
+            const errorDataCalificacion = await califiacionResponse.json();
+            throw new Error(errorDataCalificacion.error || 'Error desconocido al obtener estado del candidato');
+        }
+
+        const califiacionData = await califiacionResponse.json();
+
+        // Actualizar estados
+        setNumSeguidos(seguidosData.cantidad);
+        setEmpresas(seguidosData.empresas);
+        setCalificaciones(califiacionData.calificaciones);
+        setPromedioCalificacion(califiacionData.promedio);
       } catch (error) {
           console.error('Error al obtener los datos de seguidores:', error);
       }
@@ -145,7 +171,19 @@ export const Seccion1PagePerfilCandidato = ({candidato, candidatoActivo}) => {
 
                 {/* Detalles del usuario */}
                 <div className="datos-container-candidato ">
-                    <h2 className='mt-2 mb-2'>{`${candidato.nombre} ${candidato.apellido}`}</h2>
+                    <div className='d-flex align-items-center gap-3 mt-2 mb-2'>
+                        <h2>{`${candidato.nombre} ${candidato.apellido}`}</h2>
+
+                        <div className='contenedor-prom d-flex align-items-center gap-1' onClick={() => setShowModalCalificaciones(true)}>
+                            <h4 className='text-muted'>{promedioCalificacion}</h4>
+                            <i
+                                className={`fa fa-star text-warning`}
+                                aria-hidden="true"
+                                style={{ cursor: 'pointer' }}
+                            ></i>
+                        </div>
+                    
+                    </div>
                     {candidato.universidad !== "Otra" &&
                         candidato.universidad !== "No estudio" && (
                             <p className="text-muted">{`Estudiante de ${candidato.universidad}`}</p>
@@ -267,6 +305,19 @@ export const Seccion1PagePerfilCandidato = ({candidato, candidatoActivo}) => {
               </div>
             )}
         </div>
+
+        
+        {/* Modal Calificaciones */}
+        {showModalCalificaciones && (
+            <div className="modal-overlay" onClick={() => setShowModalCalificaciones(false)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <button className="close-button btn" onClick={() => setShowModalCalificaciones(false)}>
+                        <i className="fa-solid fa-x"></i>
+                    </button>
+                    <ModalCalifiaciones calificaciones={calificaciones}/>
+                </div>
+            </div>
+        )}
 
     </div>
   )

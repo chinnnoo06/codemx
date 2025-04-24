@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { PageInicioEmpresa } from '../pages/empresa/PageInicioEmpresa';
@@ -10,12 +10,20 @@ import { PageVacantesEmpresa } from '../pages/empresa/PageVacantesEmpresa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageChatsEmpresa } from '../pages/empresa/PageChatsEmpresa';
 import ListaChatFlotante from '../components/empresa/ListaChatFlotante';
+import { PageNotificacionesEmpresa } from '../pages/empresa/PageNotificacionesEmpresa';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true); 
+    const [tieneNotificacionesNoLeidas, setTieneNotificacionesNoLeidas] = useState(false);
+    const [tieneMensajesNoLeidos, setTieneMensajesNoLeidos] = useState(false);
     const location = useLocation();
+
+    // Establecer el scroll en la parte superior cada vez que la ubicación cambie
+    useEffect(() => {
+        window.scrollTo(0, 0); 
+    }, [location]);
 
   useEffect(() => {
         const fetchData = async () => {
@@ -57,6 +65,64 @@ export const RutasEmpresa = () => {
         fetchData();
     }, []);
 
+    const verificarNotificacionesNoLeidas = useCallback(async () => {
+        try {
+            const response = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_notificaciones_empresa.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idEmpresa: empresa?.id }),
+            });
+    
+            const data = await response.json();
+            const hayNoLeidas = data.notificaciones?.some(n => n.Leida === '0');
+            setTieneNotificacionesNoLeidas(hayNoLeidas);
+        } catch (error) {
+            console.error('Error verificando notificaciones:', error);
+        }
+    }, [empresa?.id]);
+
+    const verificarMensajesNoLeidos = useCallback(async () => {
+        try {
+            const response = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_chats_empresa.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idEmpresa: empresa?.id }),
+            });
+    
+            const data = await response.json();
+    
+            // Si el último mensaje lo mandó la empresa y no ha sido leído (Lectura = 0), lo consideramos no leído
+            const hayNoLeidos = data.chats?.some(chat =>
+                chat.Ultimo_Mensaje &&
+                chat.Ultimo_Mensaje.Usuario === 'candidato' &&
+                chat.Ultimo_Mensaje.Lectura === "0"
+            );
+    
+            setTieneMensajesNoLeidos(hayNoLeidos);
+        } catch (error) {
+            console.error('Error verificando chats no leídos:', error);
+        }
+    }, [empresa?.id]);
+
+    useEffect(() => {
+        if (empresa?.id) {
+            verificarNotificacionesNoLeidas();
+            const intervalo = setInterval(verificarNotificacionesNoLeidas, 2000);
+            return () => clearInterval(intervalo);
+        }
+    }, [verificarNotificacionesNoLeidas]);
+
+    useEffect(() => {
+        if (empresa?.id) {
+            verificarMensajesNoLeidos();
+            const intervalo = setInterval(verificarMensajesNoLeidos, 2000);
+            return () => clearInterval(intervalo);
+        }
+    }, [verificarMensajesNoLeidos])
 
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
@@ -66,6 +132,7 @@ export const RutasEmpresa = () => {
         return <LoadingSpinner></LoadingSpinner> 
     }
 
+    console.log(tieneMensajesNoLeidos)
     return (
         <>
             {/* Header */}
@@ -83,12 +150,36 @@ export const RutasEmpresa = () => {
                             <i className="fa-solid fa-file-pen"></i>
                             Vacantes
                         </NavLink>
-                        <NavLink to="/usuario-empresa/chats-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-comment"></i>
+                        <NavLink
+                            to="/usuario-empresa/chats-empresa"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                <i className="fa-solid fa-comment"></i>
+                                {tieneMensajesNoLeidos && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
                             Chats
                         </NavLink>
-                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-bell"></i>
+                        <NavLink
+                            to="/usuario-empresa/notificaciones-empresa"
+                            className={({ isActive }) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                <i className="fa-solid fa-bell"></i>
+                                {tieneNotificacionesNoLeidas && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
                             Notificaciones
                         </NavLink>
                         <NavLink to="/usuario-empresa/informacion-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
@@ -137,6 +228,7 @@ export const RutasEmpresa = () => {
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  empresaActiva={empresa.id}/>} />
                     <Route path="/vacantes-empresa/" element={<PageVacantesEmpresa  empresa={empresa}/>} />
                     <Route path="/chats-empresa/" element={<PageChatsEmpresa  empresa={empresa}/>} />
+                    <Route path="/notificaciones-empresa/" element={<PageNotificacionesEmpresa  empresa={empresa}/>} />
                 </Routes>
             </section>
 

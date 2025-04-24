@@ -103,6 +103,24 @@ export const PagePerfilEmpresa = ({candidato}) => {
         }, 100); 
     }
 
+    useEffect(() => {
+        if (location.state?.seccionActiva === "publicacion" && location.state?.idPublicacion && publicaciones.length > 0) {
+            const publicacionEncontrada = publicaciones.find(publi => publi.ID === location.state.idPublicacion);
+            if (publicacionEncontrada) {
+                setPublicacionSeleccionada(publicacionEncontrada);
+                setSeccionActiva("publicacion");
+            }
+        }
+    
+        if (location.state?.seccionActiva === "detalles-vacante" && location.state?.idVacante && vacantes.length > 0) {
+            const vacanteEncontrada = vacantes.find(vac => vac.ID === location.state.idVacante);
+            if (vacanteEncontrada) {
+                setVacanteSeleccionada(vacanteEncontrada);
+                setSeccionActiva("detalles-vacante");
+            }
+        }
+    }, [location.state, publicaciones, vacantes]);
+    
     const manejarOcultarSeccion = () => {
         setSeccionActiva("perfil-publicaciones");
     };
@@ -157,7 +175,7 @@ export const PagePerfilEmpresa = ({candidato}) => {
             {seccionActiva === "publicacion" && (
                 <div className='contenedor-todo'>
                     <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
-                        <SeccionPublicacion empresa={empresa} idCandidato={candidato.id} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
+                        <SeccionPublicacion empresa={empresa} candidato={candidato} idCandidato={candidato.id} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion}/>
                     </div>
                 </div>
             )}
@@ -166,7 +184,7 @@ export const PagePerfilEmpresa = ({candidato}) => {
             {seccionActiva === "detalles-vacante" && (
                 <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
                     <div className='w-100 pt-4 pb-4'> 
-                        <SeccionVacante idCandidato={candidato.id} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData}/>
+                        <SeccionVacante idCandidato={candidato.id} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData} candidato={candidato}/>
                     </div>
                 </div>
     

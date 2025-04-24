@@ -14,7 +14,7 @@ export const PageLogin = () => {
                 </div>
             </header>
         </div>
-        <div className="container text-center pt-5">
+        <div className="container-bienvenida text-center">
           <h2 className="text-center mb-4"><i className="fas fa-user-circle icono"></i> Iniciar Sesión</h2>
         </div>
 

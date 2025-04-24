@@ -219,7 +219,7 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
   };
 
   return (
-    <div className="contenedor-form  container py-5">
+    <div className="contenedor-form  container mb-5">
       <h3 className="titulo-form text-center">Diseña tu perfil de Empresa</h3>
 
       {/* Render condicional basado en el paso */}
@@ -314,7 +314,19 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="telefono" className="form-label">Teléfono <span className="text-danger">*</span></label>
-      <input type="text" id="telefono" name="telefono" className="form-control" maxLength={10} value={formData.telefono} onChange={manejarValorInput} required/>
+      <input type="text" id="telefono" name="telefono" className="form-control" maxLength={10} 
+        onChange={(e) => {
+          // Elimina espacios si los pegan
+          const sinEspacios = e.target.value.replace(/\s/g, '');
+          manejarValorInput({ target: { name: 'telefono', value: sinEspacios } });
+        }}
+        onKeyDown={(e) => {
+          if (e.key === ' ') {
+            e.preventDefault();
+          }
+        }}
+        required
+      />
       {errors.telefono && <small className="text-danger">{errors.telefono}</small>}
     </div>
 

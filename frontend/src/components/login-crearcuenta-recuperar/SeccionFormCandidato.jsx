@@ -263,7 +263,7 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   
 
   return (
-    <div className="contenedor-form container py-4">
+    <div className="contenedor-form container mb-5">
       <h3 className="titulo-form text-center mb-4">Diseña tu perfil de Candidato</h3>
 
       {/* Render condicional basado en el paso */}
@@ -334,7 +334,19 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="telefono" className="form-label">Teléfono <span className="text-danger">*</span></label>
-      <input type="tel" id="telefono" name="telefono" className="form-control"  maxLength={10} value={formData.telefono} onChange={manejarValorInput} required/>
+      <input type="tel" id="telefono" name="telefono" className="form-control" maxLength={10} value={formData.telefono}
+        onChange={(e) => {
+          // Elimina espacios si los pegan
+          const sinEspacios = e.target.value.replace(/\s/g, '');
+          manejarValorInput({ target: { name: 'telefono', value: sinEspacios } });
+        }}
+        onKeyDown={(e) => {
+          if (e.key === ' ') {
+            e.preventDefault();
+          }
+        }}
+        required
+      />
       {errors.telefono && <small className="text-danger">{errors.telefono}</small>}
     </div>
 
@@ -458,6 +470,7 @@ const Paso3 = ({ errors, formData, manejarValorInput, tecnologias }) => {
         tecnologias={tecnologias}
         seleccionadas={formData.tecnologias}
         onSeleccionChange={manejarCambioTecnologias}
+        esperarConfirmacion={false} 
       />
 
       {errors.tecnologias && <small className="text-danger">{errors.tecnologias}</small>}

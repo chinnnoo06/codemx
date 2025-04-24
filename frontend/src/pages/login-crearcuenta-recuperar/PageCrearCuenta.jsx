@@ -51,7 +51,7 @@ export const PageCrearCuenta = () => {
 
       {/* Render Condicional */}
       {estadoRegistro === 'seleccion' ? (
-        <div className="text-center pt-5">
+        <div className="container-bienvenida text-center">
           <h2>Selecciona el tipo de cuenta</h2>
           <button
             className="btn-tipouno btn m-2"
@@ -74,12 +74,18 @@ export const PageCrearCuenta = () => {
         </div>
       ) : estadoRegistro === 'formulario' ? (
         tipoCuenta === 'candidato' ? (
-          <SeccionFormCandidato onRegistroCompleto={manejarRegistroCompleto} />
+          <div className='container-bienvenida'>
+            <SeccionFormCandidato onRegistroCompleto={manejarRegistroCompleto} />
+          </div>
         ) : (
-          <SeccionFormEmpresa onRegistroCompleto={manejarRegistroCompleto} />
+          <div className='container-bienvenida'>
+            <SeccionFormEmpresa onRegistroCompleto={manejarRegistroCompleto} />
+          </div>
         )
       ) : (
-        <SeccionVerificacionCorreo email={emailUsuario}  reenviarCorreo={reenviarCorreo}/>
+        <div className='container-bienvenida'>
+          <SeccionVerificacionCorreo email={emailUsuario}  reenviarCorreo={reenviarCorreo}/>
+        </div>
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { PageInicioCandidato } from '../pages/candidato/PageInicioCandidato';
@@ -12,13 +12,22 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PageMisVacantes } from '../pages/candidato/PageMisVacantes';
 import { PageChatsCandidato } from '../pages/candidato/PageChatsCandidato';
 import ListaChatFlotante from '../components/candidato/ListaChatFlotante';
+import { PageNotificacionesCandidato } from '../pages/candidato/PageNotificacionesCandidato';
 
 export const RutasCandidato = () => {
     const [candidato, setCandidato] = useState(null);
     const [fotoPerfil, setFotoPerfil] = useState('');
     const [menuVisible, setMenuVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true); 
+    const [tieneNotificacionesNoLeidas, setTieneNotificacionesNoLeidas] = useState(false);
+    const [tieneMensajesNoLeidos, setTieneMensajesNoLeidos] = useState(false);
     const location = useLocation();
+
+    // Establecer el scroll en la parte superior cada vez que la ubicación cambie
+    useEffect(() => {
+        window.scrollTo(0, 0); 
+    }, [location]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,6 +70,66 @@ export const RutasCandidato = () => {
         fetchData();
     }, []);
     
+    const verificarNotificacionesNoLeidas = useCallback(async () => {
+        try {
+            const response = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_notificaciones_candidato.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idCandidato: candidato?.id }),
+            });
+    
+            const data = await response.json();
+            const hayNoLeidas = data.notificaciones?.some(n => n.Leida === '0');
+            setTieneNotificacionesNoLeidas(hayNoLeidas);
+        } catch (error) {
+            console.error('Error verificando notificaciones:', error);
+        }
+    }, [candidato?.id]);
+
+    const verificarMensajesNoLeidos = useCallback(async () => {
+        try {
+            const response = await fetch('https://www.codemx.net/codemx/backend/candidato/obtener_chats_candidato.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idCandidato: candidato?.id }),
+            });
+    
+            const data = await response.json();
+    
+            // Si el último mensaje lo mandó la empresa y no ha sido leído (Lectura = 0), lo consideramos no leído
+            const hayNoLeidos = data.chats?.some(chat =>
+                chat.Ultimo_Mensaje &&
+                chat.Ultimo_Mensaje.Usuario === 'empresa' &&
+                chat.Ultimo_Mensaje.Lectura === "0"
+            );
+    
+            setTieneMensajesNoLeidos(hayNoLeidos);
+        } catch (error) {
+            console.error('Error verificando chats no leídos:', error);
+        }
+    }, [candidato?.id]);
+
+    useEffect(() => {
+        if (candidato?.id) {
+            verificarNotificacionesNoLeidas();
+            const intervalo = setInterval(verificarNotificacionesNoLeidas, 2000);
+            return () => clearInterval(intervalo);
+        }
+    }, [verificarNotificacionesNoLeidas]);
+
+    useEffect(() => {
+        if (candidato?.id) {
+            verificarMensajesNoLeidos();
+            const intervalo = setInterval(verificarMensajesNoLeidos, 2000);
+            return () => clearInterval(intervalo);
+        }
+    }, [verificarMensajesNoLeidos]);
+    
+    
 
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
@@ -93,14 +162,39 @@ export const RutasCandidato = () => {
                             <i className="fa-solid fa-briefcase"></i>
                             Vacantes
                         </NavLink>
-                        <NavLink to="/usuario-candidato/chats-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-comment"></i>
+                        <NavLink
+                            to="/usuario-candidato/chats-candidato"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                <i className="fa-solid fa-comment"></i>
+                                {tieneMensajesNoLeidos && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
                             Chats
                         </NavLink>
-                        <NavLink to="/usuario-candidato/notificaciones-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-bell"></i>
-                            Notificaciones 
+                        <NavLink
+                            to="/usuario-candidato/notificaciones-candidato"
+                            className={({ isActive }) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                <i className="fa-solid fa-bell"></i>
+                                {tieneNotificacionesNoLeidas && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                            Notificaciones
                         </NavLink>
+
                         <NavLink to="/usuario-candidato/informacion-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex  gap-2 align-items-center" }>
                             <i className="fa-solid fa-chart-simple"></i>
                             Información
@@ -164,6 +258,7 @@ export const RutasCandidato = () => {
                     <Route path="/perfil-empresa/" element={<PagePerfilEmpresa  candidato={candidato}/>} />
                     <Route path="/vacantes-candidato/" element={<PageMisVacantes  candidato={candidato}/>} />
                     <Route path="/chats-candidato/" element={<PageChatsCandidato  candidato={candidato}/>} />
+                    <Route path="/notificaciones-candidato/" element={<PageNotificacionesCandidato  candidato={candidato}/>} />
                 </Routes> 
             </section>
 

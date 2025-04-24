@@ -39,7 +39,7 @@ export const SeccionVerificacionCorreo = ({ email, tiempoLimite = 30, reenviarCo
   };
 
   return (
-    <div className="verificacion-correo text-center py-5">
+    <div className="verificacion-correo text-center mb-5">
       <h2 className="mb-3">¡Gracias por registrarte!</h2>
       <p className="mb-4">
         Hemos enviado un enlace de verificación a tu correo electrónico:

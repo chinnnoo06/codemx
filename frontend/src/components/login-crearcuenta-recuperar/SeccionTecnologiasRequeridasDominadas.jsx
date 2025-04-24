@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/login-crearcuenta-recuperar/form.css';
 import { motion } from 'framer-motion';
 
-export const SeccionTecnologiasRequeridasDominadas = ({ tecnologias, seleccionadas = [], onSeleccionChange, tecnologiasVacante }) => {
+export const SeccionTecnologiasRequeridasDominadas = ({ tecnologias, seleccionadas = [], onSeleccionChange, tecnologiasVacante, esperarConfirmacion = false }) => {
   const [tecnologiasSeleccionadas, setTecnologiasSeleccionadas] = useState(seleccionadas);
 
   // Sincronizar el estado de tecnologías seleccionadas con las prop seleccionadas
@@ -17,6 +17,9 @@ export const SeccionTecnologiasRequeridasDominadas = ({ tecnologias, seleccionad
       : [...tecnologiasSeleccionadas, id]; // Si no está seleccionada, la agregamos
 
     setTecnologiasSeleccionadas(actualizadas); // Actualizamos el estado local
+    if (!esperarConfirmacion) {
+      onSeleccionChange(actualizadas);
+    }
   };
 
   // Función para manejar el cierre de la sección (cuando el usuario hace clic en "Cancelar" o "Guardar")

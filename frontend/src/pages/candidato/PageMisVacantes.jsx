@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import '../../styles/empresa/seccionvacantes.css';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { SeccionVacante } from '../../components/candidato/SeccionVacante';
@@ -11,6 +12,7 @@ export const PageMisVacantes = ({ candidato }) => {
     const [seccionActiva, setSeccionActiva] = useState("vacantes-postuladas");
     const [isLoading, setIsLoading] = useState(true); 
     const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null);
+    const location = useLocation();
 
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
@@ -42,6 +44,24 @@ export const PageMisVacantes = ({ candidato }) => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    useEffect(() => {
+        // Si venimos desde una notificación con vacante
+        if (location.state?.seccionActiva === "detalles-vacante" && location.state?.vacanteID) {
+            const vacanteId = location.state.vacanteID;
+
+            // Esperamos a que se carguen las vacantes antes de buscarla
+            setTimeout(() => {
+            const todas = [...(vacantesPostuladas || []), ...(vacantesGuardadas || [])];
+            const encontrada = todas.find(v => v.ID == vacanteId);
+            if (encontrada) {
+                setVacanteSeleccionada(encontrada);
+                setSeccionActiva("detalles-vacante");
+            }
+            }, 300); // Tiempo leve para asegurar fetch completo
+        }
+    }, [location, vacantesPostuladas, vacantesGuardadas]);
+
 
     
     const manejarOcultarSeccionVacante = () => {
@@ -96,7 +116,7 @@ export const PageMisVacantes = ({ candidato }) => {
             )}
             {seccionActiva === "detalles-vacante" && (
                 <div className='w-100 pt-4 pb-4'> 
-                    <SeccionVacante idCandidato={candidato.id} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData}/>
+                    <SeccionVacante idCandidato={candidato.id} vacante={vacanteSeleccionada} manejarOcultarSeccionVacante={manejarOcultarSeccionVacante} setVacanteSeleccionada={setVacanteSeleccionada} actualizarFetch={fetchData} candidato={candidato}/>
                 </div>
             )}
         </div>

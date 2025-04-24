@@ -1,0 +1,130 @@
+.contenedor-seccion-notificaciones {
+    min-height: 80vh;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.notificacion:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px; 
+    transition: transform 0.3s ease; ;
+}
+
+.notificacion:hover{
+    transform: scale(1.01); 
+    cursor: pointer;
+}
+
+
+/* Ícono de notificación alineado y con tamaño fijo */
+.fila-img {
+    width: 40px;
+    min-width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo para el ícono en sí */
+.icono-notificacion {
+    font-size: 28px;
+    min-width: 22px;
+    line-height: 1;
+    color: #F2A922;  
+}
+
+/* Descripción y fecha */
+.fila-info {
+    flex: 1;
+    word-break: break-word;
+}
+
+.contenedor-descripcion{
+    max-width: 900px;
+}
+
+/* Contenedor para checkbox e icono de opciones alineados */
+.acciones-laterales {
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* Estilo del checkbox */
+.checkbox-personalizado {
+    width: 15px;
+    height: 15px;
+    accent-color: #0B1C26;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Estilo para los tres puntos de opciones */
+.icono-opciones-notificaciones {
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+}
+
+/* Negrita si no ha sido leída */
+.noti-noleida {
+    font-weight: 600;
+}
+
+.icono-no-notificacion {
+    font-size: 5rem; 
+    color: #ccc; 
+}
+
+.texto-no-notificaciones {
+    font-size: 1.5rem; 
+    color: #0B1C26;  
+}
+
+.texto-descripcion-link {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .texto-descripcion-link:hover {
+    text-decoration: underline;
+    color: #0B1C26;
+  }
+
+.fecha-notificacion{
+    font-size: 0.8rem;
+    color: #555;
+}
+
+  
+@media (max-width: 767px) {
+
+
+    /* Estilo para el ícono en sí */
+    .icono-notificacion {
+        font-size: 22px;
+    }
+
+    .texto-descripcion-link {
+        font-size: 0.7rem;
+
+    }
+
+    .fecha-notificacion{
+        font-size: 0.6rem;
+        color: #555;
+    }
+    
+    .contenedor-seleccionar button{
+        font-size: 0.6rem;
+    }
+}
+  

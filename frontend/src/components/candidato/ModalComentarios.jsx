@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../../styles/empresa/publicacion.css";
 
-export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerfilCandidato, irAlPerfilEmpresa, irAMiPerfil, idCandidato }) => {
+export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerfilCandidato, irAlPerfilEmpresa, irAMiPerfil, idCandidato, empresa, candidato }) => {
     // Estado para manejar los likes por cada comentario
     const [likesEstado, setLikesEstado] = useState(
         comentarios.reduce((acc, comentario) => {
@@ -277,6 +277,22 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
                 setNuevoComentario(""); 
                 setRespuestaA(null); 
                 fetchData();
+
+                // Segundo fetch: enviar notificación
+                const notifResponse = await fetch(
+                    'https://www.codemx.net/codemx/backend/config/notificacion_reaccion_publicacion.php',
+                    {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idEmpresa: empresa.id,  empresaNombre: empresa.nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: false}),
+                    }
+                );
+
+                const notifResult = await notifResponse.json();
+
+                if (!notifResponse.ok || !notifResult.success) {
+                    console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
+                }
             } else {
                 console.error("Error al agregar comentario:", result.message);
             }

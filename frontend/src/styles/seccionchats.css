@@ -96,6 +96,11 @@
     width: 185px; 
   }
   
+  .mensaje-no-leido {
+    font-weight: 600;
+    color: #000; /* Puedes usar otro tono oscuro si quieres */
+  }
+  
 
 /* Estilo general para el chat */
 .chat-mensajes {

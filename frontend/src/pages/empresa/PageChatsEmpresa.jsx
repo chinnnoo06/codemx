@@ -65,7 +65,7 @@ export const PageChatsEmpresa = ({ empresa }) => {
     
         const interval = setInterval(() => {
             fetchData(); // actualiza lista de chats
-        }, 2000); 
+        }, 1000); 
     
         return () => clearInterval(interval); 
     }, [fetchData]);
@@ -103,12 +103,17 @@ export const PageChatsEmpresa = ({ empresa }) => {
 
     useEffect(() => {
         if (location.state?.chatId && chats) {
-            const chatEncontrado = chats.find(c => c.Chat_ID === location.state.chatId);
-            if (chatEncontrado) {
-                setChatActivo(chatEncontrado);
+          const chatEncontrado = chats.find(c => c.Chat_ID === location.state.chatId);
+          if (chatEncontrado) {
+            setChatActivo(chatEncontrado);
+            if (window.innerWidth < 1000) {
+              setSeccionActiva("pantalla-pequenia");
+              setSeccionActivaPequenia("conversacion-chat");
             }
+          }
         }
-    }, [location.state?.chatId, chats]);
+      }, [location.state?.chatId, chats]);
+
     
 
     // Función para filtrar chats por la barra de búsqueda
@@ -319,6 +324,7 @@ export const PageChatsEmpresa = ({ empresa }) => {
                                 }}
                                 manejarMostrarOpcionesEliminar={manejarMostrarOpcionesEliminar}
                                 idEmpresa={empresa.id}
+                                empresa={empresa}
                             />
                         </div>
 
@@ -375,6 +381,7 @@ export const PageChatsEmpresa = ({ empresa }) => {
                                 }}
                                 setShowModalOpciones={setShowModalOpciones}
                                 idEmpresa={empresa.id}
+                                empresa={empresa}
                             />
                         </div>
                     )}

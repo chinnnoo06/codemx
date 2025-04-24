@@ -1,3 +1,6 @@
+.container-bienvenida{
+  margin-top: 7rem;
+}
 
 .btn-tipouno{
   background-color: #0B1C26; 
@@ -68,7 +71,7 @@
 }
 
 .contenedor-form{
-  max-width: 600px ;
+  max-width: 700px ;
 }
 
 .contenedor-form a{
