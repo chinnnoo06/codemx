@@ -8,53 +8,41 @@ header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204); // No Content
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Consulta las tecnologías más solicitadas por las empresas en sus vacantes
-    $consultaTecnologiasMasSolicitadas = "
-        SELECT tecnologias_vacante.Tecnologia_ID, tecnologias.Tecnologia AS Nombre, COUNT(*) AS cantidad
-        FROM tecnologias_vacante
-        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia_ID = tecnologias.ID
-        GROUP BY tecnologias_vacante.Tecnologia_ID, tecnologias.Tecnologia
-        ORDER BY cantidad DESC
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $sql = "
+        SELECT 
+            t.ID AS Tecnologia_ID,
+            t.Tecnologia,
+            COUNT(tv.Vacante_ID) AS Veces_Solicitada
+        FROM tecnologias_vacante tv
+        INNER JOIN tecnologias t ON tv.Tecnologia_ID = t.ID
+        GROUP BY tv.Tecnologia_ID, t.Tecnologia
+        ORDER BY Veces_Solicitada DESC
         LIMIT 10
     ";
 
-    // Ejecutar la consulta en la base de datos
-    $resultadoTecnologiasMasSolicitadas = mysqli_query($conexion, $consultaTecnologiasMasSolicitadas);
+    $resultado = $mysqli->query($sql);
 
-    // Comprobar si la consulta se ejecutó correctamente
-    if ($resultadoTecnologiasMasSolicitadas) {
-        $tecnologiasMasSolicitadas = [];
-        // Recorrer los resultados obtenidos de la consulta
-        while ($fila = mysqli_fetch_assoc($resultadoTecnologiasMasSolicitadas)) {
-            // Almacenar cada tecnología en un array asociativo
-            $tecnologiasMasSolicitadas[] = [
+    if ($resultado) {
+        $tecnologias = [];
+        while ($fila = $resultado->fetch_assoc()) {
+            $tecnologias[] = [
                 'id' => $fila['Tecnologia_ID'],
-                'nombre' => $fila['Nombre'],
-                'cantidad' => $fila['cantidad']
+                'nombre' => $fila['Tecnologia'],
+                'cantidad' => (int) $fila['Veces_Solicitada']
             ];
         }
-
-        // Retornar la respuesta en formato JSON con las tecnologías más solicitadas
-        echo json_encode([
-            'exito' => true,
-            'tecnologias' => $tecnologiasMasSolicitadas
-        ]);
+        echo json_encode($tecnologias);
     } else {
-        // Si ocurre un error en la consulta, se registra el error y se retorna una respuesta de error
-        error_log("Error al consultar las tecnologías más solicitadas: " . mysqli_error($conexion));
-        echo json_encode(['error' => 'Error al consultar las tecnologías más solicitadas.']);
         http_response_code(500);
+        echo json_encode(['error' => 'Error al ejecutar la consulta.']);
     }
-
 } else {
-    // Si el método HTTP no es POST, se devuelve un error 405 (Método no permitido)
     http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
 }
