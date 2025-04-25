@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta las tecnologías más comunes entre los candidatos registrados
     $consultaTecnologiasMasComunes = "
-        SELECT tecnologias_dominadas.Tecnologia_ID, tecnologias.Nombre, COUNT(*) AS cantidad
+        SELECT tecnologias_dominadas.Tecnologia, tecnologias.Tecnologia, COUNT(*) AS cantidad
         FROM tecnologias_dominadas
-        INNER JOIN tecnologias ON tecnologias_dominadas.Tecnologia_ID = tecnologias.ID
-        GROUP BY tecnologias_dominadas.Tecnologia_ID, tecnologias.Nombre
+        INNER JOIN tecnologias ON tecnologias_dominadas.Tecnologia = tecnologias.ID
+        GROUP BY tecnologias_dominadas.Tecnologia, tecnologias.Tecnologia
         ORDER BY cantidad DESC
         LIMIT 10
     ";
