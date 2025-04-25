@@ -20,11 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             t.Tecnologia,
             COUNT(tv.Vacante_ID) AS Veces_Solicitada
         FROM tecnologias_vacante tv
-        INNER JOIN tecnologias t ON tv.Tecnologia_ID = t.ID
+        LEFT JOIN tecnologias t ON tv.Tecnologia_ID = t.ID
+        WHERE t.ID IS NOT NULL
         GROUP BY tv.Tecnologia_ID, t.Tecnologia
         ORDER BY Veces_Solicitada DESC
         LIMIT 10
     ";
+
 
     $resultado = $mysqli->query($sql);
 
