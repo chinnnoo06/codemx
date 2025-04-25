@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consulta las tecnologías más solicitadas por las empresas en sus vacantes
     $consultaTecnologiasMasSolicitadas = "
-        SELECT tecnologias_vacante.Tecnologia AS Tecnologia_ID, tecnologias.Tecnologia AS Nombre, COUNT(*) AS cantidad
+        SELECT tecnologias_vacante.Tecnologia_ID, tecnologias.Tecnologia AS Nombre, COUNT(*) AS cantidad
         FROM tecnologias_vacante
-        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia = tecnologias.ID
-        GROUP BY tecnologias_vacante.Tecnologia, tecnologias.Tecnologia
+        INNER JOIN tecnologias ON tecnologias_vacante.Tecnologia_ID = tecnologias.ID
+        GROUP BY tecnologias_vacante.Tecnologia_ID, tecnologias.Tecnologia
         ORDER BY cantidad DESC
         LIMIT 10
     ";
