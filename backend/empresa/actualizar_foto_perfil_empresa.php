@@ -6,16 +6,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Configuración de rutas
     $serverUrl = 'https://codemx.net/codemx/public';
-    $logoDirRelativo = '/resources/fotos_perfil_empresas/';
+    $logoDirRelativo = '/resources/fotos_perfil_empresas/';  // Corregir aquí
     $logoDir = __DIR__ . '/../../public/resources/fotos_perfil_empresas/';
-    $defaultPhoto = $serverUrl . $flogoDirRelativo . 'Usuario.png';
+    $defaultPhoto = $serverUrl . $logoDirRelativo . 'Usuario.png';
 
     // Validar existencia del directorio
     if (!file_exists($logoDir)) {
         die(json_encode(['error' => 'El directorio para las fotografías no existe.']));
     }
 
-    // Verificar si el candidato existe y obtener la foto actual
+    // Verificar si la empresa existe y obtener la foto actual
     $verificarEmpresa = "SELECT Logo FROM empresa WHERE ID = '$idEmpresa'";
     $resultado = mysqli_query($conexion, $verificarEmpresa);
 
@@ -70,4 +70,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido.']);
 }
+
 ?>
