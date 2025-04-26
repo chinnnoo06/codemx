@@ -76,9 +76,6 @@ export const PageInformacion = () => {
     return <LoadingSpinner />; // Mostrar el spinner mientras se cargan los datos
   }
 
-  console.log(distribucionVacantes)
-
-
   return (
     <div className='contenedor-todo contenedor-seccion-informacion w-100'>
         <div className='header d-flex flex-column w-100 py-4'>
