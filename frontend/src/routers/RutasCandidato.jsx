@@ -13,6 +13,7 @@ import { PageMisVacantes } from '../pages/candidato/PageMisVacantes';
 import { PageChatsCandidato } from '../pages/candidato/PageChatsCandidato';
 import ListaChatFlotante from '../components/candidato/ListaChatFlotante';
 import { PageNotificacionesCandidato } from '../pages/candidato/PageNotificacionesCandidato';
+import { PageInformacion } from '../pages/info/PageInformacion';
 
 export const RutasCandidato = () => {
     const [candidato, setCandidato] = useState(null);
@@ -259,6 +260,7 @@ export const RutasCandidato = () => {
                     <Route path="/vacantes-candidato/" element={<PageMisVacantes  candidato={candidato}/>} />
                     <Route path="/chats-candidato/" element={<PageChatsCandidato  candidato={candidato}/>} />
                     <Route path="/notificaciones-candidato/" element={<PageNotificacionesCandidato  candidato={candidato}/>} />
+                    <Route path="/informacion-candidato/" element={<PageInformacion/>} />
                 </Routes> 
             </section>
 

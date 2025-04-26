@@ -1,0 +1,30 @@
+.contenedor-seccion-informacion {
+    min-height: 80vh; /* Asegura que el contenedor tenga suficiente altura */
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.sub-tituloinfo {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.resaltar{
+    font-weight: 600;
+}
+
+/* Asegúrate de que los gráficos no se desborden en pantallas pequeñas */
+@media (max-width: 768px) {
+    .contenedor-seccion-informacion {
+        min-height: 60vh; /* Ajusta la altura para pantallas más pequeñas */
+    }
+
+    .sub-tituloinfo {
+        font-size: 1.2rem;
+    }
+
+    .descripcion-grafica{
+        font-size: 0.8rem;
+    }
+}

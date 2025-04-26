@@ -11,6 +11,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PageChatsEmpresa } from '../pages/empresa/PageChatsEmpresa';
 import ListaChatFlotante from '../components/empresa/ListaChatFlotante';
 import { PageNotificacionesEmpresa } from '../pages/empresa/PageNotificacionesEmpresa';
+import { PageInformacion } from '../pages/info/PageInformacion';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
@@ -229,6 +230,7 @@ export const RutasEmpresa = () => {
                     <Route path="/vacantes-empresa/" element={<PageVacantesEmpresa  empresa={empresa}/>} />
                     <Route path="/chats-empresa/" element={<PageChatsEmpresa  empresa={empresa}/>} />
                     <Route path="/notificaciones-empresa/" element={<PageNotificacionesEmpresa  empresa={empresa}/>} />
+                    <Route path="/informacion-empresa/" element={<PageInformacion />} />
                 </Routes>
             </section>
 
