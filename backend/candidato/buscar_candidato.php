@@ -29,46 +29,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consultar en la tabla de candidatos
     $sql_candidatos = "
         SELECT 
-            ID, Nombre, Apellido, Password, Fecha_Nacimiento, Email, 
-            Telefono, Direccion, Estado, Sexo, Fotografia, Universidad, 
-            Tiempo_Restante, Modalidad_Trabajo, CV
+            ID, Nombre, Apellido, Fotografia AS Foto 
         FROM candidato 
         WHERE Nombre LIKE '%$query%' OR Apellido LIKE '%$query%' OR Email LIKE '%$query%'
     ";
 
     $result_candidatos = mysqli_query($conexion, $sql_candidatos);
-    $candidatos = [];
+    $usuarios = []; // Un solo arreglo para almacenar los usuarios
+
     if ($result_candidatos) {
         while ($row = mysqli_fetch_assoc($result_candidatos)) {
-            $candidatos[] = $row;
+            $row['tipo_usuario'] = 'candidato';  // Añadir tipo de usuario
+            $usuarios[] = $row;
         }
     }
 
     // Consultar en la tabla de empresas
     $sql_empresas = "
         SELECT 
-            ID, Nombre, Password, Descripcion, Sector, Tamanio, Telefono, 
-            Email, Logo, Fecha_Creacion, RFC
+            ID, Nombre, Logo AS Foto 
         FROM empresa 
         WHERE Nombre LIKE '%$query%' OR Email LIKE '%$query%'
     ";
 
     $result_empresas = mysqli_query($conexion, $sql_empresas);
-    $empresas = [];
+
     if ($result_empresas) {
         while ($row = mysqli_fetch_assoc($result_empresas)) {
-            $empresas[] = $row;
+            $row['tipo_usuario'] = 'empresa';  // Añadir tipo de usuario
+            $usuarios[] = $row;
         }
     }
 
-    // Crear el objeto de respuesta combinado
-    $response = [
-        'candidatos' => $candidatos,
-        'empresas' => $empresas
-    ];
-
-    // Devolver los resultados en formato JSON
-    echo json_encode($response);
+    // Devolver los resultados en formato JSON como un solo arreglo
+    echo json_encode($usuarios);
 
 } else {
     http_response_code(405); 
