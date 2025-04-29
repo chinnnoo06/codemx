@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['query']) || !isset($data['idCandidato']) || !isset($data['page'])) {
+    if (!isset($data['query']) || !isset($data['idCandidato'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
@@ -26,12 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitizar el término de búsqueda
     $query = mysqli_real_escape_string($conexion, $data['query']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); // ID del candidato para excluir
-    $page = (int)$data['page'];
-    $limit = 15;  // Número de elementos a devolver por página
-    $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Verificar que el término de búsqueda tenga al menos un carácter
     if (strlen($query) > 0) {
+        $usuarios = []; // Un solo arreglo para almacenar los usuarios
+
         // Consultar en la tabla de candidatos, excluyendo el perfil del usuario que realiza la búsqueda
         $sql_candidatos = "
             SELECT 
@@ -39,11 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             FROM candidato 
             WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%')  -- Buscar el término en cualquier parte del nombre o apellido
             AND ID != '$idCandidato'  -- Excluir el propio perfil
-            LIMIT $limit OFFSET $offset
         ";
 
         $result_candidatos = mysqli_query($conexion, $sql_candidatos);
-        $usuarios = []; // Un solo arreglo para almacenar los usuarios
 
         if ($result_candidatos) {
             while ($row = mysqli_fetch_assoc($result_candidatos)) {
@@ -58,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ID, Nombre, Logo AS Foto 
             FROM empresa 
             WHERE Nombre LIKE '$query%'  -- Buscar el término en cualquier parte del nombre
-            LIMIT $limit OFFSET $offset
         ";
 
         $result_empresas = mysqli_query($conexion, $sql_empresas);
