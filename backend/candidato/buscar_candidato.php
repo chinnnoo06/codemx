@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query = mysqli_real_escape_string($conexion, $data['query']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); // ID del candidato para excluir
     $page = (int)$data['page'];
-    $limit = 15;  // Número de elementos a devolver por página
+    $limit = 5;  // Número de elementos a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Consultar en la tabla de candidatos, excluyendo el perfil del usuario que realiza la búsqueda
