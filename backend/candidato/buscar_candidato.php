@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT 
             ID, Nombre, Apellido, Fotografia AS Foto 
         FROM candidato 
-        WHERE (Nombre LIKE '%$query%' OR Apellido LIKE '%$query%')
+        WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%')  -- Modificar aquí para que sea por cada carácter
         AND ID != '$idCandidato'  -- Excluir el propio perfil
         LIMIT $limit OFFSET $offset
     ";
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT 
             ID, Nombre, Logo AS Foto 
         FROM empresa 
-        WHERE Nombre LIKE '%$query%'
+        WHERE Nombre LIKE '$query%'  -- Modificar aquí para que sea por cada carácter
         LIMIT $limit OFFSET $offset
     ";
 
