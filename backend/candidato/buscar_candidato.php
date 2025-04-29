@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM candidato 
         WHERE (Nombre LIKE '%$query%' OR Apellido LIKE '%$query%' OR Email LIKE '%$query%')
         AND ID != '$idCandidato'  -- Excluir el propio perfil
+        LIMIT $limit OFFSET $offset
     ";
 
     $result_candidatos = mysqli_query($conexion, $sql_candidatos);
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ID, Nombre, Logo AS Foto 
         FROM empresa 
         WHERE Nombre LIKE '%$query%' OR Email LIKE '%$query%'
+        LIMIT $limit OFFSET $offset
     ";
 
     $result_empresas = mysqli_query($conexion, $sql_empresas);
@@ -66,11 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Paginación: Limitar el número de resultados devueltos
-    $paginatedResults = array_slice($usuarios, $offset, $limit);
-
-    // Devolver los resultados en formato JSON como un solo arreglo paginado
-    echo json_encode($paginatedResults);
+    // Devolver los resultados en formato JSON como un solo arreglo
+    echo json_encode($usuarios);
 
 } else {
     http_response_code(405); 
