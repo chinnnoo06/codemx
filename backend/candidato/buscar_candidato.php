@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['query']) || !isset($data['idCandidato'])) {
+    if (!isset($data['query']) || !isset($data['idCandidato']) || !isset($data['page'])) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query = mysqli_real_escape_string($conexion, $data['query']);
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); // ID del candidato para excluir
     $page = (int)$data['page'];
-    $limit = 15;  // Número de vacantes a devolver por página
+    $limit = 5;  // Número de elementos a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Consultar en la tabla de candidatos, excluyendo el perfil del usuario que realiza la búsqueda
@@ -66,13 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Devolver los resultados en formato JSON como un solo arreglo
-    echo json_encode($usuarios);
+    // Paginación: Limitar el número de resultados devueltos
+    $paginatedResults = array_slice($usuarios, $offset, $limit);
+
+    // Devolver los resultados en formato JSON como un solo arreglo paginado
+    echo json_encode($paginatedResults);
 
 } else {
     http_response_code(405); 
     echo json_encode(['error' => 'El método no está permitido.']);
 }
 ?>
-
-
