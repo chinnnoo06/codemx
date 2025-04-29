@@ -30,46 +30,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 15;  // Número de elementos a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
-    // Consultar en la tabla de candidatos, excluyendo el perfil del usuario que realiza la búsqueda
-    $sql_candidatos = "
-        SELECT 
-            ID, Nombre, Apellido, Fotografia AS Foto 
-        FROM candidato 
-        WHERE (Nombre LIKE '%$query%' OR Apellido LIKE '%$query%')  -- Buscar el término en cualquier parte del nombre o apellido
-        AND ID != '$idCandidato'  -- Excluir el propio perfil
-        LIMIT $limit OFFSET $offset
-    ";
+    // Verificar que el término de búsqueda tenga al menos un carácter
+    if (strlen($query) > 0) {
+        // Consultar en la tabla de candidatos, excluyendo el perfil del usuario que realiza la búsqueda
+        $sql_candidatos = "
+            SELECT 
+                ID, Nombre, Apellido, Fotografia AS Foto 
+            FROM candidato 
+            WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%')  -- Buscar el término en cualquier parte del nombre o apellido
+            AND ID != '$idCandidato'  -- Excluir el propio perfil
+            LIMIT $limit OFFSET $offset
+        ";
 
-    $result_candidatos = mysqli_query($conexion, $sql_candidatos);
-    $usuarios = []; // Un solo arreglo para almacenar los usuarios
+        $result_candidatos = mysqli_query($conexion, $sql_candidatos);
+        $usuarios = []; // Un solo arreglo para almacenar los usuarios
 
-    if ($result_candidatos) {
-        while ($row = mysqli_fetch_assoc($result_candidatos)) {
-            $row['tipo_usuario'] = 'candidato';  // Añadir tipo de usuario
-            $usuarios[] = $row;
+        if ($result_candidatos) {
+            while ($row = mysqli_fetch_assoc($result_candidatos)) {
+                $row['tipo_usuario'] = 'candidato';  // Añadir tipo de usuario
+                $usuarios[] = $row;
+            }
         }
-    }
 
-    // Consultar en la tabla de empresas, sin la necesidad de excluir el propio perfil ya que no se relacionan
-    $sql_empresas = "
-        SELECT 
-            ID, Nombre, Logo AS Foto 
-        FROM empresa 
-        WHERE Nombre LIKE '%$query%'  -- Buscar el término en cualquier parte del nombre
-        LIMIT $limit OFFSET $offset
-    ";
+        // Consultar en la tabla de empresas, sin la necesidad de excluir el propio perfil ya que no se relacionan
+        $sql_empresas = "
+            SELECT 
+                ID, Nombre, Logo AS Foto 
+            FROM empresa 
+            WHERE Nombre LIKE '$query%'  -- Buscar el término en cualquier parte del nombre
+            LIMIT $limit OFFSET $offset
+        ";
 
-    $result_empresas = mysqli_query($conexion, $sql_empresas);
+        $result_empresas = mysqli_query($conexion, $sql_empresas);
 
-    if ($result_empresas) {
-        while ($row = mysqli_fetch_assoc($result_empresas)) {
-            $row['tipo_usuario'] = 'empresa';  // Añadir tipo de usuario
-            $usuarios[] = $row;
+        if ($result_empresas) {
+            while ($row = mysqli_fetch_assoc($result_empresas)) {
+                $row['tipo_usuario'] = 'empresa';  // Añadir tipo de usuario
+                $usuarios[] = $row;
+            }
         }
-    }
 
-    // Devolver los resultados en formato JSON como un solo arreglo
-    echo json_encode($usuarios);
+        // Devolver los resultados en formato JSON como un solo arreglo
+        echo json_encode($usuarios);
+    } else {
+        // Si el término de búsqueda está vacío, devolver un arreglo vacío
+        echo json_encode([]);
+    }
 
 } else {
     http_response_code(405); 
