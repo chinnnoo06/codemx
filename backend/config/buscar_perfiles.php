@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strlen($query) > 0) {
         $usuarios = []; // Un solo arreglo para almacenar los usuarios
 
-        // Verificar si es un candidato buscando
+        // Si es un candidato, se excluye su propio perfil de la búsqueda de candidatos
         if ($idCandidato) {
             // Consultar en la tabla de candidatos, excluyendo el perfil del candidato que realiza la búsqueda
             $sql_candidatos = "
@@ -53,9 +53,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Verificar si es una empresa buscando
+        // Si es una empresa, realizar la búsqueda tanto en empresas como en candidatos
         if ($idEmpresa) {
-            // Consultar en la tabla de empresas, excluyendo el perfil de la empresa que realiza la búsqueda
+            // Consultar en la tabla de candidatos
+            $sql_candidatos = "
+                SELECT 
+                    ID, Nombre, Apellido, Fotografia AS Foto 
+                FROM candidato 
+                WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%')
+            ";
+
+            $result_candidatos = mysqli_query($conexion, $sql_candidatos);
+
+            if ($result_candidatos) {
+                while ($row = mysqli_fetch_assoc($result_candidatos)) {
+                    $row['tipo_usuario'] = 'candidato';  // Añadir tipo de usuario
+                    $usuarios[] = $row;
+                }
+            }
+
+            // Consultar en la tabla de empresas, excluyendo el propio perfil de la empresa
             $sql_empresas = "
                 SELECT 
                     ID, Nombre, Logo AS Foto 
