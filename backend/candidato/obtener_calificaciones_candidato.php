@@ -10,7 +10,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204); // No Content
+    http_response_code(204);
     exit();
 }
 
@@ -25,18 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Consulta para obtener las calificaciones, comentarios, nombre de empresa, logo y título de vacante
     $consulta = "SELECT 
-                    Empresa_ID, 
-                    Calificacion, 
-                    Comentario, 
-                    empresa.Nombre, 
-                    empresa.Logo, 
-                    vacante.Titulo 
+                    calificaciones_candidato.Empresa_ID,
+                    calificaciones_candidato.Calificacion,
+                    calificaciones_candidato.Comentario,
+                    calificaciones_candidato.Fecha_Calificacion,
+                    empresa.Nombre,
+                    empresa.Logo,
+                    vacante.Titulo
                 FROM calificaciones_candidato
                 INNER JOIN empresa ON calificaciones_candidato.Empresa_ID = empresa.ID
                 INNER JOIN vacante ON calificaciones_candidato.Vacante_ID = vacante.ID
-                WHERE Candidato_ID = '$idCandidato'";
+                WHERE calificaciones_candidato.Candidato_ID = '$idCandidato'";
 
     $resultado = mysqli_query($conexion, $consulta);
 
@@ -68,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['cantidad' => 0, 'calificaciones' => [], 'promedio' => 0, 'error' => 'No hay calificaciones disponibles.']);
     }
 } else {
-    // Método no permitido
     http_response_code(405);
     echo json_encode(['error' => 'El método no está permitido.']);
 }
+
 ?>
