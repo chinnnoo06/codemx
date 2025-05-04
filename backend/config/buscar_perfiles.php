@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Si es una empresa, realizar la búsqueda tanto en empresas como en candidatos
         if ($idEmpresa) {
-            // Consultar en la tabla de candidatos
+            // Consultar en la tabla de candidatos, excluyendo el perfil del candidato que realiza la búsqueda
             $sql_candidatos = "
                 SELECT 
                     ID, Nombre, Apellido, Fotografia AS Foto 
