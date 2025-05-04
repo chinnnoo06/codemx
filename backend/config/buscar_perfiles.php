@@ -17,8 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Verificar que el término de búsqueda esté presente
-    if (!isset($data['query']) || !isset($data['idUsuario'])) {
+    if (!isset($data['query']) || !(isset($data['idCandidato']) || isset($data['idEmpresa']))) {
         echo json_encode(['error' => 'Faltan datos importantes']);
         http_response_code(400); 
         exit();
@@ -26,41 +25,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Sanitizar el término de búsqueda
     $query = mysqli_real_escape_string($conexion, $data['query']);
-    $idUsuario = mysqli_real_escape_string($conexion, $data['idUsuario']); // ID del usuario que realiza la búsqueda
+    $idCandidato = isset($data['idCandidato']) ? mysqli_real_escape_string($conexion, $data['idCandidato']) : null;
+    $idEmpresa = isset($data['idEmpresa']) ? mysqli_real_escape_string($conexion, $data['idEmpresa']) : null;
 
     // Verificar que el término de búsqueda tenga al menos un carácter
     if (strlen($query) > 0) {
         $usuarios = []; // Un solo arreglo para almacenar los usuarios
 
-        // Buscar en la tabla de candidatos
-        $sql_candidatos = "
-            SELECT 
-                ID, Nombre, Apellido, Fotografia AS Foto, 'candidato' AS tipo_usuario 
-            FROM candidato 
-            WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%')  -- Buscar el término en cualquier parte del nombre o apellido
-        ";
+        // Verificar si es un candidato buscando
+        if ($idCandidato) {
+            // Consultar en la tabla de candidatos, excluyendo el perfil del candidato que realiza la búsqueda
+            $sql_candidatos = "
+                SELECT 
+                    ID, Nombre, Apellido, Fotografia AS Foto 
+                FROM candidato 
+                WHERE (Nombre LIKE '$query%' OR Apellido LIKE '$query%') 
+                AND ID != '$idCandidato'  -- Excluir el propio perfil del candidato
+            ";
 
-        $result_candidatos = mysqli_query($conexion, $sql_candidatos);
+            $result_candidatos = mysqli_query($conexion, $sql_candidatos);
 
-        if ($result_candidatos) {
-            while ($row = mysqli_fetch_assoc($result_candidatos)) {
-                $usuarios[] = $row;
+            if ($result_candidatos) {
+                while ($row = mysqli_fetch_assoc($result_candidatos)) {
+                    $row['tipo_usuario'] = 'candidato';  // Añadir tipo de usuario
+                    $usuarios[] = $row;
+                }
             }
         }
 
-        // Buscar en la tabla de empresas
-        $sql_empresas = "
-            SELECT 
-                ID, Nombre, Logo AS Foto, 'empresa' AS tipo_usuario 
-            FROM empresa 
-            WHERE Nombre LIKE '$query%'  -- Buscar el término en cualquier parte del nombre
-        ";
+        // Verificar si es una empresa buscando
+        if ($idEmpresa) {
+            // Consultar en la tabla de empresas, excluyendo el perfil de la empresa que realiza la búsqueda
+            $sql_empresas = "
+                SELECT 
+                    ID, Nombre, Logo AS Foto 
+                FROM empresa 
+                WHERE Nombre LIKE '$query%' 
+                AND ID != '$idEmpresa'  -- Excluir el propio perfil de la empresa
+            ";
 
-        $result_empresas = mysqli_query($conexion, $sql_empresas);
+            $result_empresas = mysqli_query($conexion, $sql_empresas);
 
-        if ($result_empresas) {
-            while ($row = mysqli_fetch_assoc($result_empresas)) {
-                $usuarios[] = $row;
+            if ($result_empresas) {
+                while ($row = mysqli_fetch_assoc($result_empresas)) {
+                    $row['tipo_usuario'] = 'empresa';  // Añadir tipo de usuario
+                    $usuarios[] = $row;
+                }
             }
         }
 
