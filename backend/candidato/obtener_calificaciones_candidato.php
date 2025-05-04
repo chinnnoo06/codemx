@@ -25,10 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    $consulta = "SELECT Empresa_ID, Calificacion, Comentario, empresa.Nombre, empresa.Logo, vacante.Titulo FROM calificaciones_candidato
-        INNER JOIN empresa ON calificaciones_candidato.Empresa_ID = empresa.ID
-        INNER JOIN vacante ON calificaciones_candidato.Vacante_ID = vacante.ID
-        WHERE Candidato_ID = '$idCandidato'";
+    // Consulta para obtener las calificaciones, comentarios, nombre de empresa, logo y título de vacante
+    $consulta = "SELECT 
+                    Empresa_ID, 
+                    Calificacion, 
+                    Comentario, 
+                    empresa.Nombre, 
+                    empresa.Logo, 
+                    vacante.Titulo 
+                FROM calificaciones_candidato
+                INNER JOIN empresa ON calificaciones_candidato.Empresa_ID = empresa.ID
+                INNER JOIN vacante ON calificaciones_candidato.Vacante_ID = vacante.ID
+                WHERE Candidato_ID = '$idCandidato'";
 
     $resultado = mysqli_query($conexion, $consulta);
 
