@@ -51,11 +51,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $usuarios[] = $row;
                 }
             }
+
+            // Consultar en la tabla de empresas, excluyendo el propio perfil de la empresa
+            $sql_empresas = "
+                SELECT 
+                    ID, Nombre, Logo AS Foto 
+                FROM empresa 
+                WHERE Nombre LIKE '$query%' 
+            ";
+
+            $result_empresas = mysqli_query($conexion, $sql_empresas);
+
+            if ($result_empresas) {
+                while ($row = mysqli_fetch_assoc($result_empresas)) {
+                    $row['tipo_usuario'] = 'empresa';  // Añadir tipo de usuario
+                    $usuarios[] = $row;
+                }
+            }
         }
 
         // Si es una empresa, realizar la búsqueda tanto en empresas como en candidatos
         if ($idEmpresa) {
-            // Consultar en la tabla de candidatos, excluyendo el perfil del candidato que realiza la búsqueda
+            // Consultar en la tabla de candidatos
             $sql_candidatos = "
                 SELECT 
                     ID, Nombre, Apellido, Fotografia AS Foto 
