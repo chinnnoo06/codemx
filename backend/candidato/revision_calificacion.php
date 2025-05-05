@@ -34,7 +34,7 @@ try {
 
     // Construir consulta SQL
     $consulta = "INSERT INTO validar_calificaciones 
-    (Calificacion_ID, Motivo, Estado, Fecha_Denuncia)
+    (Calificacion_ID, Motivo, Estado, Fecha_Creacion)
     VALUES (
         '$idCalificacion',
         '$descripcion',
