@@ -33,7 +33,7 @@ try {
     $idDenunciado  = mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $idMotivo      = mysqli_real_escape_string($conexion, $data['motivo']);
     $descripcion   = mysqli_real_escape_string($conexion, $data['descripcion']);
-    $estado        = 1;
+    $estado        = 0;
 
     // Por defecto todos NULL
     $idComentario = "NULL";

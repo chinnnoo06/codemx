@@ -19,9 +19,7 @@ try {
     $fechaActual = date('Y-m-d H:i:s');
 
     if (
-        !isset($data['idDenunciante']) ||
-        !isset($data['idDenunciado']) ||
-        !isset($data['motivo']) ||
+        !isset($data['idCalificacion']) ||
         !isset($data['descripcion'])
     ) {
         echo json_encode(['success' => false, 'error' => 'Faltan datos importantes para realizar la denuncia.']);
@@ -29,34 +27,19 @@ try {
         exit();
     }
 
-    $idDenunciante = mysqli_real_escape_string($conexion, $data['idDenunciante']);
-    $idDenunciado  = mysqli_real_escape_string($conexion, $data['idDenunciado']);
-    $idMotivo      = mysqli_real_escape_string($conexion, $data['motivo']);
-    $descripcion   = mysqli_real_escape_string($conexion, $data['descripcion']);
-    $estado        = 0;
-
-    // Validación cruzada: si uno viene, el otro debe ir NULL
-    $idComentario = "NULL";
-    $idMensaje = "NULL";
-
-    if (!empty($data['idComentario']) && empty($data['idMensaje'])) {
-        $idComentario = "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'";
-    } elseif (!empty($data['idMensaje']) && empty($data['idComentario'])) {
-        $idMensaje = "'" . mysqli_real_escape_string($conexion, $data['idMensaje']) . "'";
-    }
+    $idCalificacion = mysqli_real_escape_string($conexion, $data['idCalificacion']);
+    $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
+    $fechaActual = date('Y-m-d H:i:s');
+    $estado = 0;
 
     // Construir consulta SQL
-    $consulta = "INSERT INTO denuncia_empresa_candidato 
-    (Denunciante_ID, Denunciado_ID, Motivo, Estado_Denuncia, Descripcion, Fecha_Denuncia, Comentario_ID, Mensaje_ID)
+    $consulta = "INSERT INTO validar_calificaciones 
+    (Calificacion_ID, Motivo, Estado, Fecha_Denuncia)
     VALUES (
-        '$idDenunciante',
-        '$idDenunciado',
-        '$idMotivo',
-        '$estado',
+        '$idCalificacion',
         '$descripcion',
-        '$fechaActual',
-        $idComentario,
-        $idMensaje
+        '$estado',
+        '$fechaActual'
     )";
 
     if (mysqli_query($conexion, $consulta)) {
