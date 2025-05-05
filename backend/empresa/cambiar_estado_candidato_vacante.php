@@ -61,8 +61,20 @@ try {
             }
         }
 
-        // Enviar mensaje automático
-        $mensaje = "Tu vacante ha sido aceptada, inicia el proceso de contratación.";
+       // Obtener nombre y apellido del candidato
+        $consultaNombre = "SELECT Nombre, Apellido FROM candidatos WHERE ID = '$idCandidato'";
+        $resultadoNombre = mysqli_query($conexion, $consultaNombre);
+
+        $nombreCompleto = "Candidato";
+        if ($resultadoNombre && mysqli_num_rows($resultadoNombre) > 0) {
+            $fila = mysqli_fetch_assoc($resultadoNombre);
+            $nombreCompleto = $fila['Nombre'] . ' ' . $fila['Apellido'];
+        }
+
+        // Mensaje personalizado
+        $mensaje = "Hola $nombreCompleto,\n\n¡Felicitaciones! Tu postulación ha sido aceptada por la empresa. A partir de este momento, inicia el proceso de contratación. " .
+                "En breve, la empresa se pondrá en contacto contigo para coordinar los siguientes pasos. Si tienes alguna duda, no dudes en escribirnos por este chat.\n\n" .
+                "¡Mucho éxito!";
         $fechaEnvio = date('Y-m-d H:i:s');
         $usuario = "empresa"; // o "sistema", como prefieras
 
