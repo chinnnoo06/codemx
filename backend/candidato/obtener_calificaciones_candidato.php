@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
     $consulta = "SELECT 
+                    calificaciones_candidato.ID,
                     calificaciones_candidato.Empresa_ID,
                     calificaciones_candidato.Calificacion,
                     calificaciones_candidato.Comentario,
