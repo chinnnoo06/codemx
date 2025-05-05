@@ -62,7 +62,7 @@ try {
         }
 
        // Obtener nombre y apellido del candidato
-        $consultaNombre = "SELECT Nombre, Apellido FROM candidatos WHERE ID = '$idCandidato'";
+        $consultaNombre = "SELECT Nombre, Apellido FROM candidato WHERE ID = '$idCandidato'";
         $resultadoNombre = mysqli_query($conexion, $consultaNombre);
 
         $nombreCompleto = "Candidato";
