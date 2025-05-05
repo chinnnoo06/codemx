@@ -12,6 +12,7 @@ import { PageChatsEmpresa } from '../pages/empresa/PageChatsEmpresa';
 import ListaChatFlotante from '../components/empresa/ListaChatFlotante';
 import { PageNotificacionesEmpresa } from '../pages/empresa/PageNotificacionesEmpresa';
 import { PageInformacion } from '../pages/info/PageInformacion';
+import { PageBuscarEmpresa } from '../pages/empresa/PageBuscarEmpresa';
 
 export const RutasEmpresa = () => {
     const [empresa, setEmpresa] = useState(null);
@@ -231,6 +232,7 @@ export const RutasEmpresa = () => {
                     <Route path="/chats-empresa/" element={<PageChatsEmpresa  empresa={empresa}/>} />
                     <Route path="/notificaciones-empresa/" element={<PageNotificacionesEmpresa  empresa={empresa}/>} />
                     <Route path="/informacion-empresa/" element={<PageInformacion />} />
+                    <Route path="/busqueda-empresa/" element={<PageBuscarEmpresa empresa={empresa}/>} />
                 </Routes>
             </section>
 

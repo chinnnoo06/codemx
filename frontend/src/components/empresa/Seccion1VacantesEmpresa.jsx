@@ -38,6 +38,7 @@ export const Seccion1VacantesEmpresa = ({vacantes, manejarMostrarSeccionVacante}
                                 <span className='modalidad-vacante text-muted'>({vacante.Modalidad_Vacante})</span>
                                 {vacante.Estatus == "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
                                 {vacante.Estatus == "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
+                                <span className='estatus-vacante text-muted'>Limite: {vacante.Fecha_Limite}</span>
                             </div>
                         </div>
 

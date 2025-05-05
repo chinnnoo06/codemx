@@ -14,6 +14,7 @@ import { PageChatsCandidato } from '../pages/candidato/PageChatsCandidato';
 import ListaChatFlotante from '../components/candidato/ListaChatFlotante';
 import { PageNotificacionesCandidato } from '../pages/candidato/PageNotificacionesCandidato';
 import { PageInformacion } from '../pages/info/PageInformacion';
+import { PageBuscarCandidato } from '../pages/candidato/PageBuscarCandidato';
 
 export const RutasCandidato = () => {
     const [candidato, setCandidato] = useState(null);
@@ -261,6 +262,7 @@ export const RutasCandidato = () => {
                     <Route path="/chats-candidato/" element={<PageChatsCandidato  candidato={candidato}/>} />
                     <Route path="/notificaciones-candidato/" element={<PageNotificacionesCandidato  candidato={candidato}/>} />
                     <Route path="/informacion-candidato/" element={<PageInformacion/>} />
+                    <Route path="/busqueda-candidato/" element={<PageBuscarCandidato candidato={candidato}/>} />
                 </Routes> 
             </section>
 

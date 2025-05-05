@@ -1,5 +1,7 @@
-import React from 'react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useRef } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 // Función para truncar el texto a un máximo de 20 caracteres
 const truncateText = (text, maxLength = 15) => {
@@ -7,6 +9,9 @@ const truncateText = (text, maxLength = 15) => {
 };
 
 export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
+  const chartRef = useRef();
+  const descRef = useRef();
+
   // Recortar los nombres de las tecnologías antes de pasarlos a la gráfica
   const truncatedTecnologias = tecnologiasSolicitadas.map(tecnologia => ({
     ...tecnologia,
@@ -22,14 +27,85 @@ export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
   const segundaTecnologia = tecnologiasSolicitadas[1]?.nombre || 'N/D';
   const cantidadSegundaTecnologia = tecnologiasSolicitadas[1]?.cantidad || 0;
 
+  const maxCantidad = Math.max(...tecnologiasSolicitadas.map(t => t.cantidad));
+
+
+  const handleDownload = async () => {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const colorTitulo = '#F2A922';
+    const colorTexto = '#0B1C26';
+  
+    pdf.setFont('helvetica');
+  
+    // === HEADER ===
+    pdf.setFillColor(colorTexto);
+    pdf.rect(0, 0, 210, 20, 'F');
+  
+    pdf.setTextColor(colorTitulo);
+    pdf.setFontSize(18);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('TECNOLOGÍAS REQUERIDAS POR LAS EMPRESAS', 10, 13);
+  
+    const logoBaseX = 175;
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor('#dde1e9');
+    pdf.text('CODE', logoBaseX, 13);
+    const textWidth = pdf.getTextWidth('CODE');
+    pdf.setTextColor('#F2A922');
+    pdf.text('MX', logoBaseX + textWidth, 13);
+  
+    // === FOOTER FUNCTION ===
+    const agregarFooter = () => {
+      const footerY = 285;
+      pdf.setDrawColor(230);
+      pdf.line(10, footerY - 5, 200, footerY - 5);
+      pdf.setFontSize(9);
+      pdf.setFont('helvetica', 'italic');
+      pdf.setTextColor(colorTitulo);
+      pdf.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
+    };
+  
+    // === CAPTURA DE IMÁGENES ===
+    const descCanvas = await html2canvas(descRef.current, { scale: 2 });
+    const descImg = descCanvas.toDataURL('image/png');
+  
+    const chartCanvas = await html2canvas(chartRef.current, { scale: 2 });
+    const chartImg = chartCanvas.toDataURL('image/png');
+  
+    // === CONTENIDO ===
+    let y = 25;  // Mantén este valor para el inicio, pero ajusta el espacio hacia abajo.
+
+    pdf.addImage(descImg, 'PNG', 10, y, 190, 50);  // Descripción más pequeña
+    y += 55;  // Reduces el espacio entre la descripción y la gráfica
+    
+    // Ahora la gráfica
+    pdf.addImage(chartImg, 'PNG', 10, y, 190, 100);
+  
+    // Footer en la primera (y única) página
+    agregarFooter();
+  
+    pdf.save('Tecnologias_Requeridas.pdf');
+  };
+
   return (
     <>
 
 
         {/* Gráfico de tecnologías dominadas */}
-        <h4 className='sub-tituloinfo'>Tecnologías Requeridas por las Empresas </h4>
+        <div className='d-flex justify-content-between'>
+          <h4 className='sub-tituloinfo'>Tecnologías Requeridas por las Empresas </h4>
+          <button 
+            onClick={handleDownload} 
+            className='btn boton-descargar'
+            title="Descargar PDF"
+          >
+            <i className="fa-solid fa-download"></i>
+          </button>
+        </div>
+        
 
-        <p className="descripcion-grafica">
+        <p className="descripcion-grafica" ref={descRef}>
           En esta gráfica se presentan las tecnologías más solicitadas por las empresas en sus vacantes. Cada barra representa el número de veces que una tecnología ha sido mencionada en las ofertas de trabajo. La tecnología más requerida en nuestra plataforma es <span className='resaltar'>{tecnologiaMasSolicitada}</span>, con <span className='resaltar'>{cantidadMasSolicitada}</span> menciones, lo que refleja la alta demanda de esta habilidad en el mercado laboral actual.
 
           Entre las tecnologías más destacadas, también encontramos <span className='resaltar'>{segundaTecnologia}</span>, que tiene una cantidad de <span className='resaltar'>{cantidadSegundaTecnologia}</span> menciones. Esto nos da una clara indicación de las áreas de conocimiento que las empresas están buscando en sus candidatos. 
@@ -37,23 +113,29 @@ export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
           En total, se destacan <span className='resaltar'>{totalTecnologias}</span> tecnologías diferentes, lo que muestra la variedad de habilidades que se requieren en el mercado. Este dato es clave para las empresas que buscan perfiles con competencias técnicas diversas, ya que les permite identificar rápidamente qué tecnologías están más demandadas y cuáles podrían ser áreas de oportunidad para la capacitación de sus equipos.
         </p>
 
+        <div ref={chartRef}>
+          <ResponsiveContainer width="100%" height={450}>
+            <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 0, bottom: 60, left: -39 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="nombre" 
+                angle={-45} // Rotar las etiquetas del eje X 45 grados
+                textAnchor="end" // Alineación de las etiquetas rotadas
+                interval={0} // Asegura que todas las etiquetas sean visibles
+                tick={{ fontSize: 12 }} // Tamaño de las etiquetas por defecto
+              />
+              <YAxis 
+                domain={[0, maxCantidad]} 
+                ticks={[...Array(maxCantidad + 1).keys()].filter(n => n % 1 === 0)} 
+              />
 
-        <ResponsiveContainer width="100%" height={450}>
-          <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 0, bottom: 60, left: -42 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="nombre" 
-              angle={-45} // Rotar las etiquetas del eje X 45 grados
-              textAnchor="end" // Alineación de las etiquetas rotadas
-              interval={0} // Asegura que todas las etiquetas sean visibles
-              tick={{ fontSize: 12 }} // Tamaño de las etiquetas por defecto
-            />
-            <YAxis />
-            <Tooltip />
+              <Tooltip />
 
-            <Bar dataKey="cantidad" fill="#F2A922" />
-          </BarChart>
-        </ResponsiveContainer>
+              <Bar dataKey="cantidad" fill="#F2A922" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
     </>
   );
 }

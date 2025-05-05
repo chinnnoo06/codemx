@@ -380,6 +380,7 @@ export const ModalAdministrarCandidato = ({ candidato, tecnologiasRequeridas, id
               rows="3"
               placeholder="Deja un comentario sobre el candidato"
               value={comentarioCalifiacion}
+              maxLength={350}
               onChange={(e) => setComentarioCalificacion(e.target.value)}
             />
           </div>

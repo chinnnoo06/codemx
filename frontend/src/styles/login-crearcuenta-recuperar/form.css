@@ -14,10 +14,16 @@
   border: 1px solid #0B1C26; 
 }
 
-.btn-tipodos:hover,
+.btn-tipodos:hover{
+  background-color: #0B1C26; 
+  color: #dde1e9; 
+  border: 1px solid #0B1C26; 
+}
+
+
 .btn-tipouno:hover{
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: #0B1C26;
+    background-color: rgba(255, 255, 255, 0.9);
+  color: #0B1C26; 
   border: 1px solid #0B1C26; 
 }
 

@@ -14,6 +14,25 @@
     font-weight: 600;
 }
 
+.boton-descargar {
+    color: #0B1C26;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.boton-descargar:hover{
+    color: #504e4efe;
+}
+
+ 
+  
 /* Asegúrate de que los gráficos no se desborden en pantallas pequeñas */
 @media (max-width: 768px) {
     .contenedor-seccion-informacion {
@@ -26,5 +45,10 @@
 
     .descripcion-grafica{
         font-size: 0.8rem;
+    }
+
+    .boton-descargar {
+        font-size: 0.8rem;
+        padding: 0.1rem 0.3rem;
     }
 }

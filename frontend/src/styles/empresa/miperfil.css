@@ -66,24 +66,6 @@
     padding: 0.5rem 0.8rem;
 }
 
-.btn-tipouno{
-    background-color: #0B1C26; 
-    color: #dde1e9; 
-    transition: all 0.3s ease; 
-  }
-  
-.btn-tipodos{
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #0B1C26; 
-    border: 1px solid #0B1C26; 
-}
-
-.btn-tipodos:hover,
-.btn-tipouno:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #0B1C26;
-}
-
 .text-highlight {
 
     font-weight: 600;

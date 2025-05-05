@@ -53,7 +53,7 @@ export const ModalLikes = ({likes, irAlPerfilCandidato, irAMiPerfil, idCandidato
                     <img
                         src={candidato.Fotografia}
                         alt={candidato.Nombre}
-                        className="usuario-reaccion-foto rounded-circle me-3"
+                        className="usuario-reaccion-foto rounded-circle me-2"
                     />
     
                     <span className="usuario-reaccion-nombre">{nombreCompleto} {candidato.id}</span>

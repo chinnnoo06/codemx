@@ -1,0 +1,155 @@
+.contenedor-seccion-buscar {
+    min-height: 80vh;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.contenedor-buscar{
+    width: 100%;
+    min-height: 50vh;
+}
+
+.contenedor-sin-resultados{
+    height: 50vh;
+}
+
+.col-uno img{
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 0.8rem;
+}
+
+.col-dos span{
+    color: #0B1C26;
+    font-size: 1.2rem;
+}
+
+.resultado:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px; 
+    transition: transform 0.3s ease; ;
+}
+
+.resultado:hover{
+    transform: scale(1.01); 
+    cursor: pointer;
+}
+
+
+.contenedor-sin-resultados{
+    padding: 0;
+}
+
+.icono-resultado {
+    font-size: 5rem; 
+    color: #ccc; 
+}
+
+.texto-no-resultados {
+    font-size: 1.5rem; 
+    color: #0B1C26;  
+}
+
+.boton-buscar-vacantes{
+    width: 3rem;
+}
+
+.sugerencias-tecnologias {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    max-height: 200px;
+    overflow-y: auto;
+    max-width: 100%;
+}
+
+.sugerencias-tecnologias ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sugerencias-tecnologias li {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px; 
+    color: #333; /* Color del texto */
+    transition: background-color 0.2s ease; /* Transición suave para el hover */
+}
+
+.sugerencias-tecnologias li:hover {
+    background-color: #e0f7fa; /* Fondo suave al pasar el ratón */
+    color: #00796b; /* Color del texto al pasar el ratón */
+}
+
+.etiquetas-seleccionadas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.etiqueta {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #e0f7fa;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #00796b;
+    cursor: pointer;
+}
+
+.etiqueta i {
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+
+
+@media (max-width: 767px) {
+      
+    .col-uno img{
+        width: 3rem;
+        height: 3rem;
+        border: 3px solid #fff;
+        object-fit: cover;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-right: 0.5rem;
+    }
+    
+    .col-dos span{
+        color: #0B1C26;
+        font-size: 0.9rem;
+    }
+
+    
+    .sugerencias-tecnologias {
+        max-height: 150px;
+    }
+
+    .sugerencias-tecnologias li {
+        padding: 5px 10px;
+        font-size: 0.6rem; 
+    }
+
+    .etiquetas-seleccionadas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .etiqueta {
+        border-radius: 20px;
+        font-size: 0.6rem;
+    }
+    
+}

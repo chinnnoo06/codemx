@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, recomendaciones=null}) => {
+export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, recomendaciones=null, busqueda=null}) => {
   return (
     <>
         {vacantes && vacantes.length > 0 ? (
@@ -36,7 +36,6 @@ export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, re
                                 <span className='direccion-vacante text-muted'>{vacante.Ubicacion}</span>
                                 <span className='modalidad-vacante text-muted'>({vacante.Modalidad_Vacante})</span>
                                 {vacante.Estatus === "activa" && (<span className='estatus-vacante text-muted'>Activa</span>)}
-                                {vacante.Estatus === "inactiva" && (<span className='estatus-vacante text-muted'>Inactiva</span>)}
                                 {recomendaciones != null && (
                                     <span className="coincidencias-vacante text-muted">Compatibilidad: {vacante.compatibilidad}%</span>
                                 )}
@@ -47,12 +46,25 @@ export const SeccionListaVacantes = ({vacantes, manejarMostrarSeccionVacante, re
                 ))}
             </div>
         ) : (
-            <div className='contenedor-sin-vacantes'>
-                <div className='sin-vacantes d-flex flex-column justify-content-center align-items-center'>
-                    <i className="fa-solid fa-briefcase icono-vacante mb-2"></i> 
-                    <h2 className="texto-no-vacantes">Aún no hay vacantes</h2>
-                </div>
-            </div>
+            <>
+                {busqueda === 0 ? (
+                    <div className='contenedor-sin-vacantes'>
+                        <div className='sin-vacantes d-flex flex-column justify-content-center align-items-center'>
+                            <i className="fa-solid fa-briefcase icono-vacante mb-2"></i> 
+                            <h2 className="texto-no-vacantes">Aún no hay vacantes</h2>
+                        </div>
+                    </div>
+                ) : (
+                    <div className='contenedor-sin-resultados d-flex flex-column justify-content-center align-items-center'>
+                        <div className='sin-resultados d-flex flex-column align-items-center'>
+                            <i className="fa fa-exclamation-circle icono-resultado" aria-hidden="true"></i>
+                            <h2 className="texto-no-resultados">No hay resultados</h2>
+                        </div>
+                    </div>
+                )}
+            </>
+
+
         )}
     </>
   )

@@ -59,7 +59,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             setCalificaciones(califiacionData.calificaciones);
             setPromedioCalificacion(califiacionData.promedio);
         } catch (error) {
-            console.error('Error al obtener los datos de seguidores:', error);
+            console.error('Error al obtener los datos:', error);
         }
     }, [candidato.id]); // Dependencia: candidato.id
 

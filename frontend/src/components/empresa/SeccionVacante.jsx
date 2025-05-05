@@ -5,6 +5,7 @@ import { ModalTecnologiasRequeridas } from './ModalTecnologiasRequeridas';
 import { SeccionTecnologiasRequeridasDominadas } from '../login-crearcuenta-recuperar/SeccionTecnologiasRequeridasDominadas';
 import { ModalAdministrarCandidato } from './ModalAdministrarCandidato';
 import LoadingSpinner from '../LoadingSpinner';
+import jsPDF from 'jspdf';
 
 export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, actualizarFetch, setVacanteSeleccionada, empresaActiva}) => {
     const [isScrollExceeded, setIsScrollExceeded] = useState(false);
@@ -226,6 +227,150 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
         window.scrollTo(0, 0);
     };
 
+    const descargarInfo = () => {
+        const doc = new jsPDF();
+        let y = 25;
+    
+        const colorTitulo = '#F2A922';     // Amarillo
+        const colorTexto = '#0B1C26';      // Azul oscuro
+
+        const agregarFooter = () => {
+            const footerY = 285;
+            doc.setDrawColor(230);
+            doc.line(10, footerY - 5, 200, footerY - 5);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'italic');
+            doc.setTextColor(colorTitulo);
+            doc.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
+        };
+    
+        const separador = () => {
+            doc.setDrawColor(230); // gris claro
+            doc.setLineWidth(0.2);
+            doc.line(10, y, 200, y);
+            y += 7;
+        };
+    
+        // === HEADER ===
+        doc.setFillColor(colorTexto);
+        doc.rect(0, 0, 210, 20, 'F');
+    
+        // Título izquierda
+        doc.setTextColor(colorTitulo);
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('DETALLE DE LA VACANTE', 10, 13);
+    
+        // CODEMX derecha
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'normal');
+        const logoBaseX = 175;
+        doc.setTextColor('#dde1e9');
+        doc.text('CODE', logoBaseX, 13);
+        const textWidth = doc.getTextWidth('CODE');
+        doc.setTextColor('#F2A922');
+        doc.text('MX', logoBaseX + textWidth, 13);
+    
+        // === DATOS PRINCIPALES ===
+        y = 30;
+        doc.setTextColor(colorTitulo);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text(vacante.Titulo || "Sin título", 10, y);
+        y += 10;
+    
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(colorTexto);
+        doc.text(`Empresa: ${vacante.Empresa_Nombre}`, 10, y); y += 6;
+        doc.text(`Estado: ${vacante.Estado_Vacante}, Ubicación: ${vacante.Ubicacion}`, 10, y); y += 6;
+        doc.text(`Modalidad: ${vacante.Modalidad_Vacante}`, 10, y); y += 6;
+        doc.text(`Fecha Límite: ${vacante.Fecha_Limite}`, 10, y); y += 6;
+        doc.text(`Estatus: ${vacante.Estatus}`, 10, y); y += 8;
+        separador();
+    
+        // === DESCRIPCIÓN ===
+        doc.setTextColor(colorTitulo);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text("Descripción de la vacante", 10, y); y += 7;
+    
+        doc.setTextColor(colorTexto);
+        doc.setFont('helvetica', 'normal');
+        const descripcion = doc.splitTextToSize(vacante.Descripcion || "Sin descripción", 190);
+        doc.text(descripcion, 10, y);
+        y += descripcion.length * 6;
+        separador();
+    
+        // === RESPONSABILIDADES y REQUISITOS en columnas ===
+        const col1X = 10;
+        const col2X = 110;
+        let y1 = y, y2 = y;
+    
+        doc.setTextColor(colorTitulo);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Responsabilidades", col1X, y1); y1 += 7;
+        doc.text("Requisitos", col2X, y2); y2 += 7;
+    
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(colorTexto);
+    
+        responsabilidades.forEach(r => {
+            const lines = doc.splitTextToSize(`• ${r.Responsabilidad}`, 90);
+            doc.text(lines, col1X, y1);
+            y1 += lines.length * 6;
+        });
+    
+        requisitos.forEach(r => {
+            const lines = doc.splitTextToSize(`• ${r.Requerimiento}`, 90);
+            doc.text(lines, col2X, y2);
+            y2 += lines.length * 6;
+        });
+    
+        y = Math.max(y1, y2) + 5;
+        separador();
+    
+        // === TECNOLOGÍAS ===
+        doc.setTextColor(colorTitulo);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Tecnologías Requeridas", 10, y); y += 7;
+    
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(colorTexto);
+        tecnologiasRequeridas.forEach(t => {
+            doc.text(`• ${t.nombre_tecnologia}`, 10, y); y += 6;
+        });
+        separador();
+    
+        // === POSTULADOS ===
+        doc.setTextColor(colorTitulo);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Postulados (${candidatos.length})`, 10, y); y += 7;
+    
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(colorTexto);
+    
+        if (candidatos.length === 0) {
+            doc.text("No hay candidatos postulados.", 10, y); y += 7;
+        } else {
+            candidatos.forEach(c => {
+                const nombre = `${c.Nombre} ${c.Apellido}`;
+                doc.text(`• ${nombre}`, 10, y); y += 6;
+    
+                if (y > 270) {
+                    agregarFooter();
+                    doc.addPage();
+                    y = 15;
+                }
+            });
+        }
+    
+        // === GUARDAR ===
+        const nombreArchivo = vacante.Titulo ? vacante.Titulo.replace(/\s+/g, '_') : "sin_titulo";
+        agregarFooter();
+        doc.save(`Vacante_${nombreArchivo}.pdf`);
+    };
+    
     const eliminarVacante = async () => {
         if (isLoading) return;
         setIsLoading(true);
@@ -595,6 +740,10 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                                     <div className="divider"></div> 
                                     <button className="btn-opciones" onClick={() => manejarShowEditarSeccion()}>
                                         Editar
+                                    </button>
+                                    <div className="divider"></div> 
+                                    <button className="btn-opciones" onClick={() => descargarInfo()}>
+                                        Descargar Información
                                     </button>
                                     <div className="divider"></div> 
                                     <button className="btn-opciones" onClick={() => manejarCloseModalOpciones()}>

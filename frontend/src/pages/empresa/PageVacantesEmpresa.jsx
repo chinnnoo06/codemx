@@ -15,6 +15,9 @@ export const PageVacantesEmpresa = ({empresa}) => {
     const [isLoading, setIsLoading] = useState(true); 
     const location = useLocation(); // dentro del componente
 
+
+    console.log(vacantes)
+
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
         try {
@@ -110,8 +113,8 @@ export const PageVacantesEmpresa = ({empresa}) => {
     <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100 '>
         {seccionActiva === "vacantes" && (
             <div className='header  d-flex justify-content-between align-items-center w-100 py-4'>
-                <button className='btn btn-tipodos btn-header-vacantes' onClick={manejarMostrarSeccion}>Agregar Vacante</button>
-                <select id="estado" name="estado" className=" custom-font-select btn btn-tipodos btn-header-vacantes" onChange={(e) => setEstadoFiltro(e.target.value)} value={estadoFiltro}>
+                <button className='btn btn-header-vacantes' onClick={manejarMostrarSeccion}>Agregar Vacante</button>
+                <select id="estado" name="estado" className=" custom-font-select btn  btn-header-vacantes" onChange={(e) => setEstadoFiltro(e.target.value)} value={estadoFiltro}>
                     <option value="activa">Vacantes Activas</option>
                     <option value="inactiva">Vacantes Inactivas</option>
                 </select>

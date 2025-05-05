@@ -62,7 +62,18 @@
     align-items: center; 
     justify-content: center; 
     text-align: center; 
-    padding: 0; 
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26;  
+    transition: all 0.3s ease;
+}
+
+.btn-header-vacantes:hover{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0B1C26; 
+    border: 1px solid #0B1C26; 
+    transform: scale(1.02);
 }
 
 
