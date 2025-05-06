@@ -66,24 +66,30 @@ export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
       pdf.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
     };
   
-    // === CAPTURA DE IMÁGENES ===
-    const descCanvas = await html2canvas(descRef.current, { scale: 2 });
-    const descImg = descCanvas.toDataURL('image/png');
-  
-    const chartCanvas = await html2canvas(chartRef.current, { scale: 2 });
-    const chartImg = chartCanvas.toDataURL('image/png');
-  
-    // === CONTENIDO ===
-    let y = 25;  // Mantén este valor para el inicio, pero ajusta el espacio hacia abajo.
+   // === CAPTURA DE IMAGEN DE LA GRÁFICA ===
+   const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
+   const chartImg = chartCanvas.toDataURL('image/png');
 
-    pdf.addImage(descImg, 'PNG', 10, y, 190, 50);  // Descripción más pequeña
-    y += 55;  // Reduces el espacio entre la descripción y la gráfica
-    
-    // Ahora la gráfica
-    pdf.addImage(chartImg, 'PNG', 10, y, 190, 100);
-  
-    // Footer en la primera (y única) página
-    agregarFooter();
+   // === CONTENIDO ===
+   let y = 35;
+   
+   // Descripción
+   pdf.setFontSize(11);
+   pdf.setTextColor(colorTexto);
+   pdf.setFont('helvetica', 'normal');
+
+   const textoDescripcion = `En esta gráfica se presentan las tecnologías más solicitadas por las empresas en sus vacantes. Cada barra representa el número de veces que una tecnología ha sido mencionada en las ofertas de trabajo. La tecnología más requerida en nuestra plataforma es ${tecnologiaMasSolicitada}, con ${cantidadMasSolicitada} menciones, lo que refleja la alta demanda de esta habilidad en el mercado laboral actual. Entre las tecnologías más destacadas, también encontramos ${segundaTecnologia}, que tiene una cantidad de ${cantidadSegundaTecnologia} menciones. Esto nos da una clara indicación de las áreas de conocimiento que las empresas están buscando en sus candidatos. En total, se destacan ${totalTecnologias} tecnologías diferentes, lo que muestra la variedad de habilidades que se requieren en el mercado. Este dato es clave para las empresas que buscan perfiles con competencias técnicas diversas, ya que les permite identificar rápidamente qué tecnologías están más demandadas y cuáles podrían ser áreas de oportunidad para la capacitación de sus equipos.`;
+   
+   const textoDividido = pdf.splitTextToSize(textoDescripcion, 190);
+   pdf.text(textoDividido, 10, y); 
+   y += 55;  
+ 
+   // Gráfica como imagen
+   pdf.addImage(chartImg, 'PNG', 10, y, 190, 120); y += 105;
+
+ 
+   // Footer en la primera (y única) página
+   agregarFooter();
   
     pdf.save('Tecnologias_Requeridas.pdf');
   };
@@ -113,9 +119,9 @@ export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
           En total, se destacan <span className='resaltar'>{totalTecnologias}</span> tecnologías diferentes, lo que muestra la variedad de habilidades que se requieren en el mercado. Este dato es clave para las empresas que buscan perfiles con competencias técnicas diversas, ya que les permite identificar rápidamente qué tecnologías están más demandadas y cuáles podrían ser áreas de oportunidad para la capacitación de sus equipos.
         </p>
 
-        <div ref={chartRef}>
+        <div ref={chartRef} style={{ width: '1600px', height: '600px', position: 'absolute', left: '-9999px', top: 0 }}>
           <ResponsiveContainer width="100%" height={450}>
-            <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 0, bottom: 60, left: -39 }}>
+            <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 20, bottom: 60, left: -20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="nombre" 
@@ -135,6 +141,28 @@ export const TecnologiasRequeridasVacantes = ({ tecnologiasSolicitadas }) => {
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <div style={{ width: '100%', height: 450 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 20, bottom: 60, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="nombre" 
+                  angle={-45} // Rotar las etiquetas del eje X 45 grados
+                  textAnchor="end" // Alineación de las etiquetas rotadas
+                  interval={0} // Asegura que todas las etiquetas sean visibles
+                  tick={{ fontSize: 12 }} // Tamaño de las etiquetas por defecto
+                />
+                <YAxis 
+                  domain={[0, maxCantidad]} 
+                  ticks={[...Array(maxCantidad + 1).keys()].filter(n => n % 1 === 0)} 
+                />
+
+                <Tooltip />
+
+                <Bar dataKey="cantidad" fill="#F2A922" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
     </>
   );

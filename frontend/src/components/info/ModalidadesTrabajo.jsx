@@ -63,24 +63,30 @@ export const ModalidadesTrabajo = ({ distribucionVacantes }) => {
       pdf.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
     };
   
-    // === CAPTURA DE IMÁGENES ===
-    const descCanvas = await html2canvas(descRef.current, { scale: 2 });
-    const descImg = descCanvas.toDataURL('image/png');
-  
-    const chartCanvas = await html2canvas(chartRef.current, { scale: 2 });
-    const chartImg = chartCanvas.toDataURL('image/png');
-  
-    // === CONTENIDO ===
-    let y = 25;  // Mantén este valor para el inicio, pero ajusta el espacio hacia abajo.
+   // === CAPTURA DE IMAGEN DE LA GRÁFICA ===
+   const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
+   const chartImg = chartCanvas.toDataURL('image/png');
 
-    pdf.addImage(descImg, 'PNG', 10, y, 190, 25);  // Descripción más pequeña
-    y += 35;  // Reduces el espacio entre la descripción y la gráfica
-    
-    // Ahora la gráfica
-    pdf.addImage(chartImg, 'PNG', 10, y, 190, 100);
-  
-    // Footer en la primera (y única) página
-    agregarFooter();
+   // === CONTENIDO ===
+   let y = 35;
+   
+   // Descripción
+   pdf.setFontSize(11);
+   pdf.setTextColor(colorTexto);
+   pdf.setFont('helvetica', 'normal');
+
+   const textoDescripcion = `Este gráfico representa cómo se distribuyen las vacantes según su modalidad de trabajo. La modalidad más común es ${modalidad1}, con un total de ${cantidad1} vacantes, lo que indica una alta demanda de esta modalidad. A continuación, encontramos la modalidad ${modalidad2} con ${cantidad2} vacantes, seguida por ${modalidad3} con ${cantidad3} vacantes. Este análisis ofrece una visión clara sobre las preferencias de modalidad de trabajo en el mercado.`;
+   
+   const textoDividido = pdf.splitTextToSize(textoDescripcion, 190);
+   pdf.text(textoDividido, 10, y); 
+   y += 25;  
+ 
+   // Gráfica como imagen
+   pdf.addImage(chartImg, 'PNG', 10, y, 190, 120); y += 105;
+
+ 
+   // Footer en la primera (y única) página
+   agregarFooter();
   
     pdf.save('Modalidad_Vacantes.pdf');
   };
@@ -104,7 +110,7 @@ export const ModalidadesTrabajo = ({ distribucionVacantes }) => {
         Este gráfico representa cómo se distribuyen las vacantes según su modalidad de trabajo. La modalidad más común es <span className='resaltar'>{modalidad1}</span>, con un total de <span className='resaltar'>{cantidad1}</span> vacantes, lo que indica una alta demanda de esta modalidad. A continuación, encontramos la modalidad <span className='resaltar'>{modalidad2}</span> con <span className='resaltar'>{cantidad2}</span> vacantes, seguida por <span className='resaltar'>{modalidad3}</span> con <span className='resaltar'>{cantidad3}</span> vacantes. Este análisis ofrece una visión clara sobre las preferencias de modalidad de trabajo en el mercado.
       </p>
 
-      <div ref={chartRef}>
+      <div ref={chartRef} style={{ width: '1200px', height: '600px', position: 'absolute', left: '-9999px', top: 0 }}>
         {/* Gráfico de pastel */}
         <ResponsiveContainer width="100%" height={400}>
           <PieChart>
@@ -128,6 +134,30 @@ export const ModalidadesTrabajo = ({ distribucionVacantes }) => {
           </PieChart>
         </ResponsiveContainer>
       </div>
+
+      <div style={{ width: '100%', height: 400 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={formattedData}
+                dataKey="cantidad_vacantes"
+                nameKey="nombre_modalidad"
+                cx="50%" 
+                cy="50%" 
+                outerRadius={150} 
+                label
+              >
+                {
+                  formattedData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))
+                }
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
 
     </div>
   );

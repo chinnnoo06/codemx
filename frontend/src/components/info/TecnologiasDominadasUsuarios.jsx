@@ -113,7 +113,27 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
       {/* Gráfica */}
       <div ref={chartRef} style={{ width: '1600px', height: '600px', position: 'absolute', left: '-9999px', top: 0 }}>
         <ResponsiveContainer width="100%" height={450}>
-          <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 0, bottom: 60, left: -42 }}>
+          <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 20, bottom: 60, left: -20 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="nombre" 
+              angle={-45}
+              textAnchor="end"
+              interval={0}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis 
+              domain={[0, maxCantidad]} 
+              ticks={[...Array(maxCantidad + 1).keys()].filter(n => n % 1 === 0)} 
+            />
+            <Tooltip />
+            <Bar dataKey="cantidad" fill="#F2A922" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ width: '100%', height: 450 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 20, bottom: 60, left: -20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="nombre" 
