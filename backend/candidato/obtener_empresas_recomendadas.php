@@ -66,12 +66,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = mysqli_query($conexion, $query);
     $empresas = [];
 
+    // Calcular máximo y mínimo para normalizar a escala 0-5
+    $scores = [];
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        $empresas[] = [
-            'ID' => $fila['ID'],
-            'Nombre' => $fila['Nombre'],
-            'Logo' => $fila['Logo']
-        ];
+        $scores[] = $fila;
+    }
+
+    if (count($scores) > 0) {
+        $maxScore = max(array_column($scores, 'ScoreBruto'));
+        $minScore = min(array_column($scores, 'ScoreBruto'));
+        $rango = $maxScore - $minScore ?: 1;
+
+        foreach ($scores as $fila) {
+            $puntuacion = round((($fila['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+
+            $empresas[] = [
+                'ID' => $fila['ID'],
+                'Nombre' => $fila['Nombre'],
+                'Logo' => $fila['Logo'],
+                'Score' => $puntuacion
+            ];
+        }
     }
 
     echo json_encode([
