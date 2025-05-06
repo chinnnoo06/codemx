@@ -29,7 +29,7 @@ try {
     $idDenunciado= mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $idMotivo = mysqli_real_escape_string($conexion, $data['motivo']);
     $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
-    $estado = 0;
+    $estado = 1;
 
     $idComentario = isset($data['idComentario']) && !empty($data['idComentario']) 
         ? "'" . mysqli_real_escape_string($conexion, $data['idComentario']) . "'" 
