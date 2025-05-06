@@ -67,10 +67,19 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
     const chartImg = chartCanvas.toDataURL('image/png');
   
     // === CONTENIDO ===
-    let y = 25;
+    let y = 35;
     
-    // Descripción como imagen
-    pdf.addImage(descImg, 'PNG', 10, y, 190, 70); y += 75;
+    // Descripción
+    pdf.setFontSize(11);
+    pdf.setTextColor(colorTexto);
+    pdf.setFont('helvetica', 'normal');
+
+    const textoDescripcion = `En esta gráfica se presentan las tecnologías dominadas por los candidatos registrados en la plataforma. Cada barra representa el número de personas que dominan una tecnología específica. La tecnología más destacada en nuestra plataforma es ${tecnologiaMasDominada}, con ${cantidadMasDominada} candidatos que la dominan, lo que refleja la alta demanda y relevancia de esta habilidad en el mercado actual. Entre las tecnologías más destacadas, también encontramos ${segundaTecnologia}, que tiene una cantidad de ${cantidadSegundaTecnologia} candidatos. Esto nos da una clara indicación de las tendencias tecnológicas predominantes dentro de los perfiles de los candidatos. Además, la diversidad de habilidades técnicas es notable, con tecnologías de diferentes áreas representadas, como el desarrollo web, bases de datos y frameworks modernos. En total, se destacan ${totalTecnologias} tecnologías diferentes, lo que muestra una amplia gama de especializaciones dentro de la comunidad de candidatos. Este dato es clave para las empresas que buscan perfiles con una variedad de competencias, ya que les permite identificar rápidamente qué tecnologías están más dominadas y cuáles podrían ser áreas de oportunidad para la capacitación y el crecimiento de su equipo. La información proporcionada por esta gráfica es útil para ajustarse a las demandas actuales del mercado.`;
+
+
+    const textoDividido = pdf.splitTextToSize(textoDescripcion, 190);
+    pdf.text(textoDividido, 10, y); 
+    y += 55;  
   
     // Gráfica como imagen
     pdf.addImage(chartImg, 'PNG', 10, y, 190, 100); y += 105;

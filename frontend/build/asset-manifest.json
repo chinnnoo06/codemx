@@ -1,18 +1,18 @@
 {
   "files": {
     "main.css": "/codemx/frontend/build/static/css/main.0a412bce.css",
-    "main.js": "/codemx/frontend/build/static/js/main.bc7f8cec.js",
+    "main.js": "/codemx/frontend/build/static/js/main.d4ed737c.js",
     "static/js/977.c3d99690.chunk.js": "/codemx/frontend/build/static/js/977.c3d99690.chunk.js",
     "static/js/732.0eb8fd42.chunk.js": "/codemx/frontend/build/static/js/732.0eb8fd42.chunk.js",
     "static/media/fondo.png": "/codemx/frontend/build/static/media/fondo.c467a09ea9a26cc36781.png",
     "index.html": "/codemx/frontend/build/index.html",
     "main.0a412bce.css.map": "/codemx/frontend/build/static/css/main.0a412bce.css.map",
-    "main.bc7f8cec.js.map": "/codemx/frontend/build/static/js/main.bc7f8cec.js.map",
+    "main.d4ed737c.js.map": "/codemx/frontend/build/static/js/main.d4ed737c.js.map",
     "977.c3d99690.chunk.js.map": "/codemx/frontend/build/static/js/977.c3d99690.chunk.js.map",
     "732.0eb8fd42.chunk.js.map": "/codemx/frontend/build/static/js/732.0eb8fd42.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0a412bce.css",
-    "static/js/main.bc7f8cec.js"
+    "static/js/main.d4ed737c.js"
   ]
 }
