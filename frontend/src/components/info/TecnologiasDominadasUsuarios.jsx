@@ -59,12 +59,18 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
       pdf.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
     };
   
-    // === CAPTURA DE IMÁGENES ===  
+    // === CAPTURA DE IMAGEN DE LA GRÁFICA ===
     const originalWidth = chartRef.current.style.width;
-    chartRef.current.style.width = '1200px'; // Fuerza una gráfica ancha
+    const originalHeight = chartRef.current.style.height;
+    chartRef.current.style.width = '1600px';
+    chartRef.current.style.height = '900px';
+
     const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
     const chartImg = chartCanvas.toDataURL('image/png');
-    chartRef.current.style.width = originalWidth; // Restaurar
+
+    chartRef.current.style.width = originalWidth;
+    chartRef.current.style.height = originalHeight;
+
 
   
     // === CONTENIDO ===
@@ -83,7 +89,8 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
     y += 55;  
   
     // Gráfica como imagen
-    pdf.addImage(chartImg, 'PNG', 10, y, 190, 100); y += 105;
+    pdf.addImage(chartImg, 'PNG', 10, y, 190, 120); y += 125;
+
   
     // Footer en la primera (y única) página
     agregarFooter();
