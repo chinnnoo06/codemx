@@ -60,19 +60,9 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
     };
   
     // === CAPTURA DE IMAGEN DE LA GRÁFICA ===
-    const originalWidth = chartRef.current.style.width;
-    const originalHeight = chartRef.current.style.height;
-    chartRef.current.style.width = '1600px';
-    chartRef.current.style.height = '900px';
-
     const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
     const chartImg = chartCanvas.toDataURL('image/png');
 
-    chartRef.current.style.width = originalWidth;
-    chartRef.current.style.height = originalHeight;
-
-
-  
     // === CONTENIDO ===
     let y = 35;
     
@@ -89,7 +79,7 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
     y += 55;  
   
     // Gráfica como imagen
-    pdf.addImage(chartImg, 'PNG', 10, y, 190, 120); y += 125;
+    pdf.addImage(chartImg, 'PNG', 10, y, 190, 120); y += 105;
 
   
     // Footer en la primera (y única) página
@@ -121,7 +111,7 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
       </p>
 
       {/* Gráfica */}
-      <div ref={chartRef}>
+      <div ref={chartRef} style={{ width: '1600px', height: '600px', position: 'absolute', left: '-9999px', top: 0 }}>
         <ResponsiveContainer width="100%" height={450}>
           <BarChart data={truncatedTecnologias} margin={{ top: 20, right: 0, bottom: 60, left: -42 }}>
             <CartesianGrid strokeDasharray="3 3" />
