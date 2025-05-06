@@ -60,8 +60,12 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
     };
   
     // === CAPTURA DE IMÁGENES ===  
+    const originalWidth = chartRef.current.style.width;
+    chartRef.current.style.width = '1200px'; // Fuerza una gráfica ancha
     const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
     const chartImg = chartCanvas.toDataURL('image/png');
+    chartRef.current.style.width = originalWidth; // Restaurar
+
   
     // === CONTENIDO ===
     let y = 35;
