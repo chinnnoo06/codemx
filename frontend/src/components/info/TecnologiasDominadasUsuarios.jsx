@@ -59,11 +59,8 @@ export const TecnologiasDominadasUsuarios = ({ tecnologiasDominadas }) => {
       pdf.text('CODEMX - ¡El inicio de tu vida profesional!', 10, footerY);
     };
   
-    // === CAPTURA DE IMÁGENES ===
-    const descCanvas = await html2canvas(descRef.current, { scale: 2 });
-    const descImg = descCanvas.toDataURL('image/png');
-  
-    const chartCanvas = await html2canvas(chartRef.current, { scale: 2 });
+    // === CAPTURA DE IMÁGENES ===  
+    const chartCanvas = await html2canvas(chartRef.current, { scale: 3 });
     const chartImg = chartCanvas.toDataURL('image/png');
   
     // === CONTENIDO ===
