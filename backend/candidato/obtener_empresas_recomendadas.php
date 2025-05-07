@@ -24,69 +24,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    $query = "
-    SELECT 
-        e.ID, e.Nombre, e.Logo,
-        COALESCE(f.Seguidores, 0) AS Seguidores,
-        COALESCE(p.TotalLikes, 0) AS Likes,
-        COALESCE(p.TotalDislikes, 0) AS Dislikes,
-        COALESCE(p.TotalComentarios, 0) AS Comentarios,
-        COALESCE(p.NumPublicaciones, 1) AS NumPublicaciones,
-        (
-            (
-                (COALESCE(f.Seguidores, 0) * 1.0) +
-                (COALESCE(p.TotalLikes, 0) * 1.5) +
-                (COALESCE(p.TotalComentarios, 0) * 1.2) -
-                (COALESCE(p.TotalDislikes, 0) * 1.3)
-            ) / COALESCE(p.NumPublicaciones, 1)
-        ) AS ScoreBruto
-    FROM empresa e
-    LEFT JOIN (
+    // Consultas separadas para obtener los datos
+    $querySeguidores = "
         SELECT Empresa_ID, COUNT(*) AS Seguidores
         FROM seguidores
         GROUP BY Empresa_ID
-    ) f ON f.Empresa_ID = e.ID
-    LEFT JOIN (
-        SELECT 
-            Empresa_ID,
-            COUNT(*) AS NumPublicaciones,
-            SUM(CASE WHEN Ocultar_MeGusta = 0 THEN 1 ELSE 0 END) AS TotalLikes,
-            SUM(CASE WHEN Ocultar_MeGusta = 1 THEN 1 ELSE 0 END) AS TotalDislikes,
-            SUM(CASE WHEN Sin_Comentarios = 0 THEN 1 ELSE 0 END) AS TotalComentarios
-        FROM publicacion
-        GROUP BY Empresa_ID
-    ) p ON p.Empresa_ID = e.ID
-    WHERE e.ID NOT IN (
-        SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
-    )
-    ORDER BY ScoreBruto DESC
-    LIMIT 20;
     ";
 
-    $resultado = mysqli_query($conexion, $query);
-    $empresas = [];
+    $queryReacciones = "
+        SELECT 
+            Publicacion_ID,
+            COUNT(CASE WHEN Reaccion = 'like' THEN 1 END) AS TotalLikes,
+            COUNT(CASE WHEN Reaccion = 'dislike' THEN 1 END) AS TotalDislikes
+        FROM reacciones 
+        GROUP BY Publicacion_ID
+    ";
 
-    // Calcular máximo y mínimo para normalizar a escala 0-5
-    $scores = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $scores[] = $fila;
+    $queryComentarios = "
+        SELECT 
+            Publicacion_ID,
+            COUNT(*) AS TotalComentarios
+        FROM comentarios
+        GROUP BY Publicacion_ID
+    ";
+
+    $queryPublicaciones = "
+        SELECT 
+            Empresa_ID,
+            COUNT(*) AS NumPublicaciones
+        FROM publicacion
+        GROUP BY Empresa_ID
+    ";
+
+    // Ejecutar las consultas
+    $resultadoSeguidores = mysqli_query($conexion, $querySeguidores);
+    $resultadoReacciones = mysqli_query($conexion, $queryReacciones);
+    $resultadoComentarios = mysqli_query($conexion, $queryComentarios);
+    $resultadoPublicaciones = mysqli_query($conexion, $queryPublicaciones);
+
+    // Organizar los resultados en arrays asociativos
+    $seguidores = [];
+    while ($row = mysqli_fetch_assoc($resultadoSeguidores)) {
+        $seguidores[$row['Empresa_ID']] = $row['Seguidores'];
     }
 
-    if (count($scores) > 0) {
-        $maxScore = max(array_column($scores, 'ScoreBruto'));
-        $minScore = min(array_column($scores, 'ScoreBruto'));
-        $rango = $maxScore - $minScore ?: 1;
+    $reacciones = [];
+    while ($row = mysqli_fetch_assoc($resultadoReacciones)) {
+        $reacciones[$row['Publicacion_ID']] = [
+            'Likes' => $row['TotalLikes'],
+            'Dislikes' => $row['TotalDislikes']
+        ];
+    }
 
-        foreach ($scores as $fila) {
-            $puntuacion = round((($fila['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+    $comentarios = [];
+    while ($row = mysqli_fetch_assoc($resultadoComentarios)) {
+        $comentarios[$row['Publicacion_ID']] = $row['TotalComentarios'];
+    }
 
-            $empresas[] = [
-                'ID' => $fila['ID'],
-                'Nombre' => $fila['Nombre'],
-                'Logo' => $fila['Logo'],
-                'Score' => $puntuacion
-            ];
+    $publicaciones = [];
+    while ($row = mysqli_fetch_assoc($resultadoPublicaciones)) {
+        $publicaciones[$row['Empresa_ID']] = $row['NumPublicaciones'];
+    }
+
+    // Ahora vamos a obtener los datos de las empresas
+    $queryEmpresas = "
+        SELECT 
+            e.ID, e.Nombre, e.Logo
+        FROM empresa e
+        WHERE e.ID NOT IN (
+            SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
+        )
+        ORDER BY e.ID
+        LIMIT 20;
+    ";
+
+    $resultadoEmpresas = mysqli_query($conexion, $queryEmpresas);
+    $empresas = [];
+
+    while ($fila = mysqli_fetch_assoc($resultadoEmpresas)) {
+        // Obtener los datos relacionados con cada empresa
+        $empresaID = $fila['ID'];
+
+        // Calcular el ScoreBruto de la empresa
+        $numSeguidores = isset($seguidores[$empresaID]) ? $seguidores[$empresaID] : 0;
+        $totalLikes = 0;
+        $totalDislikes = 0;
+        $totalComentarios = 0;
+        $numPublicaciones = isset($publicaciones[$empresaID]) ? $publicaciones[$empresaID] : 1;
+
+        // Sumar likes, dislikes y comentarios de las publicaciones de la empresa
+        foreach ($reacciones as $publicacionID => $reaccion) {
+            if (isset($comentarios[$publicacionID])) {
+                $totalLikes += $reaccion['Likes'];
+                $totalDislikes += $reaccion['Dislikes'];
+                $totalComentarios += $comentarios[$publicacionID];
+            }
         }
+
+        // Calcular el ScoreBruto
+        $scoreBruto = (
+            ($numSeguidores * 1.0) +
+            ($totalLikes * 1.5) +
+            ($totalComentarios * 1.2) -
+            ($totalDislikes * 1.3)
+        ) / $numPublicaciones;
+
+        // Agregar la empresa con su score al array
+        $empresas[] = [
+            'ID' => $fila['ID'],
+            'Nombre' => $fila['Nombre'],
+            'Logo' => $fila['Logo'],
+            'ScoreBruto' => $scoreBruto
+        ];
+    }
+
+    // Calcular máximo y mínimo para normalizar a escala 0-5
+    $scores = array_column($empresas, 'ScoreBruto');
+    $maxScore = max($scores);
+    $minScore = min($scores);
+    $rango = $maxScore - $minScore ?: 1;
+
+    // Normalizar la puntuación a 0-5
+    foreach ($empresas as &$empresa) {
+        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+        unset($empresa['ScoreBruto']);
     }
 
     echo json_encode([
