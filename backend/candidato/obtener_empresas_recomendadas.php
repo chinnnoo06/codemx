@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
-            'Logo' => $fila['Logo'],
+            'Logoo' => $fila['Logo'],
             'ScoreBruto' => $scoreBruto
         ];
     }
@@ -162,14 +162,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Normalizar la puntuación a 0-5 con decimales
     foreach ($empresas as &$empresa) {
-        // Normalizamos el score y lo guardamos en la columna 'Score' 
-        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2); // Normalización a 0-5 con decimales
-        unset($empresa['ScoreBruto']);  // Eliminamos el campo ScoreBruto de la respuesta
+        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+        unset($empresa['ScoreBruto']);
     }
 
     // Ordenar las empresas por el Score de mayor a menor
     usort($empresas, function($a, $b) {
-        return $b['Scoree'] <=> $a['Score'];
+        return $b['Score'] <=> $a['Score'];
     });
 
     echo json_encode([
