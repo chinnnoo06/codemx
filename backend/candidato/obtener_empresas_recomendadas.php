@@ -126,21 +126,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $totalDislikes = $totalDislikes ?: 0;
         $totalComentarios = $totalComentarios ?: 0;
 
-        // Calcular el Score
-        $score = ($numSeguidores * 1.0) +
-                 ($totalLikes * 1.5) +
-                 ($totalComentarios * 1.2) - 
-                 ($totalDislikes * 1.3);
+        // Calcular el Score (sin normalización aún)
+        $scoreBruto = ($numSeguidores * 1.0) +
+                      ($totalLikes * 1.5) +
+                      ($totalComentarios * 1.2) - 
+                      ($totalDislikes * 1.3);
 
         // Si no tiene publicaciones, el score será 0 para evitar división por 0
-        $score = $numPublicaciones > 0 ? $score / $numPublicaciones : 0;
+        $scoreBruto = $numPublicaciones > 0 ? $scoreBruto / $numPublicaciones : 0;
 
         // Agregar la empresa con su score al array
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
             'Logo' => $fila['Logo'],
-            'Score' => $score
+            'ScoreBruto' => $scoreBruto
         ];
     }
 
@@ -152,6 +152,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'empresas' => $empresas
         ]);
         exit();
+    }
+
+    // Calcular máximo y mínimo para normalizar a escala 0-5
+    $scores = array_column($empresas, 'ScoreBruto');
+    $maxScore = max($scores);
+    $minScore = min($scores);
+    $rango = $maxScore - $minScore ?: 1;
+
+    // Normalizar la puntuación a 0-5 con decimales
+    foreach ($empresas as &$empresa) {
+        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+        unset($empresa['ScoreBruto']);
     }
 
     // Ordenar las empresas por el Score de mayor a menor
