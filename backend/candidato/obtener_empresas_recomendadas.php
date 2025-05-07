@@ -154,19 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Calcular máximo y mínimo para normalizar a escala 0-5
-    $scores = array_column($empresas, 'ScoreBruto');
-    $maxScore = max($scores);
-    $minScore = min($scores);
-    $rango = $maxScore - $minScore ?: 1;
-
-    // Normalizar la puntuación a 0-5 con decimales
-    foreach ($empresas as &$empresa) {
-        // Normalizamos el score y lo guardamos en la columna 'Score'
-        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2); // Normalización a 0-5 con decimales
-        unset($empresa['ScoreBruto']);  // Eliminamos el campo ScoreBruto de la respuesta
-    }
-
     echo json_encode([
         'success' => true,
         'empresas' => $empresas
