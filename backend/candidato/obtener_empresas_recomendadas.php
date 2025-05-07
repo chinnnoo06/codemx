@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtener los datos relacionados con cada empresa
         $empresaID = $fila['ID'];
 
-        // Calcular el ScoreBruto de la empresa
+        // Calcular el Score de la empresa
         $numSeguidores = isset($seguidores[$empresaID]) ? $seguidores[$empresaID] : 0;
         $totalLikes = 0;
         $totalDislikes = 0;
@@ -126,27 +126,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $totalDislikes = $totalDislikes ?: 0;
         $totalComentarios = $totalComentarios ?: 0;
 
-        // Calcular el ScoreBruto
-        $scoreBruto = ($numSeguidores * 1.0) +
-                      ($totalLikes * 1.5) +
-                      ($totalComentarios * 1.2) - 
-                      ($totalDislikes * 1.3);
+        // Calcular el Score
+        $score = ($numSeguidores * 1.0) +
+                 ($totalLikes * 1.5) +
+                 ($totalComentarios * 1.2) - 
+                 ($totalDislikes * 1.3);
 
         // Si no tiene publicaciones, el score será 0 para evitar división por 0
-        $scoreBruto = $numPublicaciones > 0 ? $scoreBruto / $numPublicaciones : 0;
+        $score = $numPublicaciones > 0 ? $score / $numPublicaciones : 0;
 
         // Agregar la empresa con su score al array
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
             'Logo' => $fila['Logo'],
-            'ScoreBruto' => $scoreBruto
+            'Score' => $score
         ];
     }
 
     // Verificar si se tienen al menos 20 empresas y normalizar la puntuación
     if (count($empresas) < 20) {
-        // Si hay menos de 20 empresas, enviar las que estén disponibles sin error
+        // Si hay menos de 20 empresas, devolver las que estén disponibles sin error
         echo json_encode([
             'success' => true,
             'empresas' => $empresas
@@ -154,17 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Calcular máximo y mínimo para normalizar a escala 0-5
-    $scores = array_column($empresas, 'ScoreBruto');
-    $maxScore = max($scores);
-    $minScore = min($scores);
-    $rango = $maxScore - $minScore ?: 1;
-
-    // Normalizar la puntuación a 0-5
-    foreach ($empresas as &$empresa) {
-        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
-        unset($empresa['ScoreBruto']);
-    }
+    // Ordenar las empresas por el Score de mayor a menor
+    usort($empresas, function($a, $b) {
+        return $b['Score'] <=> $a['Score'];
+    });
 
     echo json_encode([
         'success' => true,
