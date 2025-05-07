@@ -167,11 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unset($empresa['ScoreBruto']);  // Eliminamos el campo ScoreBruto de la respuesta
     }
 
-    // Ordenar las empresas por el Score de mayor a menor
-    usort($empresas, function($a, $b) {
-        return $b['Score'] <=> $a['Score'];
-    });
-
     echo json_encode([
         'success' => true,
         'empresas' => $empresas
