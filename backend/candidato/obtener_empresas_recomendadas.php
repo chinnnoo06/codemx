@@ -24,24 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Consulta de Seguidores
+    // Consultas separadas para obtener los datos
     $querySeguidores = "
         SELECT Empresa_ID, COUNT(*) AS Seguidores
         FROM seguidores
         GROUP BY Empresa_ID
     ";
 
-    // Consulta de Reacciones (Likes y Dislikes)
     $queryReacciones = "
         SELECT 
             Publicacion_ID,
             COUNT(CASE WHEN Reaccion = 'like' THEN 1 END) AS TotalLikes,
             COUNT(CASE WHEN Reaccion = 'dislike' THEN 1 END) AS TotalDislikes
-        FROM reacciones
+        FROM reacciones 
         GROUP BY Publicacion_ID
     ";
 
-    // Consulta de Comentarios
     $queryComentarios = "
         SELECT 
             Publicacion_ID,
@@ -50,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         GROUP BY Publicacion_ID
     ";
 
-    // Consulta de Publicaciones
     $queryPublicaciones = "
         SELECT 
             Empresa_ID,
@@ -59,45 +56,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         GROUP BY Empresa_ID
     ";
 
-    // Obtener resultados de cada consulta
+    // Ejecutar las consultas
     $resultadoSeguidores = mysqli_query($conexion, $querySeguidores);
     $resultadoReacciones = mysqli_query($conexion, $queryReacciones);
     $resultadoComentarios = mysqli_query($conexion, $queryComentarios);
     $resultadoPublicaciones = mysqli_query($conexion, $queryPublicaciones);
 
-    // Inicializamos arrays para almacenar los resultados
+    // Organizar los resultados en arrays asociativos
     $seguidores = [];
-    $reacciones = [];
-    $comentarios = [];
-    $publicaciones = [];
-
     while ($row = mysqli_fetch_assoc($resultadoSeguidores)) {
         $seguidores[$row['Empresa_ID']] = $row['Seguidores'];
     }
 
+    $reacciones = [];
     while ($row = mysqli_fetch_assoc($resultadoReacciones)) {
         $reacciones[$row['Publicacion_ID']] = [
-            'TotalLikes' => $row['TotalLikes'],
-            'TotalDislikes' => $row['TotalDislikes']
+            'Likes' => $row['TotalLikes'],
+            'Dislikes' => $row['TotalDislikes']
         ];
     }
 
+    $comentarios = [];
     while ($row = mysqli_fetch_assoc($resultadoComentarios)) {
         $comentarios[$row['Publicacion_ID']] = $row['TotalComentarios'];
     }
 
+    $publicaciones = [];
     while ($row = mysqli_fetch_assoc($resultadoPublicaciones)) {
         $publicaciones[$row['Empresa_ID']] = $row['NumPublicaciones'];
     }
 
-    // Consulta para obtener las empresas y sus puntuaciones
+    // Ahora vamos a obtener los datos de las empresas
     $queryEmpresas = "
-        SELECT e.ID, e.Nombre, e.Logo
+        SELECT 
+            e.ID, e.Nombre, e.Logo
         FROM empresa e
         WHERE e.ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY e.Nombre
+        ORDER BY e.ID
         LIMIT 20;
     ";
 
@@ -105,35 +102,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $empresas = [];
 
     while ($fila = mysqli_fetch_assoc($resultadoEmpresas)) {
-        // Calculamos el ScoreBruto para cada empresa
+        // Obtener los datos relacionados con cada empresa
         $empresaID = $fila['ID'];
 
-        // Obtenemos las métricas
+        // Calcular el ScoreBruto de la empresa
         $numSeguidores = isset($seguidores[$empresaID]) ? $seguidores[$empresaID] : 0;
-        $numLikes = 0;
-        $numDislikes = 0;
-        $numComentarios = 0;
+        $totalLikes = 0;
+        $totalDislikes = 0;
+        $totalComentarios = 0;
         $numPublicaciones = isset($publicaciones[$empresaID]) ? $publicaciones[$empresaID] : 1;
 
-        // Calculamos Likes y Dislikes sumando los resultados de las publicaciones asociadas
-        foreach ($reacciones as $publicacionID => $reaction) {
+        // Sumar likes, dislikes y comentarios de las publicaciones de la empresa
+        foreach ($reacciones as $publicacionID => $reaccion) {
             if (isset($comentarios[$publicacionID])) {
-                $numLikes += $reaction['TotalLikes'];
-                $numDislikes += $reaction['TotalDislikes'];
-                $numComentarios += $comentarios[$publicacionID];
+                $totalLikes += $reaccion['Likes'];
+                $totalDislikes += $reaccion['Dislikes'];
+                $totalComentarios += $comentarios[$publicacionID];
             }
         }
 
-        // Calculamos el ScoreBruto
+        // Calcular el ScoreBruto
         $scoreBruto = (
             ($numSeguidores * 1.0) +
-            ($numLikes * 1.5) +
-            ($numComentarios * 1.2) -
-            ($numDislikes * 1.3)
+            ($totalLikes * 1.5) +
+            ($totalComentarios * 1.2) -
+            ($totalDislikes * 1.3)
         ) / $numPublicaciones;
 
-        // Normalizamos el ScoreBruto a una escala de 0 a 5
-        $scores[] = $scoreBruto;
+        // Agregar la empresa con su score al array
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
@@ -142,13 +138,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
 
-    // Calcular el máximo y mínimo para la normalización
+    // Calcular máximo y mínimo para normalizar a escala 0-5
+    $scores = array_column($empresas, 'ScoreBruto');
     $maxScore = max($scores);
     $minScore = min($scores);
     $rango = $maxScore - $minScore ?: 1;
 
+    // Normalizar la puntuación a 0-5
     foreach ($empresas as &$empresa) {
         $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
+        unset($empresa['ScoreBruto']);
     }
 
     echo json_encode([
