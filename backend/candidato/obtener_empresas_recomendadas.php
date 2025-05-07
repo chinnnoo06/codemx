@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $totalLikes = 0;
         $totalDislikes = 0;
         $totalComentarios = 0;
-        $numPublicaciones = isset($publicaciones[$empresaID]) ? $publicaciones[$empresaID] : 1;
+        $numPublicaciones = isset($publicaciones[$empresaID]) ? $publicaciones[$empresaID] : 0; // Si no tiene publicaciones, se asigna 0
 
         // Sumar likes, dislikes y comentarios de las publicaciones de la empresa
         foreach ($reacciones as $publicacionID => $reaccion) {
@@ -121,13 +121,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Si no tiene likes, dislikes o comentarios, asignamos 0 por defecto
+        $totalLikes = $totalLikes ?: 0;
+        $totalDislikes = $totalDislikes ?: 0;
+        $totalComentarios = $totalComentarios ?: 0;
+
         // Calcular el ScoreBruto
-        $scoreBruto = (
-            ($numSeguidores * 1.0) +
-            ($totalLikes * 1.5) +
-            ($totalComentarios * 1.2) -
-            ($totalDislikes * 1.3)
-        ) / $numPublicaciones;
+        $scoreBruto = ($numSeguidores * 1.0) +
+                      ($totalLikes * 1.5) +
+                      ($totalComentarios * 1.2) -
+                      ($totalDislikes * 1.3);
+
+        // Si no tiene publicaciones, el score será 0 para evitar división por 0
+        $scoreBruto = $numPublicaciones > 0 ? $scoreBruto / $numPublicaciones : 0;
 
         // Agregar la empresa con su score al array
         $empresas[] = [
@@ -136,6 +142,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'Logo' => $fila['Logo'],
             'ScoreBruto' => $scoreBruto
         ];
+    }
+
+    // Verificar si se tienen 20 empresas y normalizar la puntuación
+    if (count($empresas) < 20) {
+        echo json_encode(['error' => 'No se encontraron suficientes empresas.']);
+        http_response_code(400);
+        exit();
     }
 
     // Calcular máximo y mínimo para normalizar a escala 0-5
