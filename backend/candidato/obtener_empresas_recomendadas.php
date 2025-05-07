@@ -139,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
-            'Logoo' => $fila['Logo'],
-            'ScoreBruto' => $scoreBruto
+            'Logo' => $fila['Logo'],
+            'ScoreBruto' => $scoreBruto // Temporarily keeping ScoreBruto for calculation
         ];
     }
 
@@ -162,8 +162,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Normalizar la puntuación a 0-5 con decimales
     foreach ($empresas as &$empresa) {
-        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2);
-        unset($empresa['ScoreBruto']);
+        // Normalizamos el score y lo guardamos en la columna 'Score'
+        $empresa['Score'] = round((($empresa['ScoreBruto'] - $minScore) / $rango) * 5, 2); // Normalización a 0-5 con decimales
+        unset($empresa['ScoreBruto']);  // Eliminamos el campo ScoreBruto de la respuesta
     }
 
     // Ordenar las empresas por el Score de mayor a menor
