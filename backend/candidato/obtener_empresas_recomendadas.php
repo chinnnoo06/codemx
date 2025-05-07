@@ -135,12 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Si no tiene publicaciones, el score será 0 para evitar división por 0
         $scoreBruto = $numPublicaciones > 0 ? $scoreBruto / $numPublicaciones : 0;
 
-        // Agregar la empresa con su score al array
+        // Normalizar el scoreBruto a 0-5 directamente
+        $scoreNormalized = ($scoreBruto - 0) / (100) * 5; // Esto convierte el ScoreBruto a un rango de 0 a 5.
+
+        // Agregar la empresa con su score normalizado al array
         $empresas[] = [
             'ID' => $fila['ID'],
             'Nombre' => $fila['Nombre'],
             'Logo' => $fila['Logo'],
-            'ScoreBruto' => $scoreBruto // Temporarily keeping ScoreBruto for calculation
+            'Score' => round($scoreNormalized, 2) // Normalizamos a 2 decimales
         ];
     }
 
@@ -153,6 +156,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit();
     }
+
+    // Ordenar las empresas por el Score de mayor a menor
+    usort($empresas, function($a, $b) {
+        return $b['Score'] <=> $a['Score'];
+    });
 
     echo json_encode([
         'success' => true,
