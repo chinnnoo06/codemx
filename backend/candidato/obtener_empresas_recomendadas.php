@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Calcular el ScoreBruto
         $scoreBruto = ($numSeguidores * 1.0) +
                       ($totalLikes * 1.5) +
-                      ($totalComentarios * 1.2) -
+                      ($totalComentarios * 1.2) - 
                       ($totalDislikes * 1.3);
 
         // Si no tiene publicaciones, el score será 0 para evitar división por 0
@@ -144,10 +144,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
 
-    // Verificar si se tienen 20 empresas y normalizar la puntuación
+    // Verificar si se tienen al menos 20 empresas y normalizar la puntuación
     if (count($empresas) < 20) {
-        echo json_encode(['error' => 'No se encontraron suficientes empresas.']);
-        http_response_code(400);
+        // Si hay menos de 20 empresas, enviar las que estén disponibles sin error
+        echo json_encode([
+            'success' => true,
+            'empresas' => $empresas
+        ]);
         exit();
     }
 
