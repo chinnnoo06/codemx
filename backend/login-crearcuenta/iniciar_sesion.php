@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     WHERE administrador.Email = '$email'
     LIMIT 1";
     
+    
     $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
