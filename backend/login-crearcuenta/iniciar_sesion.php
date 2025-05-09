@@ -39,15 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     WHERE candidato.Email = '$email'
     UNION
     SELECT 
-        'administrador' AS tipo, 
-        administrador.ID, 
-        administrador.Password, 
-        1 AS Correo_Verificado,  -- Asumimos que el correo de administrador siempre está verificado
-        1 AS Estado_Cuenta,      -- Asumimos que la cuenta del administrador siempre está activa
-        NULL AS RFC_Verificado
-    FROM administrador
-    WHERE administrador.Email = '$email'
-
+        'empresa' AS tipo, 
+        empresa.ID, 
+        empresa.Password, 
+        verificacion_usuarios.Correo_Verificado, 
+        verificacion_usuarios.Estado_Cuenta, 
+        verificacion_usuarios.RFC_Verificado
+    FROM empresa
+    LEFT JOIN verificacion_usuarios ON verificacion_usuarios.Empresa_ID = empresa.ID
+    WHERE empresa.Email = '$email'
     LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
