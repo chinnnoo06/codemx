@@ -48,13 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FROM empresa
     LEFT JOIN verificacion_usuarios ON verificacion_usuarios.Empresa_ID = empresa.ID
     WHERE empresa.Email = '$email'
-    UNION
-    SELECT 
-        'administrador' AS tipo, 
-        administrador.ID, 
-        administrador.Password
-    FROM administrador
-    WHERE administrador.Email = '$email'
+   
     LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
