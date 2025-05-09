@@ -109,7 +109,7 @@ try {
             $mail->addAddress($emailDestino);
 
             $mail->isHTML(true);
-            $mail->Subject = 'NUEVA PUBLICACIÓN DE EMPRESA';
+            $mail->Subject = 'NUEVA PUBLICACION DE EMPRESA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreCandidato $apellidoCandidato</strong>,</p>
                 <p style='font-size: 15px;'>$nombreEmpresa ha agregado una nueva publicación en CODEMX. ¡Te invitamos a revisarla!</p>
