@@ -70,6 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $fila = mysqli_fetch_assoc($resultado);
 
+    if (!$fila) {
+        echo json_encode(['success' => false, 'error' => 'No se encontró el usuario.']);
+        exit();
+    }
+
     if ($fila && password_verify($password, $fila['Password'])) {
 
         if ($fila['tipo'] === 'candidato') {
