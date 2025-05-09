@@ -28,6 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $consulta = "
     SELECT 
+        'administrador' AS tipo, 
+        administrador.ID, 
+        administrador.Password, 
+        NULL AS Correo_Verificado,  
+        NULL AS Estado_Cuenta,      
+        NULL AS RFC_Verificado     
+    FROM administrador
+    WHERE administrador.Email = '$email'
+    UNION
+    SELECT 
         'candidato' AS tipo, 
         candidato.ID, 
         candidato.Password, 
@@ -48,16 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FROM empresa
     LEFT JOIN verificacion_usuarios ON verificacion_usuarios.Empresa_ID = empresa.ID
     WHERE empresa.Email = '$email'
-    UNION
-    SELECT 
-        'administrador' AS tipo, 
-        administrador.ID, 
-        administrador.Password, 
-        NULL AS Correo_Verificado,  
-        NULL AS Estado_Cuenta,      
-        NULL AS RFC_Verificado     
-    FROM administrador
-    WHERE administrador.Email = '$email'
+
     LIMIT 1";
     
     
