@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Fecha_Publicacion, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
-        WHERE p.Empresa_ID IN (" . implode(',', $empresas) . ") AND p.Empresa_ID NOT IN (
+        WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
         ORDER BY p.Fecha_Publicacion DESC
