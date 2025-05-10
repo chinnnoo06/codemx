@@ -157,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Ordenar las empresas por el Score de mayor a menor
+    // **Ordenar las empresas por el Score de mayor a menor**
     usort($empresas, function($a, $b) {
-        return $b['Score'] <=> $a['Score'];
+        return $b['Score'] <=> $a['Score'];  // Ordena de mayor a menor
     });
 
     echo json_encode([
