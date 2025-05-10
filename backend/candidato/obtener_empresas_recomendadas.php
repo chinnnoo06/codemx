@@ -93,8 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM empresa e
         WHERE e.ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
-        )
-        LIMIT 20;
+        );
     ";
 
     $resultadoEmpresas = mysqli_query($conexion, $queryEmpresas);
@@ -146,24 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
 
-    // Verificar si se tienen al menos 20 empresas y normalizar la puntuación
-    if (count($empresas) < 20) {
-        // Si hay menos de 20 empresas, devolver las que estén disponibles sin error
-        echo json_encode([
-            'success' => true,
-            'empresas' => $empresas
-        ]);
-        exit();
-    }
-
     // **Ordenar las empresas por el Score de mayor a menor**
     usort($empresas, function($a, $b) {
         return $b['Score'] <=> $a['Score'];  // Ordena de mayor a menor
     });
 
+    // **Obtener las 20 mejores empresas** (ya ordenadas)
+    $empresasTop20 = array_slice($empresas, 0, 20);
+
     echo json_encode([
         'success' => true,
-        'empresas' => $empresas
+        'empresas' => $empresasTop20
     ]);
 } else {
     http_response_code(405);
