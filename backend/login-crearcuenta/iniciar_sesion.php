@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$fila_usuario) {
         $consulta_admin = "
         SELECT 
-            'admin' AS tipo, 
+            'admininistrador' AS tipo, 
             administrador.ID, 
             administrador.Password
         FROM administrador
