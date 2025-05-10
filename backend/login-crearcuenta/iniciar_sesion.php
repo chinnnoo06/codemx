@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consulta para candidato y empresa (sin admin)
     $consulta_usuario = "
-    SELECT 
+       SELECT 
         'candidato' AS tipo, 
         candidato.ID, 
         candidato.Password, 
