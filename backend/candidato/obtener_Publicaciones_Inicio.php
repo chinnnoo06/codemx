@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $publicacionesNoSeguidas[] = $row;
     }
 
-    // Combinar ambas listas
+    // Combinar ambas listasz
     $publicaciones = array_merge($publicacionesSeguidas, $publicacionesNoSeguidas);
 
     // Si no hay publicaciones
