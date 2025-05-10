@@ -48,6 +48,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FROM empresa
     LEFT JOIN verificacion_usuarios ON verificacion_usuarios.Empresa_ID = empresa.ID
     WHERE empresa.Email = '$email'
+    UNION
+    SELECT 
+        'admin' AS tipo, 
+        administrador.ID, 
+        administrador.Password, 
+        1 AS Correo_Verificado, 
+        1 AS Estado_Cuenta, 
+        NULL AS RFC_Verificado
+    FROM administrador
+    WHERE administrador.Email = '$email'
     LIMIT 1";
 
     $resultado = mysqli_query($conexion, $consulta);
@@ -67,13 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
                 $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
-                $fechaActual = date('Y-m-d H:i:s');
 
                 // Insertar sesión en la tabla
-                $tipo = $fila['tipo'];
                 $user_id = $fila['ID'];
-                $insert_query = "";
-
                 $insert_query = "INSERT INTO sesiones (Session_id, Candidato_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
                 if (!mysqli_query($conexion, $insert_query)) {
@@ -81,78 +87,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                // Limpiar sesiones vencidas
-                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$fechaActual'";
-
-                if (!mysqli_query($conexion, $consultaEliminar)) {
-                    echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
-                    exit();
-                }
-
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
-                exit();
-            } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1) {
-                 // Actualizar fecha de expiración del token
-                 $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
-                 $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
- 
-                 $actualizarToken = "
-                 UPDATE verificacion_usuarios 
-                 SET Token_Verificacion = '$nuevoToken', Fecha_Expiracion_Token = '$fechaExpiracion' 
-                 WHERE (Candidato_ID = {$fila['ID']})";
- 
-                 if (!mysqli_query($conexion, $actualizarToken)) {
-                     echo json_encode(['success' => false, 'error' => 'Error al actualizar el token: ' . mysqli_error($conexion)]);
-                     exit();
-                 }
- 
-                 // Enviar correo de verificación
-                 $mail = new PHPMailer(true);
-                 try {
-                     // Configuración del servidor SMTP
-                     $mail->isSMTP();
-                     $mail->Host = getenv('SMTP_HOST'); 
-                     $mail->SMTPAuth = true;
-                     $mail->Username = getenv('SMTP_USERNAME'); 
-                     $mail->Password = getenv('SMTP_PASSWORD'); 
-                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                     $mail->Port = getenv('SMTP_PORT');
- 
-                     // Configuración del correo
-                     $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-                     $mail->addAddress($email);
- 
-                     $nombre = $fila['Nombre'];
-                     $mail->isHTML(true);
-                     $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
-                     $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: 
-                     <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$nuevoToken'>Verificar Cuenta</a>";
- 
-                     $mail->send();
-                     echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Correo de verificación reenviado.']);
-                 } catch (Exception $e) {
-                     echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]);
-                 }
-                exit();
-            } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0) {
-                echo json_encode(['success' => false,  'message' => 'Tu cuenta está deshabilitada.']);
                 exit();
             } else {
                 echo json_encode(['success' => false, 'error' => 'Tu cuenta no está activa o el correo no ha sido verificado.']);
                 exit();
             }
-        } elseif ($fila['tipo'] === 'empresa'){
-            if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 1) {
+        } elseif ($fila['tipo'] === 'empresa') {
+            if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
                 // Generar session_id único
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
                 $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
                 // Insertar sesión en la tabla
-                $tipo = $fila['tipo'];
                 $user_id = $fila['ID'];
-                $insert_query = "";
-
                 $insert_query = "INSERT INTO sesiones (Session_id, Empresa_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
                 if (!mysqli_query($conexion, $insert_query)) {
@@ -160,71 +109,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                // Limpiar sesiones vencidas
-                $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$$fechaActual'";
-
-                if (!mysqli_query($conexion, $consultaEliminar)) {
-                    echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
-                    exit();
-                }
-
                 echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
                 exit();
-            } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => true, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar RFC.']);
-                exit();
-            } elseif ($fila['Correo_Verificado'] == 0 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 0) {
-                // Actualizar fecha de expiración del token
-                $nuevoToken = bin2hex(random_bytes(16)); // Generar nuevo token
-                $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
-
-                $actualizarToken = "
-                UPDATE verificacion_usuarios 
-                SET Token_Verificacion = '$nuevoToken', Fecha_Expiracion_Token = '$fechaExpiracion' 
-                WHERE (Empresa_ID = {$fila['ID']})";
-
-                if (!mysqli_query($conexion, $actualizarToken)) {
-                    echo json_encode(['success' => false, 'error' => 'Error al actualizar el token: ' . mysqli_error($conexion)]);
-                    exit();
-                }
-
-                // Enviar correo de verificación
-                $mail = new PHPMailer(true);
-                try {
-                    // Configuración del servidor SMTP
-                    $mail->isSMTP();
-                    $mail->Host = getenv('SMTP_HOST'); 
-                    $mail->SMTPAuth = true;
-                    $mail->Username = getenv('SMTP_USERNAME'); 
-                    $mail->Password = getenv('SMTP_PASSWORD'); 
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = getenv('SMTP_PORT');
-
-                    // Configuración del correo
-                    $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-                    $mail->addAddress($email);
-
-                    $nombre = $fila['Nombre'];
-                    $mail->isHTML(true);
-                    $mail->Subject = 'TOKEN PARA VERIFICAR CUENTA';
-                    $mail->Body = "Hola $nombre, por favor verifica tu cuenta haciendo clic en el siguiente enlace: 
-                    <a href='https://www.codemx.net/codemx/backend/login-crearcuenta/verificar_correo.php?token=$nuevoToken'>Verificar Cuenta</a>";
-
-                    $mail->send();
-                    echo json_encode(['success' => true, 'redirect' => '/falta-verificar-correo', 'message' => 'Correo de verificación reenviado.']);
-                } catch (Exception $e) {
-                    echo json_encode(['success' => false, 'error' => 'No se pudo enviar el correo de verificación: ' . $mail->ErrorInfo]);
-                } 
-                exit();
-            } elseif ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 0 && $fila['RFC_Verificado'] == 1) {
-                echo json_encode(['success' => false, 'message' => 'Tu cuenta está deshabilitada.']);
-                exit();
             } else {
-                echo json_encode(['success' => false, 'error' => 'Tu cuenta no está activa, el correo no ha sido verificado, o falta la verificación del RFC.']);
+                echo json_encode(['success' => false, 'error' => 'Tu cuenta no está activa o el correo no ha sido verificado.']);
                 exit();
             }
+        } elseif ($fila['tipo'] === 'admin') {
+            // Para admin no se requiere verificación de correo o estado de cuenta
+            $session_id = bin2hex(random_bytes(32));
+            $creado_en = date('Y-m-d H:i:s');
+            $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+            // Insertar sesión en la tabla
+            $user_id = $fila['ID'];
+            $insert_query = "INSERT INTO sesiones (Session_id, Admin_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+
+            if (!mysqli_query($conexion, $insert_query)) {
+                echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión: ' . mysqli_error($conexion)]);
+                exit();
+            }
+
+            echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
+            exit();
         }
-        
+
     } else {
         echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos.']);
         exit();
