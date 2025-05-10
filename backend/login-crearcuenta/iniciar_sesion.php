@@ -67,9 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'admin' AS tipo, 
             administrador.ID, 
             administrador.Password, 
-            1 AS Correo_Verificado, 
-            1 AS Estado_Cuenta, 
-            NULL AS RFC_Verificado
         FROM administrador
         WHERE administrador.Email = '$email'
         LIMIT 1";
@@ -91,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insertar sesión en la tabla
             $user_id = $fila_admin['ID'];
-            $insert_query = "INSERT INTO sesiones (Session_id, Admin_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+            $insert_query = "INSERT INTO sesiones (Session_ID, Administrador_ID, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
             if (!mysqli_query($conexion, $insert_query)) {
                 echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión para admin: ' . mysqli_error($conexion)]);
