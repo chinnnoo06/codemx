@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         } elseif ($fila_usuario['tipo'] === 'empresa') {
-   if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 1) {
+            if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1 && $fila['RFC_Verificado'] == 1) {
                 // Generar session_id único
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
