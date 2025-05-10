@@ -66,10 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT 
             'admin' AS tipo, 
             administrador.ID, 
-            administrador.Password, 
-            1 AS Correo_Verificado, 
-            1 AS Estado_Cuenta, 
-            NULL AS RFC_Verificado
+            administrador.Password
         FROM administrador
         WHERE administrador.Email = '$email'
         LIMIT 1";
@@ -91,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insertar sesión en la tabla
             $user_id = $fila_admin['ID'];
-            $insert_query = "INSERT INTO sesiones (Session_id, Admin_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+            $insert_query = "INSERT INTO sesiones (Session_id, Administrador_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
             if (!mysqli_query($conexion, $insert_query)) {
                 echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión para admin: ' . mysqli_error($conexion)]);
@@ -101,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => true, 'tipo' => $fila_admin['tipo'], 'session_id' => $session_id]);
             exit();
         } else {
-            echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos para admin.']);
+            echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos.']);
             exit();
         }
     }
