@@ -26,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
     $password = $_POST['Password'];
 
-    $consulta = "
+    // Consulta para candidato y empresa (sin admin)
+    $consulta_usuario = "
     SELECT 
         'candidato' AS tipo, 
         candidato.ID, 
@@ -48,38 +49,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FROM empresa
     LEFT JOIN verificacion_usuarios ON verificacion_usuarios.Empresa_ID = empresa.ID
     WHERE empresa.Email = '$email'
-    UNION
-    SELECT 
-        'admin' AS tipo, 
-        administrador.ID, 
-        administrador.Password, 
-        1 AS Correo_Verificado, 
-        1 AS Estado_Cuenta, 
-        NULL AS RFC_Verificado
-    FROM administrador
-    WHERE administrador.Email = '$email'
     LIMIT 1";
 
-    $resultado = mysqli_query($conexion, $consulta);
+    $resultado_usuario = mysqli_query($conexion, $consulta_usuario);
 
-    if (!$resultado) {
+    if (!$resultado_usuario) {
         echo json_encode(['success' => false, 'error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
         exit();
     }
 
-    $fila = mysqli_fetch_assoc($resultado);
+    $fila_usuario = mysqli_fetch_assoc($resultado_usuario);
 
-    if ($fila && password_verify($password, $fila['Password'])) {
+    // Si no se encontró un candidato o empresa, hacer la consulta para el administrador
+    if (!$fila_usuario) {
+        $consulta_admin = "
+        SELECT 
+            'admin' AS tipo, 
+            administrador.ID, 
+            administrador.Password, 
+            1 AS Correo_Verificado, 
+            1 AS Estado_Cuenta, 
+            NULL AS RFC_Verificado
+        FROM administrador
+        WHERE administrador.Email = '$email'
+        LIMIT 1";
 
-        if ($fila['tipo'] === 'candidato') {
-            if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
+        $resultado_admin = mysqli_query($conexion, $consulta_admin);
+
+        if (!$resultado_admin) {
+            echo json_encode(['success' => false, 'error' => 'Error en la consulta SQL para admin: ' . mysqli_error($conexion)]);
+            exit();
+        }
+
+        $fila_admin = mysqli_fetch_assoc($resultado_admin);
+
+        if ($fila_admin && password_verify($password, $fila_admin['Password'])) {
+            // Generar session_id único
+            $session_id = bin2hex(random_bytes(32));
+            $creado_en = date('Y-m-d H:i:s');
+            $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+            // Insertar sesión en la tabla
+            $user_id = $fila_admin['ID'];
+            $insert_query = "INSERT INTO sesiones (Session_id, Admin_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
+
+            if (!mysqli_query($conexion, $insert_query)) {
+                echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión para admin: ' . mysqli_error($conexion)]);
+                exit();
+            }
+
+            echo json_encode(['success' => true, 'tipo' => $fila_admin['tipo'], 'session_id' => $session_id]);
+            exit();
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos para admin.']);
+            exit();
+        }
+    }
+
+    // Si es candidato o empresa
+    if ($fila_usuario && password_verify($password, $fila_usuario['Password'])) {
+        if ($fila_usuario['tipo'] === 'candidato') {
+            if ($fila_usuario['Correo_Verificado'] == 1 && $fila_usuario['Estado_Cuenta'] == 1) {
                 // Generar session_id único
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
                 $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
                 // Insertar sesión en la tabla
-                $user_id = $fila['ID'];
+                $user_id = $fila_usuario['ID'];
                 $insert_query = "INSERT INTO sesiones (Session_id, Candidato_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
                 if (!mysqli_query($conexion, $insert_query)) {
@@ -87,21 +124,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
+                echo json_encode(['success' => true, 'tipo' => $fila_usuario['tipo'], 'session_id' => $session_id]);
                 exit();
             } else {
                 echo json_encode(['success' => false, 'error' => 'Tu cuenta no está activa o el correo no ha sido verificado.']);
                 exit();
             }
-        } elseif ($fila['tipo'] === 'empresa') {
-            if ($fila['Correo_Verificado'] == 1 && $fila['Estado_Cuenta'] == 1) {
+        } elseif ($fila_usuario['tipo'] === 'empresa') {
+            if ($fila_usuario['Correo_Verificado'] == 1 && $fila_usuario['Estado_Cuenta'] == 1) {
                 // Generar session_id único
                 $session_id = bin2hex(random_bytes(32));
                 $creado_en = date('Y-m-d H:i:s');
                 $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
                 // Insertar sesión en la tabla
-                $user_id = $fila['ID'];
+                $user_id = $fila_usuario['ID'];
                 $insert_query = "INSERT INTO sesiones (Session_id, Empresa_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
 
                 if (!mysqli_query($conexion, $insert_query)) {
@@ -109,31 +146,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit();
                 }
 
-                echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
+                echo json_encode(['success' => true, 'tipo' => $fila_usuario['tipo'], 'session_id' => $session_id]);
                 exit();
             } else {
                 echo json_encode(['success' => false, 'error' => 'Tu cuenta no está activa o el correo no ha sido verificado.']);
                 exit();
             }
-        } elseif ($fila['tipo'] === 'admin') {
-            // Para admin no se requiere verificación de correo o estado de cuenta
-            $session_id = bin2hex(random_bytes(32));
-            $creado_en = date('Y-m-d H:i:s');
-            $expira_en = date('Y-m-d H:i:s', strtotime('+1 hour'));
-
-            // Insertar sesión en la tabla
-            $user_id = $fila['ID'];
-            $insert_query = "INSERT INTO sesiones (Session_id, Admin_id, Creado_en, Expira_en) VALUES ('$session_id', $user_id, '$creado_en', '$expira_en')";
-
-            if (!mysqli_query($conexion, $insert_query)) {
-                echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión: ' . mysqli_error($conexion)]);
-                exit();
-            }
-
-            echo json_encode(['success' => true, 'tipo' => $fila['tipo'], 'session_id' => $session_id]);
-            exit();
         }
-
     } else {
         echo json_encode(['success' => false, 'error' => 'Correo o contraseña incorrectos.']);
         exit();
