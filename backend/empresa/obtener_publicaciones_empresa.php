@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
-    $consulta = " SELECT * FROM publicacion
+    $consulta = " SELECT ID, Empresa_ID, Img, Contenido, Ocultar_MeGusta, Sin_Comentarios, Fecha_Publicacion, empresa.Logo AS Empresa_Logo, empresa.Nombre AS Empresa_Nombre FROM publicacion
+        INNER JOIN empresa ON publicacion.ID = Empresa_ID
         WHERE Empresa_ID = '$idEmpresa'
     ";
 
