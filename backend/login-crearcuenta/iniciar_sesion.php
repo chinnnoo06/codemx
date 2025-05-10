@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT 
             'admin' AS tipo, 
             administrador.ID, 
-            administrador.Password, 
+            administrador.Password 
         FROM administrador
         WHERE administrador.Email = '$email'
         LIMIT 1";
