@@ -25,9 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
 
-    $consulta = " SELECT ID, Empresa_ID, Img, Contenido, Ocultar_MeGusta, Sin_Comentarios, Fecha_Publicacion, empresa.Logo AS Empresa_Logo, empresa.Nombre AS Empresa_Nombre FROM publicacion
-        INNER JOIN empresa ON publicacion.ID = Empresa_ID
-        WHERE Empresa_ID = '$idEmpresa'
+    // Modificando la consulta para incluir los campos de la tabla empresa
+    $consulta = " 
+        SELECT publicacion.ID, publicacion.Empresa_ID, publicacion.Img, publicacion.Contenido, 
+               publicacion.Ocultar_MeGusta, publicacion.Sin_Comentarios, publicacion.Fecha_Publicacion, 
+               empresa.Logo AS Empresa_Logo, empresa.Nombre AS Empresa_Nombre 
+        FROM publicacion
+        INNER JOIN empresa ON publicacion.Empresa_ID = empresa.ID
+        WHERE publicacion.Empresa_ID = '$idEmpresa'
     ";
 
     $resultado = mysqli_query($conexion, $consulta);
@@ -44,14 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $listaDePublicaciones[] = $fila;
         }
 
-        $cantidadDePunlicaciones = count($listaDePublicaciones);
+        $cantidadDePublicaciones = count($listaDePublicaciones);
 
         echo json_encode([
-            'cantidad' => $cantidadDePunlicaciones,
+            'cantidad' => $cantidadDePublicaciones,
             'publicaciones' => $listaDePublicaciones
         ]);
     } else {
-        echo json_encode(['cantidad' => 0, 'empresas' => [], 'error' => 'La empresa no tiene publicaciones.']);
+        echo json_encode(['cantidad' => 0, 'publicaciones' => [], 'error' => 'La empresa no tiene publicaciones.']);
     }
 } else {
     http_response_code(405); 
