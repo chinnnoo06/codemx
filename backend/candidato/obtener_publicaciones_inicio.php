@@ -72,6 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Combinar ambas listas de publicaciones
     $publicaciones = array_merge($publicacionesSeguidas, $publicacionesNoSeguidas);
 
+    // Ordenar las publicaciones combinadas por la fecha de publicación (de la más reciente a la más antigua)
+    usort($publicaciones, function($a, $b) {
+        return strtotime($b['Fecha_Publicacion']) - strtotime($a['Fecha_Publicacion']);
+    });
+
     // Si no hay publicaciones
     if (count($publicaciones) === 0) {
         echo json_encode([
@@ -81,11 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Ordenar las publicaciones combinadas por Fecha_Publicacion en orden descendente
-    usort($publicaciones, function($a, $b) {
-        return strtotime($b['Fecha_Publicacion']) - strtotime($a['Fecha_Publicacion']);
-    });
-
     echo json_encode([
         'success' => true,
         'publicaciones' => $publicaciones
@@ -94,4 +94,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'El método no está permitido.']);
 }
+
 ?>
