@@ -28,34 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 10;
     $offset = ($page - 1) * $limit;
 
-    // Consulta unificada con UNION para obtener publicaciones seguidas y no seguidas
+    // Obtener IDs de todas las empresas relevantes (seguidas + recomendadas)
+    $empresasIds = array_map(function($empresa) { 
+        return $empresa['ID']; 
+    }, $empresas);
+    
+    // Consulta simplificada para obtener todas las publicaciones juntas
     $query = "
-        (SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-                e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-                IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                    OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto,
-                0 AS OrdenTipo -- 0 para publicaciones seguidas (prioridad)
+        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
-        WHERE p.Empresa_ID IN (
-            SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
-        ))
-        
-        UNION
-        
-        (SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-                e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-                IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                    OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto,
-                1 AS OrdenTipo -- 1 para publicaciones no seguidas
-        FROM publicacion p
-        JOIN empresa e ON p.Empresa_ID = e.ID
-        WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") 
-        AND p.Empresa_ID NOT IN (
-            SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
-        ))
-        
-        ORDER BY Visto ASC, OrdenTipo ASC, Fecha_Publicacion DESC
+        WHERE p.Empresa_ID IN (" . implode(',', $empresasIds) . ")
+        ORDER BY Visto ASC, Fecha_Publicacion DESC
         LIMIT $limit OFFSET $offset
     ";
 
@@ -66,8 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Verificar si hay más publicaciones
-    $queryCount = "SELECT COUNT(*) as total FROM (($query)) AS subquery";
-    $resultCount = mysqli_query($conexion, str_replace("LIMIT $limit OFFSET $offset", "", $queryCount));
+    $queryCount = "SELECT COUNT(*) as total FROM publicacion p 
+                  WHERE p.Empresa_ID IN (" . implode(',', $empresasIds) . ")";
+    $resultCount = mysqli_query($conexion, $queryCount);
     $total = mysqli_fetch_assoc($resultCount)['total'];
     $hasMore = ($offset + $limit) < $total;
 
