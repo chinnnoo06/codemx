@@ -78,21 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $publicaciones[] = $row;
     }
 
-    // Contar total de publicaciones
-    $queryTotal = "
-        SELECT COUNT(*) as total FROM publicacion p
-        WHERE p.Empresa_ID IN (" . implode(',', $todasEmpresasIds) . ")
-    ";
-    $resultTotal = mysqli_query($conexion, $queryTotal);
-    $total = mysqli_fetch_assoc($resultTotal)['total'];
-
     echo json_encode([
         'success' => true,
-        'publicaciones' => $publicaciones,
-        'total' => $total,
-        'has_more' => ($offset + $limit) < $total,
-        'current_page' => $page,
-        'per_page' => $limit
+        'publicaciones' => $publicaciones
     ]);
 } else {
     http_response_code(405);
