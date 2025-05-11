@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE p.Empresa_ID IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
+        ORDER BY p.Fecha_Publicacion DESC
     ";
 
     // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
+        ORDER BY p.Fecha_Publicacion DESC
     ";
 
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $publicacionesNoSeguidas[] = $row;
     }
 
-    // Combinar ambas listas
+    // Combinar ambas listas de publicaciones
     $publicaciones = array_merge($publicacionesSeguidas, $publicacionesNoSeguidas);
 
     // Si no hay publicaciones
@@ -80,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit();
     }
+
+    // Ordenar las publicaciones combinadas por Fecha_Publicacion en orden descendente
+    usort($publicaciones, function($a, $b) {
+        return strtotime($b['Fecha_Publicacion']) - strtotime($a['Fecha_Publicacion']);
+    });
 
     echo json_encode([
         'success' => true,
