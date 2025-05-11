@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consultas separadas para obtener las publicaciones de las empresas que sigue el candidato
     $queryPublicacionesSeguidas = "
-        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Fecha_Publicacion, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
+        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
     $queryPublicacionesNoSeguidas = "
-        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Fecha_Publicacion, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
+        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img p.Fecha_Publicacion, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") AND p.Empresa_ID NOT IN (
