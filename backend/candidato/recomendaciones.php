@@ -130,24 +130,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Calcular el porcentaje de compatibilidad
-        $porcentajeCompatibilidad = 0;
-        if (count($tecnologiasRequeridas) > 0) {
-            $porcentajeCompatibilidad = round(($coincidencias / count($tecnologiasRequeridas)) * 100, 2); // Porcentaje con dos decimales
-        }
-
-        // Si hay coincidencias, agregar la vacante a las recomendaciones con la compatibilidad
+        // Si hay coincidencias, agregar la vacante a las recomendaciones
         if ($coincidencias > 0) {
-            $vacantesRecomendadas[] = array_merge($vacante, [
-                'coincidencias' => $coincidencias,
-                'compatibilidad' => $porcentajeCompatibilidad
-            ]);
+            $vacantesRecomendadas[] = array_merge($vacante, ['coincidencias' => $coincidencias]);
         }
     }
 
-    // Ordenar vacantes por compatibilidad (de mayor a menor)
+    // Ordenar vacantes por el número de coincidencias de tecnologías (de mayor a menor)
     usort($vacantesRecomendadas, function($a, $b) {
-        return $b['compatibilidad'] - $a['compatibilidad']; // Ordenar solo por compatibilidad
+        return $b['coincidencias'] - $a['coincidencias'];
     });
 
     // Ahora, hacemos la paginación: traemos solo las vacantes correspondientes a la página solicitada
