@@ -17,14 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     // Verificar que las empresas fueron enviadas
-    if (!isset($data['empresas']) || !isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Faltan empresas o idCandidato.']);
+    if (!isset($data['empresas']) || !isset($data['idCandidato']) || !isset($data['page'])) {
+        echo json_encode(['error' => 'Faltan datos.']);
         http_response_code(400);
         exit();
     }
 
     $empresas = $data['empresas']; // Empresas a obtener las publicaciones
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+    $page = (int)$data['page'];
+    $limit = 2;  // Número de vacantes a devolver por página
+    $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Consultas para obtener las publicaciones de las empresas que sigue el candidato
     $queryPublicacionesSeguidas = "
@@ -80,6 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return $a['Visto'] - $b['Visto']; // No vistas primero (0 al principio)
     });
 
+     $publicacionesPaginadas = array_slice($publicaciones, $offset, $limit);
+
     // Si no hay publicaciones
     if (count($publicaciones) === 0) {
         echo json_encode([
@@ -91,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     echo json_encode([
         'success' => true,
-        'publicaciones' => $publicaciones
+        'publicaciones' => $publicacionesPaginadas
     ]);
 } else {
     http_response_code(405);
