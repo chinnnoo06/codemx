@@ -29,33 +29,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 25;  // Número de vacantes a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
-    // Consultas para obtener las publicaciones de las empresas que sigue el candidato
+    // Modificar ambas consultas para incluir LIMIT
     $queryPublicacionesSeguidas = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
+            e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+            IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
+        ORDER BY Visto ASC, p.Fecha_Publicacion DESC
+        LIMIT $limit OFFSET $offset
     ";
 
-    // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
     $queryPublicacionesNoSeguidas = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
+            e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+            IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") 
         AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
+        ORDER BY Visto ASC, p.Fecha_Publicacion DESC
+        LIMIT $limit OFFSET $offset
     ";
-
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
     $resultadoSeguidas = mysqli_query($conexion, $queryPublicacionesSeguidas);
     $publicacionesSeguidas = [];
