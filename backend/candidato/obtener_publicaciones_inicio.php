@@ -28,24 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Consultas separadas para obtener las publicaciones de las empresas que sigue el candidato
     $queryPublicacionesSeguidas = "
-        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
+        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY p.Fecha_Publicacion DESC
+        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
     ";
 
     // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
     $queryPublicacionesNoSeguidas = "
-        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
+        SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
-        WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") AND p.Empresa_ID NOT IN (
+        WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") 
+        AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY p.Fecha_Publicacion DESC
+        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
     ";
 
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
