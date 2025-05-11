@@ -23,18 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $empresas = $data['empresas']; // Empresas a obtener las publicaciones
+    $empresas = $data['empresas'];
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $page = (int)$data['page'];
-    $limit = 25;  // Número de vacantes a devolver por página
-    $offset = ($page - 1) * $limit; // Calcular el offset según la página
+    $limit = 25;
+    $offset = ($page - 1) * $limit;
 
-    // Modificar ambas consultas para incluir LIMIT
+    // Consulta para publicaciones de empresas seguidas
     $queryPublicacionesSeguidas = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-            e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-            IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (
@@ -44,11 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         LIMIT $limit OFFSET $offset
     ";
 
+    // Consulta para publicaciones de empresas no seguidas
     $queryPublicacionesNoSeguidas = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-            e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
-            IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         WHERE p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ") 
@@ -58,21 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ORDER BY Visto ASC, p.Fecha_Publicacion DESC
         LIMIT $limit OFFSET $offset
     ";
-    // Ejecutar las consultas para obtener publicaciones de empresas seguidas
+
+    // Obtener publicaciones seguidas
     $resultadoSeguidas = mysqli_query($conexion, $queryPublicacionesSeguidas);
     $publicacionesSeguidas = [];
     while ($row = mysqli_fetch_assoc($resultadoSeguidas)) {
         $publicacionesSeguidas[] = $row;
     }
 
-    // Ejecutar las consultas para obtener publicaciones de empresas no seguidas
+    // Obtener publicaciones no seguidas
     $resultadoNoSeguidas = mysqli_query($conexion, $queryPublicacionesNoSeguidas);
     $publicacionesNoSeguidas = [];
     while ($row = mysqli_fetch_assoc($resultadoNoSeguidas)) {
         $publicacionesNoSeguidas[] = $row;
     }
 
-    // Combinar ambas listas de publicaciones (seguidas + no seguidas)
+    // Combinar resultados
     $publicaciones = array_merge($publicacionesSeguidas, $publicacionesNoSeguidas);
 
     // Ordenar las publicaciones por Visto (no vistas primero) y luego por Fecha_Publicacion (descendente)
@@ -85,20 +87,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return $a['Visto'] - $b['Visto']; // No vistas primero (0 al principio)
     });
 
-     $publicacionesPaginadas = array_slice($publicaciones, $offset, $limit);
+    // Contar total de publicaciones para paginación
+    $queryTotal = "
+        SELECT COUNT(*) as total FROM publicacion p
+        WHERE p.Empresa_ID IN (
+            SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
+        )
+        OR (
+            p.Empresa_ID IN (" . implode(',', array_map(function($empresa) { return $empresa['ID']; }, $empresas)) . ")
+            AND p.Empresa_ID NOT IN (
+                SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
+            )
+        )
+    ";
+    $resultTotal = mysqli_query($conexion, $queryTotal);
+    $total = mysqli_fetch_assoc($resultTotal)['total'];
 
-    // Si no hay publicaciones
     if (count($publicaciones) === 0) {
         echo json_encode([
             'success' => true,
-            'publicaciones' => []
+            'publicaciones' => [],
+            'total' => 0,
+            'has_more' => false
         ]);
         exit();
     }
 
     echo json_encode([
         'success' => true,
-        'publicaciones' => $publicacionesPaginadas
+        'publicaciones' => $publicaciones,
+        'total' => $total,
+        'has_more' => ($offset + $limit) < $total,
+        'current_page' => $page,
+        'per_page' => $limit
     ]);
 } else {
     http_response_code(405);
