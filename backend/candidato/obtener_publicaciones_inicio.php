@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $empresas = $data['empresas']; // Empresas a obtener las publicaciones
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
 
-    // Consultas separadas para obtener las publicaciones de las empresas que sigue el candidato
+    // Consultas para obtener las publicaciones de las empresas que sigue el candidato
     $queryPublicacionesSeguidas = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
                e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
@@ -37,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE p.Empresa_ID IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY p.Fecha_Publicacion DESC
     ";
 
     // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
@@ -52,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY p.Fecha_Publicacion DESC
     ";
 
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
@@ -69,12 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $publicacionesNoSeguidas[] = $row;
     }
 
-    // Combinar ambas listas de publicaciones
+    // Combinar ambas listas de publicaciones (seguidas + no seguidas)
     $publicaciones = array_merge($publicacionesSeguidas, $publicacionesNoSeguidas);
 
-    // Ordenar las publicaciones combinadas por la fecha de publicación (de la más reciente a la más antigua)
+    // Ordenar las publicaciones por Visto (no vistas primero) y luego por Fecha_Publicacion (descendente)
     usort($publicaciones, function($a, $b) {
-        return strtotime($b['Fecha_Publicacion']) - strtotime($a['Fecha_Publicacion']);
+        // Primero ordenamos por el estado de Visto (0 = no visto, 1 = visto)
+        if ($a['Visto'] == $b['Visto']) {
+            // Si ambas publicaciones tienen el mismo estado de vista, ordenamos por fecha
+            return strtotime($b['Fecha_Publicacion']) - strtotime($a['Fecha_Publicacion']);
+        }
+        return $a['Visto'] - $b['Visto']; // No vistas primero (0 al principio)
     });
 
     // Si no hay publicaciones
@@ -94,5 +97,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'El método no está permitido.']);
 }
-
 ?>
