@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE p.Empresa_ID IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY Visto ASC, p.Fecha_Publicacion DESC
+        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
     ";
 
     // Consultas para obtener las publicaciones de las empresas que NO sigue el candidato
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         AND p.Empresa_ID NOT IN (
             SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
         )
-        ORDER BY Visto ASC, p.Fecha_Publicacion DESC
+        ORDER BY Visto DESC, p.Fecha_Publicacion DESC
     ";
 
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
