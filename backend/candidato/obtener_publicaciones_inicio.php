@@ -28,20 +28,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $limit = 10;
     $offset = ($page - 1) * $limit;
 
-    // Obtener IDs de todas las empresas relevantes (seguidas + recomendadas)
+    // Obtener IDs de todas las empresas (seguidas + recomendadas)
     $empresasIds = array_map(function($empresa) { 
         return $empresa['ID']; 
     }, $empresas);
     
-    // Consulta simplificada para obtener todas las publicaciones juntas
+    // Consulta unificada para obtener todas las publicaciones
     $query = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
                e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
                IF( EXISTS( SELECT 1 FROM reacciones WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ) 
-                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto
+                   OR EXISTS( SELECT 1 FROM comentarios WHERE Publicacion_ID = p.ID AND Candidato_ID = '$idCandidato' ), 1, 0) AS Visto,
+               EXISTS( SELECT 1 FROM seguidores WHERE Empresa_ID = p.Empresa_ID AND Candidato_ID = '$idCandidato' ) AS EsSeguida
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
-        WHERE p.Empresa_ID IN (" . implode(',', $empresasIds) . ")
+        WHERE p.Empresa_ID IN (
+            -- Empresas que el usuario sigue
+            SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
+            
+            UNION
+            
+            -- Empresas recomendadas
+            SELECT ID FROM empresa WHERE ID IN (" . implode(',', $empresasIds) . ")
+        )
         ORDER BY Visto ASC, Fecha_Publicacion DESC
         LIMIT $limit OFFSET $offset
     ";
@@ -54,7 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verificar si hay más publicaciones
     $queryCount = "SELECT COUNT(*) as total FROM publicacion p 
-                  WHERE p.Empresa_ID IN (" . implode(',', $empresasIds) . ")";
+                  WHERE p.Empresa_ID IN (
+                      SELECT Empresa_ID FROM seguidores WHERE Candidato_ID = '$idCandidato'
+                      UNION
+                      SELECT ID FROM empresa WHERE ID IN (" . implode(',', $empresasIds) . ")
+                  )";
     $resultCount = mysqli_query($conexion, $queryCount);
     $total = mysqli_fetch_assoc($resultCount)['total'];
     $hasMore = ($offset + $limit) < $total;
