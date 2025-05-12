@@ -33,10 +33,10 @@ try {
     $filaSesion = mysqli_fetch_assoc($resultadoSesion);
 
     if (!$filaSesion || !$filaSesion['Administrador_ID']) {
-        echo json_encode(['success' => false, 'error' => 'Sesión inválida o expirada.']);
+        echo json_encode(['success' => false]);  // Sesión inválida o expirada
         exit();
     } else {
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true]);  // Sesión válida
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
