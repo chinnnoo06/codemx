@@ -25,6 +25,7 @@ if (!getenv('SMTP_HOST')) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = mysqli_real_escape_string($conexion, $_POST['Correo_Electronico']);
     $password = $_POST['Password'];
+    $fechaActual = date('Y-m-d H:i:s');
 
     // Consulta para candidato y empresa (sin admin)
     $consulta_usuario = "
@@ -94,6 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'error' => 'Error al guardar la sesión para admin: ' . mysqli_error($conexion)]);
                 exit();
             }
+
+            // Limpiar sesiones vencidas
+            $consultaEliminar = "DELETE FROM sesiones WHERE Expira_En < '$fechaActual'";
+
+            if (!mysqli_query($conexion, $consultaEliminar)) {
+                echo json_encode(['success' => false, 'error' => 'Error al limpiar sesiones: ' . mysqli_error($conexion)]);
+                exit();
+            }
+
 
             echo json_encode(['success' => true, 'tipo' => $fila_admin['tipo'], 'session_id' => $session_id]);
             exit();
