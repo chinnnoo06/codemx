@@ -1,0 +1,96 @@
+.empresas-scroll-container {
+    overflow-x: auto; 
+    padding-bottom: 20px;
+}
+
+.empresas-scroll {
+    display: flex;
+    gap: 15px; 
+}
+
+
+.empresa-card {
+    width: 150px;
+    height: 230px; 
+    flex-shrink: 0; 
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    background-color: white;
+}
+
+.empresa-card:hover {
+    transform: translateY(-2px); /* Efecto hover para la tarjeta */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo de las imágenes de las empresas */
+.empresa-logo-card {
+    width: 5rem;
+    height: 5rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px; /* Espacio entre la imagen y el nombre */
+}
+
+.empresa-nombre-card {
+    font-weight: 600;
+    font-size: 1rem; 
+}
+
+.seguir {
+    width: 120px;
+    margin-top: auto; /* Empuja el botón hacia abajo */
+    font-size: 0.7rem;
+}
+
+.publicacion-item {
+  border-bottom: 1px solid #e0e0e0; /* Línea separadora gris clara */
+}
+
+.seguir-publi{
+    font-size: 0.7rem;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+
+
+
+@media (max-width: 767px) { 
+
+
+    .empresas-scroll {
+        gap: 10px; 
+    }
+
+
+    .empresa-card {
+        width: 100px;
+        height: 180px; 
+
+    }
+
+
+    /* Estilo de las imágenes de las empresas */
+    .empresa-logo-card {
+        width: 3rem;
+        height: 3rem;
+
+    }
+
+    .empresa-nombre-card {
+        font-size: 0.8rem; 
+    }
+
+    .seguir {
+        width: 80px;
+    }
+}
+
+  

@@ -27,7 +27,7 @@ export const ModalSeguidoresPerfilEmpresa = ({ seguidores, idCandidato }) => {
 
 
 return (
-    <div className="container container-mdoal">
+    <div className="container-mdoal">
       <h5 className="mb-3 text-center titulo-modal">Seguidores</h5>
       {/* Barra de búsqueda */}
       <div className="input-group mb-4 position-relative">

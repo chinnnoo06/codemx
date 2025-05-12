@@ -6,7 +6,7 @@ import { ModalDislikes } from './ModalDislikes';
 import { ModalComentarios} from './ModalComentarios';
 import LoadingSpinner from '../LoadingSpinner';
 
-export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacion, manejarOcultarSeccion}) => {
+export const SeccionPublicacion = ({ candidato, idCandidato, publicacion, manejarOcultarSeccion, seccionInicio=0, toggleSeguir, seguimientoEstado}) => {
     const [likes, setLikes] = useState(0);
     const [numLikes, setNumLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
@@ -24,7 +24,9 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
     const [motivoSeleccionado, setMotivoSeleccionado] = useState("");
     const [descripcionReporte, setDescripcionReporte] = useState("");
     const [isLoading, setIsLoading] = useState(true); 
-
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [idEmpresa] = useState(publicacion.Empresa_ID);
+    const [nombreEmpresa] = useState(publicacion.Empresa_Nombre);
 
     const fetchData = useCallback(async () => {
           try {
@@ -142,7 +144,7 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
                         {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ idEmpresa: empresa.id,  empresaNombre: empresa.nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: true}),
+                        body: JSON.stringify({ idEmpresa: idEmpresa,  empresaNombre: nombreEmpresa, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: true}),
                         }
                     );
 
@@ -192,7 +194,7 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
                     descripcion: descripcionReporte,
                     idPublicacion: publicacion.ID,
                     idDenunciante: idCandidato, 
-                    idDenunciado: empresa.id,
+                    idDenunciado: idEmpresa,
                 }),
             });
 
@@ -221,14 +223,25 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
     };
 
     const irAlPerfilEmpresa = (idEmpresaPerfil) => {
-        manejarOcultarSeccion();
-        navigate(`/usuario-candidato/perfil-empresa`, { 
-            state: { idEmpresa: idEmpresaPerfil}
-        });
+        if (seccionInicio === 0 ) {
+            manejarOcultarSeccion();
+            navigate(`/usuario-candidato/perfil-empresa`, { 
+                state: { idEmpresa: idEmpresaPerfil}
+            });
+        } else if (seccionInicio === 1) {
+            navigate(`/usuario-candidato/perfil-empresa`, { 
+                state: { idEmpresa: idEmpresaPerfil}
+            });
+        }
+
     };
 
     const irAMiPerfil = () => {
       navigate(`/usuario-candidato/miperfil-candidato`);  
+    };
+
+    const toggleDescription = () => {
+        setIsExpanded(!isExpanded);
     };
 
     if (isLoading) {
@@ -239,17 +252,39 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
     <div className='contenedor'>
 
         <>
-        <div className='boton d-flex align-items-center mb-2'>
-            <button className="btn btn-volver-publicaciones d-flex align-items-center" onClick={() => manejarOcultarSeccion("perfil-publicaciones")}>
-                <i className="fa-solid fa-arrow-left me-2"></i> Volver a publicaciones
-            </button>
-        </div>
+        {seccionInicio === 0 && (
+            <div className='boton d-flex align-items-center mb-2'>
+                <button className="btn btn-volver-publicaciones d-flex align-items-center" onClick={() => manejarOcultarSeccion("perfil-publicaciones")}>
+                    <i className="fa-solid fa-arrow-left me-2"></i> Volver a publicaciones
+                </button>
+            </div>
+
+        )}
 
         <div className="contenedor-publicacion d-flex flex-column justify-content-between">
-            <div className='seccion-usuario d-flex align-items-center gap-2 px-1 '>
-                <img src={`${empresa.logo}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-perfil" onClick={() => irAlPerfilEmpresa(empresa.id)}/>
-                <p className='usuario-nombre m-0 align-self-center' onClick={() => irAlPerfilEmpresa(empresa.id)}>{empresa.nombre}</p>
-                <i className="fa-solid fa-ellipsis ms-auto" onClick={manejarShowModalDenuncia}></i>
+            <div className='seccion-usuario d-flex align-items-center gap-2 px-1 justify-content-between'>
+                <div className="d-flex align-items-center gap-2">
+                    <img 
+                        src={`${publicacion.Empresa_Logo}?t=${new Date().getTime()}`} 
+                        alt="Imagen de la publicación" 
+                        className="img-perfil" 
+                        onClick={() => irAlPerfilEmpresa(idEmpresa)}
+                    />
+                    <p className='usuario-nombre m-0 align-self-center' onClick={() => irAlPerfilEmpresa(idEmpresa)}>
+                        {publicacion.Empresa_Nombre}
+                    </p>
+                </div>
+
+                {seccionInicio === 1 && publicacion.Siguiendo == 0 && (
+                    <button 
+                        className={`btn ${seguimientoEstado[idEmpresa] ? 'btn-tipouno' : 'btn-tipodos'} btn-sm seguir-publi ms-auto`} 
+                        onClick={() => toggleSeguir(idEmpresa)}
+                    >
+                        {seguimientoEstado[idEmpresa] ? 'Dejar de seguir' : 'Seguir'}
+                    </button>
+                )}
+
+                <i className="fa-solid fa-ellipsis" onClick={manejarShowModalDenuncia}></i>
             </div>
             <div className='seccion-img'>
                 <img src={`${publicacion.Img}?t=${new Date().getTime()}`} alt="Imagen de la publicación" className="img-detalle" />
@@ -279,10 +314,28 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
                 )}
   
             </div>
+
+            {/* Mostrar la descripción con truncado de 100 caracteres */}
             <div className='seccion-descripcion text-start d-flex flex-column'>
-                <p className='descripcion'> <span className='usuario-nombre'>{empresa.nombre}</span> {publicacion.Contenido}</p>
-                <span className="comentario-tiempo">{new Date(publicacion.Fecha_Publicacion).toLocaleString()}</span>
+                <p className='descripcion'>
+                    <span className='usuario-nombre'>{publicacion.Empresa_Nombre}</span>
+                    <span style={{ whiteSpace: 'pre-wrap' }}>
+                    {isExpanded ? publicacion.Contenido : publicacion.Contenido.substring(0, 100) + (publicacion.Contenido.length > 100 ? "..." : "")}
+                    </span>
+                    {publicacion.Contenido.length > 100 && (
+                    <span 
+                        className="ver-mas" 
+                        onClick={toggleDescription}>
+                        {isExpanded ? " Ver menos" : " Ver más"}
+                    </span>
+                    )}
+                </p>
+                <span className="comentario-tiempo">
+                    {new Date(publicacion.Fecha_Publicacion).toLocaleString()}
+                </span>
             </div>
+
+
 
 
         </div>
@@ -318,7 +371,7 @@ export const SeccionPublicacion = ({ empresa, candidato, idCandidato, publicacio
                     <button className="close-button btn" onClick={() => manejarCloseModalComentarios()}>
                             <i className="fa-solid fa-x"></i>
                     </button>
-                    <ModalComentarios comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfilCandidato={irAlPerfilCandidato} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfil={irAMiPerfil} idCandidato={idCandidato} empresa={empresa} candidato={candidato}/>
+                    <ModalComentarios comentarios={comentarios} publicacion={publicacion} fetchData={fetchData} irAlPerfilCandidato={irAlPerfilCandidato} irAlPerfilEmpresa={irAlPerfilEmpresa} irAMiPerfil={irAMiPerfil} idCandidato={idCandidato} idEmpresa={idEmpresa} nombreEmpresa={nombreEmpresa} candidato={candidato}/>
                 </div>
             </div>
         )}

@@ -246,7 +246,7 @@
 }
 
 
-@media (max-width: 767px) {
+@media (max-width: 1100px) {
 
  .chat-flotante-container{
     display: none;

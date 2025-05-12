@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../../styles/empresa/publicacion.css";
 
-export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerfilCandidato, irAlPerfilEmpresa, irAMiPerfil, idCandidato, empresa, candidato }) => {
+export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerfilCandidato, irAlPerfilEmpresa, irAMiPerfil, idCandidato, idEmpresa, nombreEmpresa, candidato }) => {
     // Estado para manejar los likes por cada comentario
     const [likesEstado, setLikesEstado] = useState(
         comentarios.reduce((acc, comentario) => {
@@ -284,7 +284,7 @@ export const ModalComentarios = ({ comentarios, publicacion, fetchData, irAlPerf
                     {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ idEmpresa: empresa.id,  empresaNombre: empresa.nombre, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: false}),
+                    body: JSON.stringify({ idEmpresa,  empresaNombre: nombreEmpresa, candidatoNombre: candidato.nombre, candidatoApellido: candidato.apellido, idPublicacion: publicacion.ID, esLike: false}),
                     }
                 );
 

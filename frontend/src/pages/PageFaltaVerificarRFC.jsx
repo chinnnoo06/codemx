@@ -15,7 +15,7 @@ export const PageFaltaVerificarRFC = () => {
             </header>
         </div>
 
-        <div className="verificacion-correo text-center py-5">
+        <div className="verificacion-correo text-center container-bienvenida">
             <h2 className="texto-color mb-3">¡Espera! Tu cuenta de empresa esta en proceso de verificación</h2>
             <p className="texto-color mb-4">
                 En este momento nuestro equipo esta verificando la validez del RFC proporcionado durante el proceso de registro.

@@ -136,7 +136,6 @@ export const RutasCandidato = () => {
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
-
     
     if (isLoading) {
         return <LoadingSpinner></LoadingSpinner> 

@@ -16,7 +16,7 @@ export const PageFaltaVerificarCorreo = () => {
             </header>
         </div>
 
-        <div className="verificacion-correo text-center py-5">
+        <div className="verificacion-correo text-center container-bienvenida">
             <h2 className="texto-color mb-3">¡Ups! Falta verificar tu cuenta</h2>
             <p className="texto-color mb-4">
                 Hemos enviado un enlace de verificación a tu correo electrónico

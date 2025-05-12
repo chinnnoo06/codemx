@@ -12,8 +12,8 @@
 }
 
 .contenedor-header header {
-    padding-left: 3rem;
-    padding-right: 3rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
     height: 4.5rem; 
     margin: 0 auto;
     text-transform: uppercase;
@@ -108,6 +108,16 @@
     text-decoration: none;
 }
 
+.contenedor-header .link-cerrar-sesion{
+    font-weight: 600;
+    color: #dde1e9;
+    transition: all 0.3s ease;
+}
+
+.contenedor-header .link-cerrar-sesion:hover{
+   color: #dd0909
+}
+
 .nav-responsive {
     color: #F2A922;
     font-size: 1.6rem; 
@@ -181,20 +191,24 @@ footer li {
     transform: scale(1.1);
 }
 
-@media (min-width: 1280px) and (max-width: 1450px) {
+@media (min-width: 1100px) and (max-width: 1350px) {
     .contenedor-seccion-vacantes{
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
     .contenedor-header header nav{
-        gap: 1.5rem
+        gap: 1.2rem !important;
+    }
+    .contenedor-header header {
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
 
     
 }
 
 
-@media (max-width: 1280px) { 
+@media (max-width: 1100px) { 
     .contenedor-header header {
         padding-left: 0rem;
         padding-right: 0rem;

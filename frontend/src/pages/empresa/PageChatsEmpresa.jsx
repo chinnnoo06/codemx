@@ -254,6 +254,8 @@ export const PageChatsEmpresa = ({ empresa }) => {
                 }),
             });
 
+            console.log(mensajeSeleccionado)
+
             const result = await response.json();
             if (result.success) {
                 alert("Reporte enviado correctamente.");

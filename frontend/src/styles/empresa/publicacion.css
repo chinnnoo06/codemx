@@ -28,7 +28,7 @@
   height: auto; 
   max-width: 450px;
   min-height: 250px;
-  max-height: 500px;
+  max-height: 420px;
   overflow: hidden; 
   display: flex;
   justify-content: center;
@@ -299,8 +299,32 @@
   height: 7rem;
 }
 
+/* Estilos para la descripción */
+.descripcion {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.ver-mas {
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+
+}
+
+.ver-mas:hover {
+  color: #504e4efe;
+}
+
 
 @media (max-width: 767px) {
+  
+  .seccion-usuario .img-perfil{
+    width: 2.5rem; 
+    height: 2.5rem; 
+  }
 
   .usuario-reaccion-nombre{
     font-size: 0.8rem;

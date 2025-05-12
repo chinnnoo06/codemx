@@ -49,6 +49,8 @@ export const PageCrearCuenta = () => {
         </header>
       </div>
 
+
+
       {/* Render Condicional */}
       {estadoRegistro === 'seleccion' ? (
         <div className="container-bienvenida text-center">
@@ -87,6 +89,7 @@ export const PageCrearCuenta = () => {
           <SeccionVerificacionCorreo email={emailUsuario}  reenviarCorreo={reenviarCorreo}/>
         </div>
       )}
+    
     </>
   );
 };

@@ -111,7 +111,6 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             });
             const result = await response.json(); 
             if (result.success) {
-                alert(result.message); 
                 window.location.href = 'https://www.codemx.net/codemx/frontend/build';
             } else {
                 alert('Error al cerrar la sesión: ' + result.error);

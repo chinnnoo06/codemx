@@ -134,7 +134,6 @@ export const RutasEmpresa = () => {
         return <LoadingSpinner></LoadingSpinner> 
     }
 
-    console.log(tieneMensajesNoLeidos)
     return (
         <>
             {/* Header */}

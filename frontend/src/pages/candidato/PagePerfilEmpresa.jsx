@@ -158,6 +158,8 @@ export const PagePerfilEmpresa = ({candidato}) => {
         return <LoadingSpinner></LoadingSpinner> 
     }
 
+    console.log(publicaciones)
+
   return (
         <>
             {seccionActiva === "perfil-publicaciones" && (
