@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ORDER BY verificacion_usuarios.Fecha_Registro DESC
     ";
 
-    $resultado = mysqli_query($conexion, $consultaSiguiendo);
+    $resultado = mysqli_query($conexion, $consulta);
 
     if (!$resultado) {
         echo json_encode(['error' => 'Error en la consulta SQL: ' . mysqli_error($conexion)]);
