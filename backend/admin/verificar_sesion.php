@@ -32,7 +32,7 @@ try {
 
     $filaSesion = mysqli_fetch_assoc($resultadoSesion);
 
-    if (!$filaSesion || !$filaSesion['Candidato_ID']) {
+    if (!$filaSesion || !$filaSesion['Administrador_ID']) {
         echo json_encode(['success' => false, 'error' => 'Sesión inválida o expirada.']);
         exit();
     } else {
