@@ -37,19 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (mysqli_num_rows($resultado) > 0) {
-        $listaDeEmpresas = [];
+        $listaDeSolicitudes= [];
         while ($fila = mysqli_fetch_assoc($resultado)) {
-            $listaDeEmpresas[] = $fila;
+            $listaDeSolicitudes[] = $fila;
         }
 
-        $cantidadDeEmpresas = count($listaDeEmpresas);
-
         echo json_encode([
-            'cantidad' => $cantidadDeEmpresas,
-            'empresas' => $listaDeEmpresas
+            'solicitudes' => $listaDeSolicitudes
         ]);
     } else {
-        echo json_encode(['cantidad' => 0, 'empresas' => [], 'error' => 'El candidato no sigue a ninguna empresa.']);
+        echo json_encode(['solicitudes' => [], 'error' => 'No hay solicitudes']);
     }
 } else {
     http_response_code(405); 
