@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $consulta = "
-        SELECT verificacion_usuarios.ID, verificacion_usuarios.Empresa_ID, verificacion_usuarios.Correo_Verificado, verificacion_usuarios.RFC_Verificado, verificacion_usuarios.Fecha_Registro, 
+        SELECT verificacion_usuarios.ID, verificacion_usuarios.Empresa_ID, verificacion_usuarios.Correo_Verificado, verificacion_usuarios.RFC_Verificado, verificacion_usuarios.RFC_Rechazado, verificacion_usuarios.Fecha_Registro, 
         empresa.Nombre, empresa.Descripcion, empresa.Telefono, empresa.Email, empresa.Logo, empresa.RFC, sector.Sector, tamanio.Tamanio
         FROM verificacion_usuarios
         INNER JOIN empresa ON verificacion_usuarios.Empresa_ID = empresa.ID
