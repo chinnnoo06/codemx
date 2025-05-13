@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'rfc' => $fila['RFC']
             ]);
         } else {
+            // Si no se encontraron datos, se devuelve un error
             echo json_encode(['error' => 'No se encontraron datos para la empresa especificada.']);
         }
     } else {
