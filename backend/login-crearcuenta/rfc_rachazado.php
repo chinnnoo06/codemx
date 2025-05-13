@@ -31,35 +31,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FROM verificacion_usuarios
     INNER JOIN empresa ON verificacion_usuarios.Empresa_ID = empresa.ID
     WHERE verificacion_usuarios.Empresa_ID = '$idEmpresa'";
-    
-    // Preparar y ejecutar la consulta
-    $stmt = mysqli_prepare($conexion, $consulta);
-    
-    // Asegúrate de que el parámetro `userId` esté presente
-    if (isset($data['userId'])) {
-        mysqli_stmt_bind_param($stmt, "i", $data['userId']); // 'i' para entero (userId)
-        mysqli_stmt_execute($stmt);
-        
-        $resultado = mysqli_stmt_get_result($stmt);
-        
-        if ($resultado) {
-            // Obtener los datos de la consulta
-            $row = mysqli_fetch_assoc($resultado);
-            
-            // Devolver los resultados en formato JSON
+
+    // Ejecutar la consulta
+    $resultado = mysqli_query($conexion, $consulta);
+
+    // Verificar si la consulta se ejecutó correctamente
+    if ($resultado) {
+        // Obtener el resultado en un array asociativo
+        $fila = mysqli_fetch_assoc($resultado);
+
+        // Verificar si hay datos
+        if ($fila) {
             echo json_encode([
-                'rfc' => $row['RFC'], // RFC de la empresa
-                'rfcRechazado' => $row['RFC_Rechazado'] // Estado de RFC rechazado
+                'rfcRechazado' => $fila['RFC_Rechazado'],
+                'rfc' => $fila['RFC']
             ]);
         } else {
-            echo json_encode(['error' => 'No se encontró el RFC o hubo un problema al ejecutar la consulta.']);
+            echo json_encode(['error' => 'No se encontraron datos para la empresa especificada.']);
         }
     } else {
-        echo json_encode(['error' => 'Faltan parámetros.']);
-        http_response_code(400); // Bad Request
+        // En caso de error en la consulta
+        echo json_encode(['error' => 'Error al ejecutar la consulta.']);
     }
 
-    mysqli_stmt_close($stmt);
 } else {
     http_response_code(405); // Method Not Allowed
     echo json_encode(['error' => 'El método no está permitido.']);
