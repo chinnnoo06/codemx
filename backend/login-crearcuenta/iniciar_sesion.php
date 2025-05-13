@@ -218,7 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => true, 'tipo' => $fila_usuario['tipo'], 'session_id' => $session_id]);
                 exit();
             } elseif ($fila_usuario['Correo_Verificado'] == 1 && $fila_usuario['Estado_Cuenta'] == 1 && $fila_usuario['RFC_Verificado'] == 0) {
-                echo json_encode(['success' => true, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar RFC.']);
+                // Insertar sesión en la tabla
+                $user_id = $fila_usuario['ID'];
+                echo json_encode(['success' => true, 'redirect' => '/falta-verificar-rfc', 'message' => 'Falta verificar RFC.', 'idEmpresa' => $user_id]);
                 exit();
             } elseif ($fila_usuario['Correo_Verificado'] == 0 && $fila_usuario['Estado_Cuenta'] == 1 && $fila_usuario['RFC_Verificado'] == 0) {
                 // Actualizar fecha de expiración del token
