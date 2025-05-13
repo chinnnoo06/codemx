@@ -29,20 +29,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['userId']);
     $nuevoRfc = mysqli_real_escape_string($conexion, $data['rfc']);
 
-    // Consulta SQL para actualizar el RFC en la base de datos
-    $consulta = "
-        UPDATE empresa
-        SET RFC = '$nuevoRfc'
-        WHERE ID = '$idEmpresa'
-    ";
+    // Iniciar la transacción para asegurarse de que ambas consultas se ejecuten correctamente
+    mysqli_begin_transaction($conexion);
 
-    // Ejecutar la consulta
-    if (mysqli_query($conexion, $consulta)) {
+    try {
+        // Consulta para actualizar el RFC en la tabla empresa
+        $consultaRFC = "
+            UPDATE empresa
+            SET RFC = '$nuevoRfc'
+            WHERE ID = '$idEmpresa'
+        ";
+
+        // Ejecutar la consulta
+        if (!mysqli_query($conexion, $consultaRFC)) {
+            throw new Exception("Error al actualizar RFC en la tabla empresa.");
+        }
+
+        // Consulta para cambiar RFC_Rechazado a 0 en la tabla verificacion_usuarios
+        $consultaRFCRechazado = "
+            UPDATE verificacion_usuarios
+            SET RFC_Rechazado = 0
+            WHERE Empresa_ID = '$idEmpresa'
+        ";
+
+        // Ejecutar la consulta
+        if (!mysqli_query($conexion, $consultaRFCRechazado)) {
+            throw new Exception("Error al actualizar RFC_Rechazado en la tabla verificacion_usuarios.");
+        }
+
+        // Confirmar la transacción
+        mysqli_commit($conexion);
+
         // Responder con éxito
-        echo json_encode(['success' => true, 'message' => 'RFC actualizado correctamente.']);
-    } else {
-        // Si ocurre un error con la consulta
-        echo json_encode(['error' => 'Error al actualizar el RFC.']);
+        echo json_encode(['success' => true, 'message' => 'RFC actualizado correctamente y RFC_Rechazado restablecido.']);
+    } catch (Exception $e) {
+
+        // Responder con error
+        echo json_encode(['error' => $e->getMessage()]);
     }
 
 } else {
