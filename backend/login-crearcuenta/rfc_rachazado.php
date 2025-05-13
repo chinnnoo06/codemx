@@ -17,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idEmpresa'])) {
+    if (!isset($data['userId'])) {
         echo json_encode(['error' => 'Faltan los parámetros.']);
         http_response_code(400); 
         exit();
     }
 
-    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['userId']);
 
     // Consulta para obtener RFC y RFC_Rechazado
     $consulta = "
