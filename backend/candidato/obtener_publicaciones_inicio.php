@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $empresas = $data['empresas']; // Empresas a obtener las publicaciones
     $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
     $page = (int)$data['page'];
-    $limit = 25;  // Número de vacantes a devolver por página
+    $limit = 5;  // Número de vacantes a devolver por página
     $offset = ($page - 1) * $limit; // Calcular el offset según la página
 
     // Consultas para obtener las publicaciones de las empresas que sigue el candidato
