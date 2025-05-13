@@ -8,6 +8,9 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+loadEnv(__DIR__ . '/../../.env');
+
+
 // Encabezados para habilitar CORS
 $allowed_origin = 'https://www.codemx.net';
 header("Access-Control-Allow-Origin: $allowed_origin");
