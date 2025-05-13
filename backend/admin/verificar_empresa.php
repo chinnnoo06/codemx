@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $emailDestino = mysqli_real_escape_string($conexion, $data['email']);
 
     // Actualizamos el campo RFC_Verificado a 1 para la empresa proporcionada
-    $consulta = "UPDATE verificacon_usuarios SET RFC_Verificado = 1, Fecha_Actualizacion = '$fechaActual' WHERE Empresa_ID = '$idEmpresa'";
+    $consulta = "UPDATE verificacion_usuarios SET RFC_Verificado = 1, Fecha_Actualizacion = '$fechaActual' WHERE Empresa_ID = '$idEmpresa'";
 
     $resultado = mysqli_query($conexion, $consulta);
 
