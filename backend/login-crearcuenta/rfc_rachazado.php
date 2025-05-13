@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     SELECT verificacion_usuarios.RFC_Rechazado, empresa.RFC 
     FROM verificacion_usuarios
     INNER JOIN empresa ON verificacion_usuarios.Empresa_ID = empresa.ID
-    WHERE verificacion_usuarios.Empresa_ID = ?";
+    WHERE verificacion_usuarios.Empresa_ID = '$idEmpresa'";
     
     // Preparar y ejecutar la consulta
     $stmt = mysqli_prepare($conexion, $consulta);
