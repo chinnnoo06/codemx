@@ -41,10 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             candidato.Tiempo_Restante,
             modalidad_trabajo.Modalidad AS Modalidad_Trabajo_Nombre,
             candidato.CV,
-            verificacion_usuario.Correo_Verificada,
-            verificacion_usuario.Estado_Cuenta,
-            verificacion_usuario.Strikes,
-            verificacion_usuario.Fecha_Registro,
+            verificacion_usuarios.Correo_Verificado,
+            verificacion_usuarios.Estado_Cuenta,
+            verificacion_usuarios.Strikes,
+            verificacion_usuarios.Fecha_Registro
         FROM candidato
         INNER JOIN estado ON candidato.Estado = estado.ID
         INNER JOIN sexo ON candidato.Sexo = sexo.ID
