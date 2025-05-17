@@ -40,12 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             universidad.Nombre AS Universidad_Nombre,
             candidato.Tiempo_Restante,
             modalidad_trabajo.Modalidad AS Modalidad_Trabajo_Nombre,
-            candidato.CV
+            candidato.CV,
+            verificacion_usuario.Correo_Verificada,
+            verificacion_usuario.Estado_Cuenta,
+            verificacion_usuario.Strikes,
+            verificacion_usuario.Fecha_Registro,
         FROM candidato
         INNER JOIN estado ON candidato.Estado = estado.ID
         INNER JOIN sexo ON candidato.Sexo = sexo.ID
         INNER JOIN universidad ON candidato.Universidad = universidad.ID
         INNER JOIN modalidad_trabajo ON candidato.Modalidad_Trabajo = modalidad_trabajo.ID
+        INNER JOIN verificacion_usuarios ON candidato.ID = verificacion_usuarios.Candidato_ID
         WHERE candidato.ID = $idCandidato
         LIMIT 1
     ";
