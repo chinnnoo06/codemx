@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             verificacion_usuarios.Fecha_Registro,
             candidato.Nombre,
             candidato.Apellido,
-            candidato.Fotografia
+            candidato.Fotografia,
+            candidato.Email
         FROM verificacion_usuarios
         INNER JOIN candidato ON verificacion_usuarios.Candidato_ID = candidato.ID
         ORDER BY verificacion_usuarios.Fecha_Registro DESC
