@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             verificacion_usuarios.Empresa_ID,
             verificacion_usuarios.Correo_Verificado,
             verificacion_usuarios.Estado_Cuenta,
+            verificacion_usuarios.RFC_Verificado,
             verificacion_usuarios.Strikes,
             verificacion_usuarios.Fecha_Registro,
             empresa.Nombre,
