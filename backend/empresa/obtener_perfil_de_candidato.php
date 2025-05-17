@@ -80,7 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'universidad' => $fila['Universidad_Nombre'],
             'tiempo_restante' => $fila['Tiempo_Restante'],
             'modalidad_trabajo' => $fila['Modalidad_Trabajo_Nombre'],
-            'cv' => $fila['CV']
+            'cv' => $fila['CV'],
+            'Correo_Verificado' => $fila['Correo_Verificado'],
+            'Estado_Cuenta' => $fila['Estado_Cuenta'],
+            'Strikes' => $fila['Strikes'],
+            'Fecha_Registro' => $fila['Fecha_Registro'],
         ]);
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró al candidato.']);
