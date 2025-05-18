@@ -15,28 +15,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Obtener los datos de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato']) || !isset($data['nuevoEstado'])) {
-        echo json_encode(['success' => false, 'error' => 'Falta el ID o estado.']);
+    // Validación de estado
+    if (!isset($data['nuevoEstado'])) {
+        echo json_encode(['success' => false, 'error' => 'Falta el nuevo estado.']);
         http_response_code(400);
         exit();
     }
 
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']); 
     $estado = mysqli_real_escape_string($conexion, $data['nuevoEstado']);
-  
-    $consulta = "UPDATE verificacion_usuarios SET Estado_Cuenta = '$estado' WHERE Candidato_ID = '$idCandidato'";
 
-    if (mysqli_query($conexion, $consulta)) {
-        echo json_encode(['success' => 'Estado de cuenta editado corrctamente']);
+    // Determinar si se usará Candidato_ID o Empresa_ID
+    if (isset($data['idCandidato'])) {
+        $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+        $consulta = "UPDATE verificacion_usuarios SET Estado_Cuenta = '$estado' WHERE Candidato_ID = '$idCandidato'";
+    } elseif (isset($data['idEmpresa'])) {
+        $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+        $consulta = "UPDATE verificacion_usuarios SET Estado_Cuenta = '$estado' WHERE Empresa_ID = '$idEmpresa'";
     } else {
-        die(json_encode(['error' => 'Error al guardar en la base de datos: ' . mysqli_error($conexion)]));
+        echo json_encode(['success' => false, 'error' => 'Falta el ID de candidato o empresa.']);
+        http_response_code(400);
+        exit();
+    }
+
+    // Ejecutar la consulta
+    if (mysqli_query($conexion, $consulta)) {
+        echo json_encode(['success' => true, 'message' => 'Estado de cuenta actualizado correctamente.']);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Error en la base de datos: ' . mysqli_error($conexion)]);
+        http_response_code(500);
     }
 
 } else {
-    http_response_code(405); 
+    http_response_code(405);
     echo json_encode(['error' => 'El método no está permitido.']);
 }
 ?>
