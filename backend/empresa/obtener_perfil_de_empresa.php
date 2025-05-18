@@ -36,7 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             empresa.Email,
             empresa.Logo,
             empresa.Fecha_Creacion,
-            empresa.RFC
+            empresa.RFC,
+            verificacion_usuarios.Correo_Verificado,
+            verificacion_usuarios.RFC_Verificado,
+            verificacion_usuarios.Estado_Cuenta,
+            verificacion_usuarios.Strikes,
+            verificacion_usuarios.Fecha_Registro
         FROM empresa
         INNER JOIN sector ON empresa.Sector = sector.ID
         INNER JOIN tamanio ON empresa.Tamanio = tamanio.ID
@@ -66,6 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'logo' => $fila['Logo'],
             'fecha_creacion' => $fila['Fecha_Creacion'],
             'rfc' => $fila['RFC'],
+            'Correo_Verificado' => $fila['Correo_Verificado'],
+            'RFC_Verificado' => $fila['RFC_Verificado'],
+            'Estado_Cuenta' => $fila['Estado_Cuenta'],
+            'Strikes' => $fila['Strikes'],
+            'Fecha_Registro' => $fila['Fecha_Registro'],
         ]);
     } else {
         echo json_encode(['success' => false, 'error' => 'No se encontró al candidato.']);
