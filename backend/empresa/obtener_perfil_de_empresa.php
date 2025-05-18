@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM empresa
         INNER JOIN sector ON empresa.Sector = sector.ID
         INNER JOIN tamanio ON empresa.Tamanio = tamanio.ID
+        INNER JOIN verificacion_usuarios ON empresa.ID = verificacion_usuarios.Empresa_ID
         WHERE empresa.ID = $idEmpresa
         LIMIT 1
     ";
