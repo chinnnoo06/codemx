@@ -8,9 +8,16 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Cargar variables de entorno
 loadEnv(__DIR__ . '/../../.env');
 
-header("Access-Control-Allow-Origin: https://www.codemx.net");
+if (!getenv('SMTP_HOST')) {
+    die('Error: No se pudieron cargar las variables de entorno');
+}
+
+// Encabezados CORS
+$allowed_origin = 'https://www.codemx.net';
+header("Access-Control-Allow-Origin: $allowed_origin");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -50,26 +57,7 @@ try {
         exit();
     }
 
-    // Insertar notificación
-    $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que tu vacante '$nombreVacante' ha sido eliminada ya que infringe las normativas de la plataforma.";
-    $consultaNotificacion = "
-        INSERT INTO notificaciones (
-            Empresa_ID, 
-            Tipo_Evento, 
-            Descripcion, 
-            Fecha_Creacion
-        ) VALUES (
-            '$idEmpresa', 
-            '$tipoEvento', 
-            '$descripcion', 
-            '$fechaCreacion'
-        )
-    ";
 
-    if (!mysqli_query($conexion, $consultaNotificacion)) {
-        echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . mysqli_error($conexion)]);
-        exit();
-    }
 
 
     echo json_encode(['success' => true, 'message' => 'Vacante eliminada correctamente.']);
