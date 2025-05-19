@@ -68,12 +68,12 @@ try {
         }
 
         $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Empresa_ID = '$idEmpresa'";
-        mysqli_query($conexion, $consultaStrikes);
-
+        
         if (!mysqli_query($conexion, $consultaStrikes)) {
-            echo json_encode(['success' => false, 'error' => 'Error al registrar strike: ' . $stmt->error]);
+            echo json_encode(['success' => false, 'error' => 'Error al registrar strike: ' . mysqli_error($conexion)]);
             exit();
         }
+
 
          // Enviar correo
         try {
