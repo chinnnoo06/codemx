@@ -8,27 +8,21 @@ require '../phpmailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Cargar variables de entorno
 loadEnv(__DIR__ . '/../../.env');
 
-// Configuración de CORS
-$allowed_origin = 'https://www.codemx.net';
-header("Access-Control-Allow-Origin: $allowed_origin");
+header("Access-Control-Allow-Origin: https://www.codemx.net");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Manejo del método OPTIONS (Preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit();
 }
 
 try {
-    // Obtener los datos de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Validación
     if (
         !isset($data['idVacante']) || 
         !isset($data['nombreEmpresa']) || 
@@ -41,7 +35,6 @@ try {
         exit();
     }
 
-    // Escapar valores
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
@@ -72,11 +65,15 @@ try {
             '$fechaCreacion'
         )
     ";
-    mysqli_query($conexion, $consultaNotificacion); // incluso si falla, no detenemos el proceso
+
+    if (!mysqli_query($conexion, $consultaNotificacion)) {
+        echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . mysqli_error($conexion)]);
+        exit();
+    }
 
     // Enviar correo
-    $mail = new PHPMailer(true);
     try {
+        $mail = new PHPMailer(true);
         $mail->isSMTP();
         $mail->Host = getenv('SMTP_HOST');
         $mail->SMTPAuth = true;
@@ -104,17 +101,14 @@ try {
 
         $mail->send();
     } catch (Exception $e) {
-        error_log("Error al enviar correo a $emailDestino: " . $mail->ErrorInfo);
+        echo json_encode(['success' => false, 'error' => 'La vacante fue eliminada, pero el correo falló: ' . $mail->ErrorInfo]);
+        exit();
     }
 
-    echo json_encode([
-        'success' => true, 
-        'message' => 'Vacante eliminada correctamente.'
-    ]);
+    echo json_encode(['success' => true, 'message' => 'Vacante eliminada correctamente.']);
     exit();
 
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
     exit();
 }
-?>
