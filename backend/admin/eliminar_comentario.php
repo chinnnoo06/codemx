@@ -44,7 +44,7 @@ try {
     $tipoEvento = 'eliminacion_comentario';
     $fechaCreacion = date('Y-m-d H:i:s');
 
-    // Obtener email desde la base de datos
+    // Obtener email
     $emailDestino = null;
     if ($idCandidato) {
         $queryEmail = mysqli_query($conexion, "SELECT Email FROM candidato WHERE ID = '$idCandidato' LIMIT 1");
@@ -72,7 +72,6 @@ try {
 
     // Insertar notificación
     $descripcion = "Hola $nombreUsuario, tu comentario fue eliminado por infringir nuestras normas: \"$contenidoComentario\"";
-
     $camposNotificacion = "Tipo_Evento, Descripcion, Fecha_Creacion";
     $valoresNotificacion = "'$tipoEvento', '$descripcion', '$fechaCreacion'";
 
@@ -90,9 +89,14 @@ try {
         exit();
     }
 
-    $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Empresa_ID = '$idEmpresa'";
-    
-    if (!mysqli_query($conexion, $consultaStrikes)) {
+    // Aumentar strikes
+    if ($idEmpresa) {
+        $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Empresa_ID = '$idEmpresa'";
+    } elseif ($idCandidato) {
+        $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Candidato_ID = '$idCandidato'";
+    }
+
+    if (isset($consultaStrikes) && !mysqli_query($conexion, $consultaStrikes)) {
         echo json_encode(['success' => false, 'error' => 'Error al registrar strike: ' . mysqli_error($conexion)]);
         exit();
     }
