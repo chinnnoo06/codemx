@@ -71,39 +71,6 @@ try {
         exit();
     }
 
-    // Enviar correo
-    try {
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = getenv('SMTP_HOST');
-        $mail->SMTPAuth = true;
-        $mail->Username = getenv('SMTP_USERNAME');
-        $mail->Password = getenv('SMTP_PASSWORD');
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = getenv('SMTP_PORT');
-
-        $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-        $mail->addAddress($emailDestino);
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Vacante eliminada por normativa';
-        $mail->Body = "
-            <p style='font-size: 16px;'>Hola <strong>$nombreEmpresa</strong>,</p>
-            <p style='font-size: 15px;'>Queremos informarte que tu vacante <strong>$nombreVacante</strong> ha sido eliminada ya que infringe las normativas de la plataforma.</p>
-            <p style='margin-top: 20px;'>
-                <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
-                style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
-                Ir a CODEMX
-                </a>
-            </p>
-            <p style='font-size: 13px; color: #888;'>Este correo es automático. No respondas a esta dirección.</p>
-        ";
-
-        $mail->send();
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => 'La vacante fue eliminada, pero el correo falló: ' . $mail->ErrorInfo]);
-        exit();
-    }
 
     echo json_encode(['success' => true, 'message' => 'Vacante eliminada correctamente.']);
     exit();
