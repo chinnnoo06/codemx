@@ -16,51 +16,53 @@ export const Seccion1PageLogin = () => {
   };
 
   const enviar = async (e) => {
-  e.preventDefault(); 
-  setIsLoading(true);
+      e.preventDefault(); 
+      setIsLoading(true);
 
-  try {
-    const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/iniciar_sesion.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({ 
-        Correo_Electronico: email,
-        Password: password,
-      }),
-    });
+      try {
+        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/iniciar_sesion.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ 
+            Correo_Electronico: email,
+            Password: password,
+          }),
+        });
 
-    const textResponse = await response.text(); // Obtén la respuesta como texto primero
-    console.log("Respuesta del servidor:", textResponse); // Muestra la respuesta en la consola
+        const textResponse = await response.text(); // Obtén la respuesta como texto primero
+        const result = JSON.parse(textResponse); // Ahora parseamos el JSON
 
-    const result = JSON.parse(textResponse); // Ahora parseamos el JSON
+        if (result.success) {
+          if (result.redirect) {
+            // Si el redireccionamiento es hacia /falta-verificar-rfc, se agrega el user_id
+            if (result.redirect.includes('/falta-verificar-rfc')) {
+              navigate(result.redirect, { state: { user_id: result.idEmpresa } });
+            } else {
+              navigate(result.redirect); // Redirige según el valor de redirect recibido del backend
+            }
+          } else {
+            // Obtén la clave secreta del archivo .env
+            const secretKey = process.env.REACT_APP_SECRET_KEY;
 
-    if (result.success) {
-      if (result.redirect) {
-        navigate(result.redirect); // Redirige según el valor de redirect recibido del backend
-      } else {
-        // Obtén la clave secreta del archivo .env
-        const secretKey = process.env.REACT_APP_SECRET_KEY;
+            // Cifra el session_id con la clave secreta
+            const encryptedSessionId = CryptoJS.AES.encrypt(result.session_id, secretKey).toString();
 
-        // Cifra el session_id con la clave secreta
-        const encryptedSessionId = CryptoJS.AES.encrypt(result.session_id, secretKey).toString();
-
-        // Guarda el session_id cifrado en localStorage
-        localStorage.setItem('session_id', encryptedSessionId);
-        window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
+            // Guarda el session_id cifrado en localStorage
+            localStorage.setItem('session_id', encryptedSessionId);
+            window.location.href = `/codemx/frontend/build/usuario-${result.tipo}/inicio-${result.tipo}`;
+          }
+        } else {
+          setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');
+        }
+      } catch (error) {
+        // Mostrar el error específico si está disponible en el backend
+        const errorMessage = error.message || 'Hubo un problema con el servidor. Intenta más tarde.';
+        setMensaje(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      setMensaje(result.message || result.error || 'Error desconocido. Intenta nuevamente.');
-    }
-  } catch (error) {
-    // Mostrar el error específico si está disponible en el backend
-    const errorMessage = error.message || 'Hubo un problema con el servidor. Intenta más tarde.';
-    console.log(error)
-    setMensaje(errorMessage);
-  } finally {
-    setIsLoading(false);
-  }
   };
   
   return (

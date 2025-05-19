@@ -1,14 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import '../styles/header-footer.css';
 import CryptoJS from "crypto-js";
-
-import { PageInicioAdmin } from '../pages/admin/PageInicioAdmin';
 import { PageVerificacionAdmin } from '../pages/admin/PageVerificacionAdmin';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { PageGestionUsuariosAdmin } from '../pages/admin/PageGestionUsuariosAdmin';
+import { PagePerfilCandidato } from '../pages/admin/PagePerfilCandidato';
+import { PagePerfilEmpresa } from '../pages/admin/PagePerfilEmpresa';
+import { PageGestionPublicacionesAdmin } from '../pages/admin/PageGestionPublicacionesAdmin';
+import { PageGestionVacantesAdmin } from '../pages/admin/PageGestionVacantesAdmin';
 
 export const RutasAdmin = () => {
-
+    const [isLoading, setIsLoading] = useState(true); 
     const [menuVisible, setMenuVisible] = useState(false); 
     const location = useLocation();
 
@@ -17,11 +21,52 @@ export const RutasAdmin = () => {
         window.scrollTo(0, 0); 
     }, [location]);
 
+   useEffect(() => {
+        const fetchData = async () => {
+            const secretKey = process.env.REACT_APP_SECRET_KEY; // Clave secreta definida en tu archivo .env
+            const encryptedSessionId = localStorage.getItem("session_id"); // Obtén el session_id cifrado
+
+            if (!encryptedSessionId) {
+                console.error("No se encontró el session_id en el localStorage.");
+                return;
+            }
+
+            // Desencripta el session_id
+            const sessionId = CryptoJS.AES.decrypt(encryptedSessionId, secretKey).toString(CryptoJS.enc.Utf8);
+
+            try {
+                // Realiza la solicitud al backend enviando el session_id desencriptado
+                const response = await fetch("https://www.codemx.net/codemx/backend/admin/verificar_sesion.php", {
+                    method: "POST",
+                    body: JSON.stringify({ session_id: sessionId }), 
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    alert("Necesitas iniciar sesión");
+                    window.location.href = `/codemx/frontend/build/iniciar-sesion`;
+                    setIsLoading(false);
+                } 
+            } catch (error) {
+                console.error("Error al verificar la sesion del administrador:", error);
+                setIsLoading(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
 
     const toggleMenu = () => {
       setMenuVisible(!menuVisible);
     };
 
+    if (isLoading) {
+        return <LoadingSpinner></LoadingSpinner> 
+    }
 
     return (
         <>
@@ -32,9 +77,13 @@ export const RutasAdmin = () => {
                         <Link to="/usuario-administrador/inicio-administrador"> <h1>CODE<span className="txtspan">MX</span></h1> </Link> 
                     </div>
                     <nav className="nav d-md-flex">
-                        <NavLink to="/usuario-administrador/inicio-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-house"></i>
-                            Inicio
+                        <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
+                            <i className="fa-solid fa-image"></i>
+                            Gestión de Post
+                        </NavLink>
+                        <NavLink to="/usuario-administrador/gestionvacantes-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
+                            <i className="fa-solid fa-briefcase"></i>
+                            Gestión de Vacantes
                         </NavLink>
                         <NavLink to="/usuario-administrador/verificacion-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2  align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-user-check"></i>
@@ -64,7 +113,8 @@ export const RutasAdmin = () => {
                         </button>
                     </div>
                     <nav className="menu-links d-flex flex-column">
-                        <NavLink to="/usuario-administrador/inicio-administrador" onClick={toggleMenu}>Inicio</NavLink>
+                        <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" onClick={toggleMenu}>Gestión de Post</NavLink>
+                        <NavLink to="/usuario-administrador/gestionvacantes-administrador" onClick={toggleMenu}>Gestión de Vacantes</NavLink>
                         <NavLink to="/usuario-administrador/verificacion-administrador" onClick={toggleMenu}>Verificación</NavLink>
                         <NavLink to="/usuario-administrador/verificacion-administrador" onClick={toggleMenu}>Gestión Denuncias</NavLink>
                         <NavLink to="/usuario-administrador/gestionusuarios-administrador" onClick={toggleMenu}>Gestión Usuarios</NavLink>
@@ -79,10 +129,14 @@ export const RutasAdmin = () => {
             {/* Contenido Principal */}
             <section className="contenido-principal">
                 <Routes>
-                    <Route path="/" element={<PageInicioAdmin />} />
-                    <Route path="/inicio-administrador" element={<PageInicioAdmin/>} />
+                    <Route path="/" element={<PageGestionPublicacionesAdmin/>} />
+                    <Route path="/inicio-administrador" element={<PageGestionPublicacionesAdmin/>} />
+                    <Route path="/gestionpublicaciones-administrador" element={<PageGestionPublicacionesAdmin/>} />
+                    <Route path="/gestionvacantes-administrador" element={<PageGestionVacantesAdmin/>} />
                     <Route path="/verificacion-administrador" element={<PageVerificacionAdmin/>} />
-
+                    <Route path="/gestionusuarios-administrador" element={<PageGestionUsuariosAdmin/>} />
+                    <Route path="/perfil-candidato" element={<PagePerfilCandidato/>} />
+                    <Route path="/perfil-empresa" element={<PagePerfilEmpresa/>} />
                 </Routes> 
             </section>
 
@@ -96,8 +150,13 @@ export const RutasAdmin = () => {
                             <h4 className="text-uppercase mb-3">Enlaces</h4>
                             <ul className="list-unstyled">
                                 <li>
-                                    <NavLink to="/usuario-administrador/inicio-administrador" className="footer-link" >
-                                        <i className="fa-solid fa-house"></i> &nbsp; Inicio
+                                    <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" className="footer-link" >
+                                         <i className="fa-solid fa-image"></i> &nbsp; Gestión de Post
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/usuario-administrador/gestionvacantes-administrador" className="footer-link" >
+                                         <i className="fa-solid fa-briefcase"></i> &nbsp; Gestión de Vacantes
                                     </NavLink>
                                 </li>
                                 <li>

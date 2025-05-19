@@ -276,7 +276,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
                     {/* Mostrar la descripción con truncado de 100 caracteres */}
                     <div className='seccion-descripcion text-start d-flex flex-column'>
                         <p className='descripcion'>
-                            <span className='usuario-nombre'>{empresa.nombre}</span>
+                            <span className='usuario-nombre'>{empresa.nombre} </span>
                             <span style={{ whiteSpace: 'pre-wrap' }}>
                             {isExpanded ? publicacion.Contenido : publicacion.Contenido.substring(0, 100) + (publicacion.Contenido.length > 100 ? "..." : "")}
                             </span>

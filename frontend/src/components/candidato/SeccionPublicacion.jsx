@@ -233,7 +233,6 @@ export const SeccionPublicacion = ({ candidato, idCandidato, publicacion, maneja
                 state: { idEmpresa: idEmpresaPerfil}
             });
         }
-
     };
 
     const irAMiPerfil = () => {
@@ -269,6 +268,7 @@ export const SeccionPublicacion = ({ candidato, idCandidato, publicacion, maneja
                         alt="Imagen de la publicación" 
                         className="img-perfil" 
                         onClick={() => irAlPerfilEmpresa(idEmpresa)}
+                        loading="lazy" 
                     />
                     <p className='usuario-nombre m-0 align-self-center' onClick={() => irAlPerfilEmpresa(idEmpresa)}>
                         {publicacion.Empresa_Nombre}
@@ -318,7 +318,7 @@ export const SeccionPublicacion = ({ candidato, idCandidato, publicacion, maneja
             {/* Mostrar la descripción con truncado de 100 caracteres */}
             <div className='seccion-descripcion text-start d-flex flex-column'>
                 <p className='descripcion'>
-                    <span className='usuario-nombre'>{publicacion.Empresa_Nombre}</span>
+                    <span className='usuario-nombre'>{publicacion.Empresa_Nombre} </span>
                     <span style={{ whiteSpace: 'pre-wrap' }}>
                     {isExpanded ? publicacion.Contenido : publicacion.Contenido.substring(0, 100) + (publicacion.Contenido.length > 100 ? "..." : "")}
                     </span>

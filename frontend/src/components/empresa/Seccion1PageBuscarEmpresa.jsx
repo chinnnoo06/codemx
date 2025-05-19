@@ -6,13 +6,13 @@ export const Seccion1PageBuscarEmpresa = ({resultados}) => {
 
     // Función para redirigir al perfil del candidato
     const irAlPerfilCandidato = (idCandidato) => {
-        navigate(`/usuario-candidato/perfil-candidato`, { 
+        navigate(`/usuario-empresa/perfil-candidato`, { 
             state: { idCandidato: idCandidato }
         });
     };
 
     const irAlPerfilEmpresa = (idEmpresaPerfil) => {
-        navigate(`/usuario-candidato/perfil-empresa`, { 
+        navigate(`/usuario-empresa/perfil-empresa`, { 
             state: { idEmpresa: idEmpresaPerfil}
         });
     };

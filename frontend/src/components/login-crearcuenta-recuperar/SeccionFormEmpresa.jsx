@@ -160,8 +160,10 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
     const descripcion = form.querySelector('#descripcion');
     if (descripcion && descripcion.value.trim() === '') {
       stepErrors['descripcion'] = 'Este campo es obligatorio';
+    } else if (descripcion && descripcion.value.trim().length < 100) {
+      stepErrors['descripcion'] = 'La descripción debe tener al menos 100 caracteres';
     }
-  
+
     if (currentStep === 1) {
       // Validar correo electrónico
       const email = formData.email.trim();
@@ -252,7 +254,7 @@ const Paso1 = ({ errors, formData, manejarValorInput, visibilidadPassword, visib
 
     <div className="mb-3">
       <label htmlFor="descripcion" className="form-label">Descripción <span className="text-danger">*</span></label>
-      <textarea id="descripcion" name="descripcion" className="form-control"  maxLength={250} value={formData.descripcion} onChange={manejarValorInput} required/>
+      <textarea id="descripcion" name="descripcion" className="form-control" minLength={100} maxLength={250} value={formData.descripcion} onChange={manejarValorInput} required/>
       {errors.descripcion && <small className="text-danger">{errors.descripcion}</small>}
     </div>
 

@@ -112,7 +112,6 @@ export const PageRecomendacionesCandidato = ({candidato}) => {
     return <LoadingSpinner />; 
   }
 
-  console.log(vacantes)
   return (
     <div className='contenedor-seccion-vacantes d-flex flex-column align-items-center w-100'>
       {seccionActiva === "vacantes-recomendadas" && (

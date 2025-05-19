@@ -1,0 +1,164 @@
+.contenedor-seccion-gestionusuarios {
+    width: 100%;
+    min-height: 80vh;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.fila-foto img{
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+}
+
+.fila-info h4,
+.fila-info h5{
+    color: #0B1C26;
+}
+
+.contenedor-listausuarios,
+.contenedor-sin-listausuarios{
+
+    width: 100%;
+}
+
+.sin-usuarios{
+    margin-top: 6rem;
+}
+
+.datos span:not(:last-child)::after {
+    content: " · ";
+    color: #6c757d;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.usuario:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px; 
+    transition: transform 0.3s ease; ;
+}
+
+.usuario:hover{
+    transform: scale(1.01); 
+    cursor: pointer;
+}
+
+
+.usuario {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.datos {
+    display: flex;
+    gap: 5px; 
+}
+
+.contenedor-sin-usuarios{
+    padding: 0;
+}
+
+.icono-usuarios {
+    font-size: 5rem; 
+    color: #ccc; 
+}
+
+.texto-no-usuarios {
+    font-size: 1.5rem; 
+    color: #0B1C26;  
+}
+
+
+
+@media (min-width: 767px) and (max-width: 1280px) {
+    .contenedor-seccion-listausuarios{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .fila-foto img{
+        width: 5rem;
+        height: 5rem;
+    }
+    
+    .fila-info h4 {
+        padding-top: 1rem;
+        font-size: 1rem;
+    }
+    
+    .fila-info h5 {
+        font-size: 0.9rem;
+    }
+
+    
+    
+    .fila-info .datos span {
+        font-size: 0.8rem;
+    }
+    
+}
+
+@media (max-width: 767px) { 
+    .contenedor-seccion-listausuarios{
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+   
+    .usuario {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .fila-foto {
+        width: 100%;
+    }
+
+    .fila-info {
+        width: 100%;
+    }
+
+    .datos {
+        flex-wrap: wrap;
+    }
+
+    .fila-foto img{
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .fila-info h4 {
+        padding-top: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .fila-info h5 {
+        font-size: 0.8rem;
+    }
+    
+    .fila-info .datos span {
+        font-size: 0.7rem;
+    }
+
+    .icono-usuarios {
+        font-size: 3rem; 
+    }
+    
+    .texto-no-usuarios{
+        font-size: 1rem; 
+        font-weight: 600; 
+    }
+
+    .btn-publicar-vacante{
+        font-size: 0.7rem;
+        width: 7rem;
+    }
+    
+    
+
+}

@@ -4,7 +4,8 @@ import { ModalSeguidosCandidato } from './ModalSeguidosCandidato';
 import { ModalDetallesCandidato } from './ModalDetallesCandidato';
 import img from '../../resources/fondo.png';
 import '../../styles/candidato/miperfil.css';
-import { ModalCalifiaciones } from '../candidato/ModalCalifiaciones';
+import { ModalCalifiaciones } from './ModalCalifiaciones';
+
 
 export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
     const [numSeguidos, setNumSeguidos] = useState(0);
@@ -405,7 +406,7 @@ export const Seccion1PagePerfilCandidato = ({candidato, idEmpresa}) => {
                         <button className="close-button btn" onClick={() => setShowModalCalificaciones(false)}>
                             <i className="fa-solid fa-x"></i>
                         </button>
-                        <ModalCalifiaciones calificaciones={calificaciones}/>
+                        <ModalCalifiaciones calificaciones = {calificaciones}></ModalCalifiaciones>
                     </div>
                 </div>
             )}

@@ -86,11 +86,9 @@ export const Seccion2PageInicio = ({ empresa, publicaciones, fetchData, manejarM
           if (!notifResponse.ok || !notifResult.success) {
             console.error('Error al enviar notificación:', notifResult.error || 'Respuesta no exitosa');
           }
-        } else if (result.error) {
-          alert("Error al subir publicacion");
-        }
+        } 
       } catch (error) {
-        alert("Error al subir publicacion");
+        console.log("Error al subir");
       } finally {
         setIsLoading(false);
       }

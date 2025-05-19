@@ -1,0 +1,157 @@
+.contenedor-seccion-solicitudes {
+    width: 100%;
+    min-height: 80vh;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.contenedor-solicitudes,
+.contenedor-sin-solicitudes{
+
+    width: 100%;
+}
+
+.sin-solicitudes{
+    margin-top: 6rem;
+}
+
+.solicitud:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px; 
+    transition: transform 0.3s ease; ;
+}
+
+.solicitud:hover{
+    transform: scale(1.01); 
+    cursor: pointer;
+}
+
+.fila-1-solicitudes .foto-perfil-empresa{
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+}
+
+/* Estilos de la fila 2 */
+.fila-2-solicitudes .col-6 {
+    flex: 1;
+    min-width: 240px; /* Se ajusta según el contenido */
+}
+
+.info-item {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.info-value {
+    color: #212529;
+}
+
+/* Estilos para los badges */
+.badge {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 5px 10px;
+}
+
+.bg-span{
+    background-color: #0B1C26; 
+    color: #f8f9fa;
+}
+
+
+.contenedor-sin-solicitudes{
+    padding: 0;
+}
+
+.icono-solicitud {
+    font-size: 5rem; 
+    color: #ccc; 
+}
+
+.texto-no-solicitudes {
+    font-size: 1.5rem; 
+    color: #0B1C26;  
+}
+
+.foto-perfil-empresa-solicitudes{
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid #fff;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+
+}
+
+.fila-2-solicitudes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.fila-2-solicitudes > div {
+  flex: none !important;
+  min-width: auto !important;
+}
+
+
+@media (max-width: 1000px) {
+    .fila-1-solicitudes {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .fila-2-solicitudes {
+        grid-template-columns: 1fr !important;
+    }
+
+    .fila-1-solicitudes .foto-perfil-empresa {
+        width: 5rem;
+        height: 5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .d-flex.justify-content-end.gap-2 button {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    .foto-perfil-empresa-solicitudes{
+        width: 5rem;
+        height: 5rem;
+    }
+
+
+    .datos-empresa p{
+        font-size: 0.8rem;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+    }
+    .info-item {
+        padding: 8px 11px;
+    }
+
+    .info-label {
+      font-size: 0.9rem;
+    }
+
+    .info-value {
+        font-size: 0.8rem;
+    }
+
+}

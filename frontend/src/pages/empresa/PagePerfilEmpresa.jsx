@@ -153,8 +153,8 @@ export const PagePerfilEmpresa = ({empresaActiva}) => {
 
         {seccionActiva === "publicacion" && (
             <div className='contenedor-todo'>
-                <div className='seccionn container mt-5 mb-4 d-flex justify-content-center'>
-                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} empresaActiva={empresaActiva}/>
+                <div className='seccionn container mt-4 mb-4 d-flex justify-content-center'>
+                    <SeccionPublicacion empresa={empresa} publicacion={publicacionSeleccionada}  manejarOcultarSeccion={manejarOcultarSeccion} actualizarFetch={fetchData} empresaActiva={empresaActiva}/>
                 </div>
             </div>
         )}
