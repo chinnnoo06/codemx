@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $consulta = " 
         SELECT publicacion.ID, publicacion.Empresa_ID, publicacion.Img, publicacion.Contenido, 
                publicacion.Ocultar_MeGusta, publicacion.Sin_Comentarios, publicacion.Fecha_Publicacion, 
-               empresa.Logo AS Empresa_Logo, empresa.Nombre AS Empresa_Nombre 
+               empresa.Logo AS Empresa_Logo, empresa.Nombre AS Empresa_Nombre, empresa.Email 
         FROM publicacion
         INNER JOIN empresa ON publicacion.Empresa_ID = empresa.ID
         WHERE publicacion.Empresa_ID = '$idEmpresa'
