@@ -41,7 +41,7 @@ try {
     $idCandidato = isset($data['idCandidato']) ? mysqli_real_escape_string($conexion, $data['idCandidato']) : null;
     $nombreUsuario = mysqli_real_escape_string($conexion, $data['nombreUsuario']);
     $contenidoComentario = mysqli_real_escape_string($conexion, $data['contenidoComentario']);
-    $tipoEvento = 'eliminacion_comentario';
+    $tipoEvento = 'eliminacion_contenido';
     $fechaCreacion = date('Y-m-d H:i:s');
 
     // Obtener email
