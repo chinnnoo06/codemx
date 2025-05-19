@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INNER JOIN estado ON vacante.Estado = estado.ID
         INNER JOIN empresa ON vacante.Empresa_ID = empresa.ID
         LEFT JOIN postulaciones ON vacante.ID = postulaciones.Vacante_ID  
-        ORDER BY p.Fecha_Creacion DESC
+        ORDER BY vacante.Fecha_Creacion DESC
     ";
 
     // Ejecutar las consultas para obtener publicaciones de empresas seguidas
