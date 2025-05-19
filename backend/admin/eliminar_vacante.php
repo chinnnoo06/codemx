@@ -49,14 +49,27 @@ try {
                 Empresa_ID, 
                 Tipo_Evento, 
                 Descripcion, 
-                Fecha_Creacion
+                Fecha_Creacion,
+                Leida,
+                Candidato_ID,
+                Vacante_ID,
+                Chat_ID,
+                Publicacion_ID,
+                Perfil_Empresa
             ) VALUES (
                 '$idEmpresa', 
                 '$tipoEvento', 
                 '$descripcion', 
-                '$fechaCreacion'
+                '$fechaCreacion',
+                0,
+                NULL,
+                '$idVacante',
+                NULL,
+                NULL,
+                NULL
             )
         ";
+
 
         if (!mysqli_query($conexion, $consultaNotificacion)) {
             echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . mysqli_error($conexion)]);
