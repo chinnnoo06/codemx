@@ -28,9 +28,8 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (
-        !isset($data['idVacante']) || 
+        !isset($data['idPublicacion']) || 
         !isset($data['nombreEmpresa']) || 
-        !isset($data['nombreVacante']) || 
         !isset($data['emailEmpresa']) || 
         !isset($data['idEmpresa'])
     ) {
@@ -39,19 +38,18 @@ try {
         exit();
     }
 
-    $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
+    $idPublicacion = mysqli_real_escape_string($conexion, $data['idPublicacion']);
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
-    $nombreVacante = mysqli_real_escape_string($conexion, $data['nombreVacante']);
     $emailDestino = mysqli_real_escape_string($conexion, $data['emailEmpresa']);
     $tipoEvento = 'eliminacion_contenido';
     $fechaCreacion = date('Y-m-d H:i:s');
 
-    $consultaDelete = "DELETE FROM vacante WHERE ID = '$idVacante'";
+    $consultaDelete = "DELETE FROM publicacion WHERE ID = '$idPublicacion'";
 
     if (mysqli_query($conexion, $consultaDelete)) {
           // Insertar notificación
-        $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que tu vacante '$nombreVacante' ha sido eliminada ya que infringe las normativas de la plataforma.";
+        $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma.";
 
         $stmt = $conexion->prepare("
             INSERT INTO notificaciones (
@@ -84,10 +82,10 @@ try {
             $mail->addAddress($emailDestino);
 
             $mail->isHTML(true);
-            $mail->Subject = 'VACANTE ELIMINADA POR NORMATIVA';
+            $mail->Subject = 'PUBLICACION ELIMINADA POR NORMATIVA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreEmpresa</strong>,</p>
-                <p style='font-size: 15px;'>Queremos informarte que tu vacante <strong>$nombreVacante</strong> ha sido eliminada ya que infringe las normativas de la plataforma.</p>
+                <p style='font-size: 15px;'>Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma.</p>
                 <p style='margin-top: 20px;'>
                     <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                     style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
@@ -99,20 +97,20 @@ try {
 
             $mail->send();
         } catch (Exception $e) {
-            echo json_encode(['success' => false, 'error' => 'La vacante fue eliminada, pero el correo falló: ' . $mail->ErrorInfo]);
+            echo json_encode(['success' => false, 'error' => 'La publicacion fue eliminada, pero el correo falló: ' . $mail->ErrorInfo]);
             exit();
         }
 
 
         echo json_encode([
             'success' => true, 
-            'message' => 'vacante eliminada correctamente.'
+            'message' => 'Publicacion eliminada correctamente.'
         ]);
         exit();
     } else {
         echo json_encode([
             'success' => false, 
-            'error' => 'Error al eliminar la vacante: ' . mysqli_error($conexion)
+            'error' => 'Error al eliminar la publicacion: ' . mysqli_error($conexion)
         ]);
         exit();
     }
