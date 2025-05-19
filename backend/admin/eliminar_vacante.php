@@ -18,13 +18,25 @@ try {
     // Obtener los datos de la solicitud
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idVacante'])) {
-        echo json_encode(['success' => false, 'error' => 'Falta el ID de la Vacante.']);
+    if (
+        !isset($data['idVacante']) || 
+        !isset($data['nombreEmpresa']) || 
+        !isset($data['nombreVacante']) || 
+        !isset($data['emailEmpresa']) || 
+        !isset($data['idEmpresa'])
+    ) {
+        echo json_encode(['success' => false, 'error' => 'Faltan datos importantes']);
         http_response_code(400);
         exit();
     }
 
     $idVacante = mysqli_real_escape_string($conexion, $data['idVacante']);
+    $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+    $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
+    $nombreVacante = mysqli_real_escape_string($conexion, $data['nombreVacante']);
+    $emailDestino = mysqli_real_escape_string($conexion, $data['emailEmpresa']);
+    $tipoEvento = 'eliminacion_contenido';
+    $fechaCreacion = date('Y-m-d H:i:s');
 
     $consultaDelete = "DELETE FROM vacante WHERE ID = '$idVacante'";
 
