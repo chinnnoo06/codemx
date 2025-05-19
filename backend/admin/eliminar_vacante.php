@@ -44,37 +44,22 @@ try {
           // Insertar notificación
         $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que tu vacante '$nombreVacante' ha sido eliminada ya que infringe las normativas de la plataforma.";
 
-        $consultaNotificacion = "
+        $stmt = $conexion->prepare("
             INSERT INTO notificaciones (
                 Empresa_ID, 
                 Tipo_Evento, 
                 Descripcion, 
-                Fecha_Creacion,
-                Leida,
-                Candidato_ID,
-                Vacante_ID,
-                Chat_ID,
-                Publicacion_ID,
-                Perfil_Empresa
-            ) VALUES (
-                '$idEmpresa', 
-                '$tipoEvento', 
-                '$descripcion', 
-                '$fechaCreacion',
-                0,
-                NULL,
-                '$idVacante',
-                NULL,
-                NULL,
-                NULL
-            )
-        ";
+                Fecha_Creacion
+            ) VALUES (?, ?, ?, ?)
+        ");
 
+        $stmt->bind_param("isss", $idEmpresa, $tipoEvento, $descripcion, $fechaCreacion);
 
-        if (!mysqli_query($conexion, $consultaNotificacion)) {
-            echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . mysqli_error($conexion)]);
+        if (!$stmt->execute()) {
+            echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . $stmt->error]);
             exit();
         }
+
 
         echo json_encode([
             'success' => true, 
