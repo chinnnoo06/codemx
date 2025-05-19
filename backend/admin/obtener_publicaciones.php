@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Consultas para obtener las publicaciones de las empresas que sigue el candidato
     $queryPublicaciones = "
         SELECT p.ID, p.Empresa_ID, p.Contenido, p.Img, p.Fecha_Publicacion, p.Ocultar_MeGusta, p.Sin_Comentarios, 
-               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre,
+               e.Logo AS Empresa_Logo, e.Nombre AS Empresa_Nombre
         FROM publicacion p
         JOIN empresa e ON p.Empresa_ID = e.ID
         ORDER BY p.Fecha_Publicacion DESC
