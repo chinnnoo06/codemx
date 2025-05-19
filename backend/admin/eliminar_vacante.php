@@ -41,6 +41,28 @@ try {
     $consultaDelete = "DELETE FROM vacante WHERE ID = '$idVacante'";
 
     if (mysqli_query($conexion, $consultaDelete)) {
+          // Insertar notificación
+        $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que tu vacante '$nombreVacante' ha sido eliminada ya que infringe las normativas de la plataforma.";
+
+        $consultaNotificacion = "
+            INSERT INTO notificaciones (
+                Empresa_ID, 
+                Tipo_Evento, 
+                Descripcion, 
+                Fecha_Creacion
+            ) VALUES (
+                '$idEmpresa', 
+                '$tipoEvento', 
+                '$descripcion', 
+                '$fechaCreacion'
+            )
+        ";
+
+        if (!mysqli_query($conexion, $consultaNotificacion)) {
+            echo json_encode(['success' => false, 'error' => 'Error al registrar la notificación: ' . mysqli_error($conexion)]);
+            exit();
+        }
+
         echo json_encode([
             'success' => true, 
             'message' => 'vacante eliminada correctamente.'
