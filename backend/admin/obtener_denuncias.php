@@ -1,0 +1,130 @@
+<?php
+require_once '../config/conexion.php';
+
+$allowed_origin = 'https://www.codemx.net';
+header("Access-Control-Allow-Origin: $allowed_origin");
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    // Consulta para denuncias de Candidato a Candidato
+    $consultaDenunciaCandidatoCandidato = "
+    SELECT 
+        denuncia_candidato_candidato.ID,
+        denuncia_candidato_candidato.Denunciante_ID,
+        denuncia_candidato_candidato.Denunciado_ID,
+        motivos_denuncia_candidato.Motivo,
+        estado_denuncia.Estado,
+        denuncia_candidato_candidato.Descripcion,
+        denuncia_candidato_candidato.Fecha_Denuncia,
+        denuncia_candidato_candidato.Comentario_ID,
+        comentarios.Comentario,
+        comentarios.Fecha_Comentario,
+        candidato_denunciante.Nombre AS Nombre_Denunciante,
+        candidato_denunciante.Apellido AS Apellido_Denunciante,
+        candidato_denunciante.Fotografia AS Foto_Denunciante,
+        candidato_denunciado.Nombre AS Nombre_Denunciado,
+        candidato_denunciado.Apellido AS Apellido_Denunciado,
+        candidato_denunciado.Fotografia AS Foto_Denunciado,
+        'Candidato a Candidato' AS Tipo_Denuncia
+    FROM denuncia_candidato_candidato
+    INNER JOIN motivos_denuncia_candidato ON denuncia_candidato_candidato.Motivo = motivos_denuncia_candidato.ID
+    INNER JOIN estado_denuncia ON denuncia_candidato_candidato.Estado_Denuncia = estado_denuncia.ID
+    INNER JOIN candidato AS candidato_denunciante ON denuncia_candidato_candidato.Denunciante_ID = candidato_denunciante.ID
+    INNER JOIN candidato AS candidato_denunciado ON denuncia_candidato_candidato.Denunciado_ID = candidato_denunciado.ID
+    LEFT JOIN comentarios ON denuncia_candidato_candidato.Comentario_ID = comentarios.ID
+    ";
+
+    // Consulta para denuncias de Candidato a Empresa
+    $consultaDenunciaCandidatoEmpresa = "
+    SELECT 
+        denuncia_candidato_empresa.ID,
+        denuncia_candidato_empresa.Denunciante_ID,
+        denuncia_candidato_empresa.Denunciado_ID,
+        motivos_denuncia_empresa.Motivo,
+        estado_denuncia.Estado,
+        denuncia_candidato_empresa.Descripcion,
+        denuncia_candidato_empresa.Fecha_Denuncia,
+        denuncia_candidato_empresa.Comentario_ID,
+        comentarios.Comentario,
+        comentarios.Fecha_Comentario,
+        denuncia_candidato_empresa.Mensaje_ID,
+        mensajes.Mensaje,
+        mensajes.Fecha_Envio,
+        denuncia_candidato_empresa.Publicacion_ID,
+        denuncia_candidato_empresa.Vacante_ID,
+        candidato_denunciante.Nombre AS Nombre_Denunciante,
+        candidato_denunciante.Apellido AS Apellido_Denunciante,
+        candidato_denunciante.Fotografia AS Foto_Denunciante,
+        empresa_denunciado.Nombre AS Nombre_Denunciado,
+        empresa_denunciado.Logo AS Foto_Denunciado,
+        'Candidato a Empresa' AS Tipo_Denuncia
+    FROM denuncia_candidato_empresa
+    INNER JOIN motivos_denuncia_empresa ON denuncia_candidato_empresa.Motivo = motivos_denuncia_empresa.ID
+    INNER JOIN estado_denuncia ON denuncia_candidato_empresa.Estado_Denuncia = estado_denuncia.ID
+    INNER JOIN candidato AS candidato_denunciante ON denuncia_candidato_empresa.Denunciante_ID = candidato_denunciante.ID
+    INNER JOIN empresa AS empresa_denunciado ON denuncia_candidato_empresa.Denunciado_ID = empresa_denunciado.ID
+    LEFT JOIN comentarios ON denuncia_candidato_empresa.Comentario_ID = comentarios.ID
+    LEFT JOIN mensajes ON denuncia_candidato_empresa.Mensaje_ID = mensajes.ID
+    ";
+
+    // Consulta para denuncias de Empresa a Candidato
+    $consultaDenunciaEmpresaCandidato = "
+    SELECT 
+        denuncia_empresa_candidato.ID,
+        denuncia_empresa_candidato.Denunciante_ID,
+        denuncia_empresa_candidato.Denunciado_ID,
+        motivos_denuncia_candidato.Motivo,
+        estado_denuncia.Estado,
+        denuncia_empresa_candidato.Descripcion,
+        denuncia_empresa_candidato.Fecha_Denuncia,
+        denuncia_empresa_candidato.Comentario_ID,
+        comentarios.Comentario,
+        comentarios.Fecha_Comentario,
+        denuncia_empresa_candidato.Mensaje_ID,
+        mensajes.Mensaje,
+        mensajes.Fecha_Envio,
+        empresa_denunciante.Nombre AS Nombre_Denunciante,
+        empresa_denunciante.Logo AS Foto_Denunciante,
+        candidato_denunciado.Nombre AS Nombre_Denunciado,
+        candidato_denunciado.Apellido AS Apellido_Denunciado,
+        candidato_denunciado.Fotografia AS Foto_Denunciado,
+        'Empresa a Candidato' AS Tipo_Denuncia
+    FROM denuncia_empresa_candidato
+    INNER JOIN motivos_denuncia_candidato ON denuncia_empresa_candidato.Motivo = motivos_denuncia_candidato.ID
+    INNER JOIN estado_denuncia ON denuncia_empresa_candidato.Estado_Denuncia = estado_denuncia.ID
+    INNER JOIN empresa AS empresa_denunciante ON denuncia_empresa_candidato.Denunciante_ID = empresa_denunciante.ID
+    INNER JOIN candidato AS candidato_denunciado ON denuncia_empresa_candidato.Denunciado_ID = candidato_denunciado.ID
+    LEFT JOIN comentarios ON denuncia_empresa_candidato.Comentario_ID = comentarios.ID
+    LEFT JOIN mensajes ON denuncia_empresa_candidato.Mensaje_ID = mensajes.ID
+    ";
+
+    // Unir todas las denuncias con UNION, para que queden en una sola lista
+    $consultaFinal = $consultaDenunciaCandidatoCandidato . " UNION ALL " . $consultaDenunciaCandidatoEmpresa . " UNION ALL " . $consultaDenunciaEmpresaCandidato . " ORDER BY Fecha_Denuncia DESC;";
+
+    $resultado = mysqli_query($conexion, $consultaFinal);
+    $denuncias = [];
+
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $denuncias[] = $fila;
+    }
+
+    echo json_encode([
+        'success' => true,
+        'denuncias' => $denuncias
+    ]);
+    exit();
+} else {
+    http_response_code(405);
+    echo json_encode(['error' => 'El método no está permitido.']);
+    exit();
+}
+?>
