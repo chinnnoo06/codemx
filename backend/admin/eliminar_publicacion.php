@@ -31,7 +31,8 @@ try {
         !isset($data['idPublicacion']) || 
         !isset($data['nombreEmpresa']) || 
         !isset($data['emailEmpresa']) || 
-        !isset($data['idEmpresa'])
+        !isset($data['idEmpresa'] )||
+        !isset($data['descripcionReporte'])
     ) {
         echo json_encode(['success' => false, 'error' => 'Faltan datos importantes']);
         http_response_code(400);
@@ -42,6 +43,7 @@ try {
     $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
     $nombreEmpresa = mysqli_real_escape_string($conexion, $data['nombreEmpresa']);
     $emailDestino = mysqli_real_escape_string($conexion, $data['emailEmpresa']);
+    $descripcionReporte = mysqli_real_escape_string($conexion, $data['descripcionReporte']);
     $tipoEvento = 'eliminacion_contenido';
     $fechaCreacion = date('Y-m-d H:i:s');
 
@@ -49,7 +51,7 @@ try {
 
     if (mysqli_query($conexion, $consultaDelete)) {
           // Insertar notificación
-        $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma.";
+        $descripcion = "¡Hola $nombreEmpresa! Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma: '$descripcionReporte'";
 
         $stmt = $conexion->prepare("
             INSERT INTO notificaciones (
@@ -92,7 +94,7 @@ try {
             $mail->Subject = 'PUBLICACION ELIMINADA POR NORMATIVA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreEmpresa</strong>,</p>
-                <p style='font-size: 15px;'>Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma.</p>
+                <p style='font-size: 15px;'>Queremos informarte que una publicación de tu perfil fue eliminada ya que infringe las normativas de la plataforma: '$descripcionReporte'</p>
                 <p style='margin-top: 20px;'>
                     <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                     style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>

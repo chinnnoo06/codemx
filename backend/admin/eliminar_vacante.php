@@ -96,7 +96,7 @@ try {
             $mail->Subject = 'VACANTE ELIMINADA POR NORMATIVA';
             $mail->Body = "
                 <p style='font-size: 16px;'>Hola <strong>$nombreEmpresa</strong>,</p>
-                <p style='font-size: 15px;'>Queremos informarte que tu vacante <strong>$nombreVacante</strong> ha sido eliminada ya que infringe las normativas de la plataforma: $descripcionReporte</p>
+                <p style='font-size: 15px;'>Queremos informarte que tu vacante <strong>$nombreVacante</strong> ha sido eliminada ya que infringe las normativas de la plataforma: '$descripcionReporte'</p>
                 <p style='margin-top: 20px;'>
                     <a href='https://www.codemx.net/codemx/frontend/build/iniciar-sesion' 
                     style='display: inline-block; padding: 10px 20px; background-color: #0B1C26; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
