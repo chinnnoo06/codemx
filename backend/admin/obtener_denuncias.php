@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Consulta combinada de todas las denuncias
-    $consultaFinal = "
+    // Consulta para denuncias de Candidato a Candidato
+    $consultaDenunciaCandidatoCandidato = "
     SELECT 
         denuncia_candidato_candidato.ID,
         denuncia_candidato_candidato.Denunciante_ID,
@@ -34,20 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         candidato_denunciado.Nombre AS Nombre_Denunciado,
         candidato_denunciado.Apellido AS Apellido_Denunciado,
         candidato_denunciado.Fotografia AS Foto_Denunciado,
-        'Candidato a Candidato' AS Tipo_Denuncia,
-        NULL AS Mensaje,
-        NULL AS Fecha_Envio,
-        NULL AS Publicacion_ID,
-        NULL AS Vacante_ID
+        'Candidato a Candidato' AS Tipo_Denuncia
     FROM denuncia_candidato_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_candidato_candidato.Motivo = motivos_denuncia_candidato.ID
     INNER JOIN estado_denuncia ON denuncia_candidato_candidato.Estado_Denuncia = estado_denuncia.ID
     INNER JOIN candidato AS candidato_denunciante ON denuncia_candidato_candidato.Denunciante_ID = candidato_denunciante.ID
     INNER JOIN candidato AS candidato_denunciado ON denuncia_candidato_candidato.Denunciado_ID = candidato_denunciado.ID
     LEFT JOIN comentarios ON denuncia_candidato_candidato.Comentario_ID = comentarios.ID
+    ";
 
-    UNION ALL
-
+    // Consulta para denuncias de Candidato a Empresa
+    $consultaDenunciaCandidatoEmpresa = "
     SELECT 
         denuncia_candidato_empresa.ID,
         denuncia_candidato_empresa.Denunciante_ID,
@@ -59,16 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         denuncia_candidato_empresa.Comentario_ID,
         comentarios.Comentario,
         comentarios.Fecha_Comentario,
+        denuncia_candidato_empresa.Mensaje_ID,
+        mensajes.Mensaje,
+        mensajes.Fecha_Envio,
+        denuncia_candidato_empresa.Publicacion_ID,
+        denuncia_candidato_empresa.Vacante_ID,
         candidato_denunciante.Nombre AS Nombre_Denunciante,
         candidato_denunciante.Apellido AS Apellido_Denunciante,
         candidato_denunciante.Fotografia AS Foto_Denunciante,
         empresa_denunciado.Nombre AS Nombre_Denunciado,
         empresa_denunciado.Logo AS Foto_Denunciado,
-        'Candidato a Empresa' AS Tipo_Denuncia,
-        mensajes.Mensaje,
-        mensajes.Fecha_Envio,
-        denuncia_candidato_empresa.Publicacion_ID,
-        denuncia_candidato_empresa.Vacante_ID
+        'Candidato a Empresa' AS Tipo_Denuncia
     FROM denuncia_candidato_empresa
     INNER JOIN motivos_denuncia_empresa ON denuncia_candidato_empresa.Motivo = motivos_denuncia_empresa.ID
     INNER JOIN estado_denuncia ON denuncia_candidato_empresa.Estado_Denuncia = estado_denuncia.ID
@@ -76,9 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     INNER JOIN empresa AS empresa_denunciado ON denuncia_candidato_empresa.Denunciado_ID = empresa_denunciado.ID
     LEFT JOIN comentarios ON denuncia_candidato_empresa.Comentario_ID = comentarios.ID
     LEFT JOIN mensajes ON denuncia_candidato_empresa.Mensaje_ID = mensajes.ID
+    ";
 
-    UNION ALL
-
+    // Consulta para denuncias de Empresa a Candidato
+    $consultaDenunciaEmpresaCandidato = "
     SELECT 
         denuncia_empresa_candidato.ID,
         denuncia_empresa_candidato.Denunciante_ID,
@@ -90,16 +89,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         denuncia_empresa_candidato.Comentario_ID,
         comentarios.Comentario,
         comentarios.Fecha_Comentario,
+        denuncia_empresa_candidato.Mensaje_ID,
+        mensajes.Mensaje,
+        mensajes.Fecha_Envio,
         empresa_denunciante.Nombre AS Nombre_Denunciante,
         empresa_denunciante.Logo AS Foto_Denunciante,
         candidato_denunciado.Nombre AS Nombre_Denunciado,
         candidato_denunciado.Apellido AS Apellido_Denunciado,
         candidato_denunciado.Fotografia AS Foto_Denunciado,
-        'Empresa a Candidato' AS Tipo_Denuncia,
-        mensajes.Mensaje,
-        mensajes.Fecha_Envio,
-        NULL AS Publicacion_ID,
-        NULL AS Vacante_ID
+        'Empresa a Candidato' AS Tipo_Denuncia
     FROM denuncia_empresa_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_empresa_candidato.Motivo = motivos_denuncia_candidato.ID
     INNER JOIN estado_denuncia ON denuncia_empresa_candidato.Estado_Denuncia = estado_denuncia.ID
@@ -107,24 +105,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     INNER JOIN candidato AS candidato_denunciado ON denuncia_empresa_candidato.Denunciado_ID = candidato_denunciado.ID
     LEFT JOIN comentarios ON denuncia_empresa_candidato.Comentario_ID = comentarios.ID
     LEFT JOIN mensajes ON denuncia_empresa_candidato.Mensaje_ID = mensajes.ID
-
-    ORDER BY Fecha_Denuncia DESC;
     ";
 
-    // Ejecutar la consulta
-    $resultado = mysqli_query($conexion, $consultaFinal);
+    // Ejecutar todas las consultas
+    $resultCandidatoCandidato = mysqli_query($conexion, $consultaDenunciaCandidatoCandidato);
+    $resultCandidatoEmpresa = mysqli_query($conexion, $consultaDenunciaCandidatoEmpresa);
+    $resultEmpresaCandidato = mysqli_query($conexion, $consultaDenunciaEmpresaCandidato);
 
-    if ($resultado === false) {
-        // Si hay error en la consulta, enviar un error con mensaje
+    if ($resultCandidatoCandidato === false || $resultCandidatoEmpresa === false || $resultEmpresaCandidato === false) {
+        // Si hay error en alguna consulta, enviar un error con mensaje
         echo json_encode(['error' => 'Error en la consulta SQL', 'details' => mysqli_error($conexion)]);
         exit();
     }
 
     $denuncias = [];
 
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    // Agregar los resultados de cada consulta en el array
+    while ($fila = mysqli_fetch_assoc($resultCandidatoCandidato)) {
         $denuncias[] = $fila;
     }
+    while ($fila = mysqli_fetch_assoc($resultCandidatoEmpresa)) {
+        $denuncias[] = $fila;
+    }
+    while ($fila = mysqli_fetch_assoc($resultEmpresaCandidato)) {
+        $denuncias[] = $fila;
+    }
+
+    // Ordenar el array de denuncias por Fecha_Denuncia
+    usort($denuncias, function($a, $b) {
+        return strtotime($b['Fecha_Denuncia']) - strtotime($a['Fecha_Denuncia']);
+    });
 
     if (empty($denuncias)) {
         // Si no hay resultados, enviar mensaje adecuado
