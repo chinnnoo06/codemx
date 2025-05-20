@@ -111,10 +111,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $consultaFinal = $consultaDenunciaCandidatoCandidato . " UNION ALL " . $consultaDenunciaCandidatoEmpresa . " UNION ALL " . $consultaDenunciaEmpresaCandidato . " ORDER BY Fecha_Denuncia DESC;";
 
     $resultado = mysqli_query($conexion, $consultaFinal);
+
+    if ($resultado === false) {
+        // Si hay error en la consulta, enviar un error con mensaje
+        echo json_encode(['error' => 'Error en la consulta SQL', 'details' => mysqli_error($conexion)]);
+        exit();
+    }
+
     $denuncias = [];
 
     while ($fila = mysqli_fetch_assoc($resultado)) {
         $denuncias[] = $fila;
+    }
+
+    if (empty($denuncias)) {
+        // Si no hay resultados, enviar mensaje adecuado
+        echo json_encode(['error' => 'No se encontraron denuncias']);
+        exit();
     }
 
     echo json_encode([
