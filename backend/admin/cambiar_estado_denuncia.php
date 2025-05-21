@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idDenuncia = mysqli_real_escape_string($conexion, $data['idDenuncia']);
     $idDenunciado = mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $estado = mysqli_real_escape_string($conexion, $data['nuevoEstado']);
-    $tipo = mysqli_real_escape_string($conexion, $data['tipo']);
+    $tipo = mysqli_real_escape_string($conexion, $data['emailDenunciado']);
+    $emailDestino = mysqli_real_escape_string($conexion, $data['tipo']);
     $nombreDenunciado = mysqli_real_escape_string($conexion, $data['nombreDenunciado']);
     $apellidoDenunciado = isset($data['apellidoDenunciado']) ? mysqli_real_escape_string($conexion, $data['apellidoDenunciado']) : '';
     $fechaActual = date('Y-m-d H:i:s');
@@ -101,10 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Port = getenv('SMTP_PORT');
 
                 $mail->setFrom(getenv('SMTP_USERNAME'), 'CODEMX');
-
-                // Aquí debes obtener el email del denunciado para enviar el correo
-                // Suponiendo que lo tienes en $emailDestino, si no, debes buscarlo en DB
-                $emailDestino = ''; // REEMPLAZA con el correo real del denunciado
 
                 if (empty($emailDestino)) {
                     throw new Exception("Email del denunciado no especificado.");
