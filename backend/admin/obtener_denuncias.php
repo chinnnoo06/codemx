@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         candidato_denunciado.Nombre AS Nombre_Denunciado,
         candidato_denunciado.Apellido AS Apellido_Denunciado,
         candidato_denunciado.Fotografia AS Foto_Denunciado,
-        'Candidato a Candidato' AS Tipo_Denuncia
+        'CandidatoCandidato' AS Tipo_Denuncia
     FROM denuncia_candidato_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_candidato_candidato.Motivo = motivos_denuncia_candidato.ID
     INNER JOIN estado_denuncia ON denuncia_candidato_candidato.Estado_Denuncia = estado_denuncia.ID
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         candidato_denunciante.Fotografia AS Foto_Denunciante,
         empresa_denunciado.Nombre AS Nombre_Denunciado,
         empresa_denunciado.Logo AS Foto_Denunciado,
-        'Candidato a Empresa' AS Tipo_Denuncia
+        'CandidatoEmpresa' AS Tipo_Denuncia
     FROM denuncia_candidato_empresa
     INNER JOIN motivos_denuncia_empresa ON denuncia_candidato_empresa.Motivo = motivos_denuncia_empresa.ID
     INNER JOIN estado_denuncia ON denuncia_candidato_empresa.Estado_Denuncia = estado_denuncia.ID
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         candidato_denunciado.Nombre AS Nombre_Denunciado,
         candidato_denunciado.Apellido AS Apellido_Denunciado,
         candidato_denunciado.Fotografia AS Foto_Denunciado,
-        'Empresa a Candidato' AS Tipo_Denuncia
+        'EmpresaCandidato' AS Tipo_Denuncia
     FROM denuncia_empresa_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_empresa_candidato.Motivo = motivos_denuncia_candidato.ID
     INNER JOIN estado_denuncia ON denuncia_empresa_candidato.Estado_Denuncia = estado_denuncia.ID
