@@ -64,6 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!mysqli_query($conexion, $consultaNoti)) {
                     throw new Exception("Error al insertar la notificación.");
                 }
+                $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Candidato_ID = '$idDenunciado'";
+                if (!mysqli_query($conexion, $consultaStrikes)) {
+                    throw new Exception("Error al insertar la notificación.");
+                }
             }
 
             if ($tipo == "CandidatoEmpresa") {
@@ -76,6 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!mysqli_query($conexion, $consultaNoti)) {
                     throw new Exception("Error al insertar la notificación.");
                 }
+                $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Empresa_ID = '$idDenunciado'";
+                if (!mysqli_query($conexion, $consultaStrikes)) {
+                    throw new Exception("Error al insertar la notificación.");
+                }
             }
 
             if ($tipo == "EmpresaCandidato") {
@@ -86,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $consultaNoti = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion)
                                 VALUES ('$idDenunciado', '$tipoEvento', '$descripcion', '$fechaActual')";
                 if (!mysqli_query($conexion, $consultaNoti)) {
+                    throw new Exception("Error al insertar la notificación.");
+                }
+                $consultaStrikes = "UPDATE verificacion_usuarios SET Strikes = Strikes + 1 WHERE Candidato_ID = '$idDenunciado'";
+                if (!mysqli_query($conexion, $consultaStrikes)) {
                     throw new Exception("Error al insertar la notificación.");
                 }
             }
