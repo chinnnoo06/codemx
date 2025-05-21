@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if ($estado == 1) {
             if ($tipo == "CandidatoCandidato") {
-                $consulta = "UPDATE denuncias_candidato_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_candidato_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_candidato_candidato.");
                 }
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($tipo == "CandidatoEmpresa") {
-                $consulta = "UPDATE denuncias_candidato_empresa SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_candidato_empresa SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_candidato_empresa.");
                 }
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($tipo == "EmpresaCandidato") {
-                $consulta = "UPDATE denuncias_empresa_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_empresa_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_empresa_candidato.");
                 }
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else if ($estado == 0) {
             if ($tipo == "CandidatoCandidato") {
-                $consulta = "UPDATE denuncias_candidato_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_candidato_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_candidato_candidato.");
                 }
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($tipo == "CandidatoEmpresa") {
-                $consulta = "UPDATE denuncias_candidato_empresa SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_candidato_empresa SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_candidato_empresa.");
                 }
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($tipo == "EmpresaCandidato") {
-                $consulta = "UPDATE denuncias_empresa_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+                $consulta = "UPDATE denuncia_empresa_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
                 if (!mysqli_query($conexion, $consulta)) {
                     throw new Exception("Error al actualizar el estado de la denuncia en denuncias_empresa_candidato.");
                 }
