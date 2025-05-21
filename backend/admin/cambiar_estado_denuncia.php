@@ -41,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idDenuncia = mysqli_real_escape_string($conexion, $data['idDenuncia']);
     $idDenunciado = mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $estado = mysqli_real_escape_string($conexion, $data['nuevoEstado']);
-    $tipo = mysqli_real_escape_string($conexion, $data['emailDenunciado']);
-    $emailDestino = mysqli_real_escape_string($conexion, $data['tipo']);
+    $tipo = mysqli_real_escape_string($conexion, $data['tipo']);
+    $emailDestino = mysqli_real_escape_string($conexion, $data['emailDenunciado']);
     $nombreDenunciado = mysqli_real_escape_string($conexion, $data['nombreDenunciado']);
     $apellidoDenunciado = isset($data['apellidoDenunciado']) ? mysqli_real_escape_string($conexion, $data['apellidoDenunciado']) : '';
     $fechaActual = date('Y-m-d H:i:s');
