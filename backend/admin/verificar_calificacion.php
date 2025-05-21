@@ -48,7 +48,7 @@ try {
         }
 
         $consultaDelete2 = "DELETE FROM calificaciones_candidato WHERE ID = '$idCalificacion'";
-        if (!mysqli_query($conexion, $consultaDelet2)) {
+        if (!mysqli_query($conexion, $consultaDelete2)) {
             throw new Exception("Error al eliminar calificacion.");
         }
 
