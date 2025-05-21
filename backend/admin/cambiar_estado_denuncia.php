@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $estado = mysqli_real_escape_string($conexion, $data['nuevoEstado']);
     $tipo = mysqli_real_escape_string($conexion, $data['tipo']);
     $nombreDenunciado = mysqli_real_escape_string($conexion, $data['nombreDenunciado']);
-    $ApellidoDenunciado = mysqli_real_escape_string($conexion, $data['ApellidoDenunciado']);
+    $apellidoDenunciado = mysqli_real_escape_string($conexion, $data['apellidoDenunciado']);
     $fechaActual = date('Y-m-d H:i:s');
     $tipoEvento = 'strike';
     $descripcion = "¡Hola $nombreDenunciado $apellidoDenunciado! Tu cuenta ha recibido un strike a causa de una denuncia de un acto que infrinja las normas de la plataforma, que no vuelva a suceder.";
