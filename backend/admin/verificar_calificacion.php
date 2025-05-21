@@ -37,7 +37,7 @@ try {
         exit();
     }
 
-    $idSolicitud = mysqli_real_escape_string($conexion, $data['idSolcitud']);
+    $idSolicitud = mysqli_real_escape_string($conexion, $data['idSolicitud']);
     $idCalificacion = mysqli_real_escape_string($conexion, $data['idCalificacion']);
     $estado = mysqli_real_escape_string($conexion, $data['estado']);
 
@@ -48,7 +48,7 @@ try {
         }
 
         $consultaDelete2 = "DELETE FROM calificaciones_candidato WHERE ID = '$idCalificacion'";
-        if (!mysqli_query($conexion, $consultaDelet)) {
+        if (!mysqli_query($conexion, $consultaDelet2)) {
             throw new Exception("Error al eliminar calificacion.");
         }
 
