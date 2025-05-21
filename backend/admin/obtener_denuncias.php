@@ -136,9 +136,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    // Consulta para solicitudes de revision de calificaciones
+    $consultaSolicitudes = "
+    SELECT 
+        validar_calificaciones.ID,
+        validar_calificaciones.Calificacion_ID,
+        validar_calificaciones.Motivo,
+        validar_calificaciones.Fecha_Creacion,
+        calificaciones_candidato.Candidato_ID,
+        calificaciones_candidato.Empresa_ID,
+        calificaciones_candidato.Calificacion,
+        calificaciones_candidato.Comentario,
+        calificaciones_candidato.Fecha_Calificacion,
+        candidato.Nombre AS Candidato_Nombre,
+        candidato.Apellido AS Candidato_Apellido,
+        candidato.Fotografia AS Candidato_Foto,
+        empresa.Nombre AS Empresa_Nombre,
+        empresa.Logo AS Empresa_Foto
+    FROM validar_calificaciones
+    INNER JOIN calificaciones_candidato ON validar_calificaciones.Calificacion_ID = calificaciones_candidato.ID
+    INNER JOIN candidato ON candidato.ID = calificaciones_candidato.Candidato_ID
+    INNER JOIN empresa ON empresa.ID = calificaciones_candidato.Empresa_ID
+    ORDER BY validar_calificaciones.Fecha_Creacion;
+    ";
+
+    $resultSolicitudes = mysqli_query($conexion, $consultaSolicitudes);
+
+    if ($resultSolicitudes === false) {
+        // Si hay error en alguna consulta, enviar un error con mensaje
+        echo json_encode(['error' => 'Error en la consulta SQL', 'details' => mysqli_error($conexion)]);
+        exit();
+    }
+
+    $solicitudes = [];
+
+    // Agregar los resultados de cada consulta en el array
+    while ($fila = mysqli_fetch_assoc($resultSolicitudes)) {
+        $solicitudes[] = $fila;
+    }
+
     echo json_encode([
         'success' => true,
-        'denuncias' => $denuncias
+        'denuncias' => $denuncias,
+        'solicitudes' => $solicitudes
     ]);
     exit();
 } else {

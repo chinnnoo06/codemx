@@ -30,15 +30,13 @@ try {
     $idCalificacion = mysqli_real_escape_string($conexion, $data['idCalificacion']);
     $descripcion = mysqli_real_escape_string($conexion, $data['descripcion']);
     $fechaActual = date('Y-m-d H:i:s');
-    $estado = 0;
 
     // Construir consulta SQL
     $consulta = "INSERT INTO validar_calificaciones 
-    (Calificacion_ID, Motivo, Estado, Fecha_Creacion)
+    (Calificacion_ID, Motivo, Fecha_Creacion)
     VALUES (
         '$idCalificacion',
         '$descripcion',
-        '$estado',
         '$fechaActual'
     )";
 
