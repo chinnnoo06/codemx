@@ -39,7 +39,7 @@ try {
 
     $idSolicitud = mysqli_real_escape_string($conexion, $data['idSolcitud']);
     $idCalificacion = mysqli_real_escape_string($conexion, $data['idCalificacion']);
-    $estado = mysqli_real_escape_string($conexion, $data['estadp']);
+    $estado = mysqli_real_escape_string($conexion, $data['estado']);
 
     if($estado == 1) {
         $consultaDelete1 = "DELETE FROM validar_calificaciones WHERE ID = '$idSolicitud'";
@@ -63,7 +63,7 @@ try {
     } else {
         echo json_encode([
             'success' => false, 
-            'error' => 'Error al eliminar la publicacion: ' . mysqli_error($conexion)
+            'error' => 'Error: ' . mysqli_error($conexion)
         ]);
         exit();
     }
