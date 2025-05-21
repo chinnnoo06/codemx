@@ -18,20 +18,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     // Validación de estado
-    if (!isset($data['nuevoEstado']) || !isset($data['tipo'])) {
+    if (!isset($data['idDenuncia']) || !isset($data['idDenunciado']) || !isset($data['nuevoEstado']) || !isset($data['tipo']) || !isset($data['nombreDenunciado']) || !isset($data['apellidoDenunciado'])) {
         echo json_encode(['success' => false, 'error' => 'Faltan datos.']);
         http_response_code(400);
         exit();
     }
 
+    $idDenuncia = mysqli_real_escape_string($conexion, $data['idDenuncia']);
+    $idDenunciado = mysqli_real_escape_string($conexion, $data['idDenunciado']);
     $estado = mysqli_real_escape_string($conexion, $data['nuevoEstado']);
     $tipo = mysqli_real_escape_string($conexion, $data['tipo']);
+    $nombreDenunciado = mysqli_real_escape_string($conexion, $data['nombreDenunciado']);
+    $ApellidoDenunciado = mysqli_real_escape_string($conexion, $data['ApellidoDenunciado']);
+    $fechaActual = date('Y-m-d H:i:s');
+    $tipoEvento = 'strike';
+    $descripcion = "¡Hola $nombreDenunciado $apellidoDenunciado! Tu cuenta ha recibido un strike a causa de una denuncia de un acto que infrinja las normas de la plataforma, que no vuelva a suceder.";
 
     if($estado == 1){
         if($tipo == "CandidatoCandidato"){
-            $consulta = "UPDATE denuncias_candidato_candidato SET Estado_Denuncia = 2";
+            $consulta = "UPDATE denuncias_candidato_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            $consultaNoti = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion)
+            VALUES ('$idDenunciado', '$tipoEvento', '$descripcion', '$fechaActual')";
+            $resultConsultaNoti = mysqli_query($conexion, $consultaNoti);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
+        }
+
+        if($tipo == "CandidatoEmpresa"){
+            $consulta = "UPDATE denuncias_candidato_empresa SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            $consultaNoti = "INSERT INTO notificaciones (Empresa_ID, Tipo_Evento, Descripcion, Fecha_Creacion)
+            VALUES ('$idDenunciado', '$tipoEvento', '$descripcion', '$fechaActual')";
+            $resultConsultaNoti = mysqli_query($conexion, $consultaNoti);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
+        }
+
+        if($tipo == "EmpresaCandidato"){
+            $consulta = "UPDATE denuncias_empresa_candidato SET Estado_Denuncia = 2 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            $consultaNoti = "INSERT INTO notificaciones (Candidato_ID, Tipo_Evento, Descripcion, Fecha_Creacion)
+            VALUES ('$idDenunciado', '$tipoEvento', '$descripcion', '$fechaActual')";
+            $resultConsultaNoti = mysqli_query($conexion, $consultaNoti);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
+        }
+    } else if ($estado == 0) {
+        if($tipo == "CandidatoCandidato"){
+            $consulta = "UPDATE denuncias_candidato_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
+        }
+
+        if($tipo == "CandidatoEmpresa"){
+            $consulta = "UPDATE denuncias_candidato_empresa SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
+        }
+
+        if($tipo == "EmpresaCandidato"){
+            $consulta = "UPDATE denuncias_empresa_candidato SET Estado_Denuncia = 3 WHERE ID = $idDenuncia";
+            $resultConsulta = mysqli_query($conexion, $consulta);
+
+            echo json_encode(['success' => true, 'message' => 'Estado de denuncia actualizado correctamente.']);
         }
     }
+
     // Ejecutar la consulta
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Estado de cuenta actualizado correctamente.']);
