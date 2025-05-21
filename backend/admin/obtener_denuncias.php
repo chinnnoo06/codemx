@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         denuncia_candidato_candidato.Denunciante_ID,
         denuncia_candidato_candidato.Denunciado_ID,
         motivos_denuncia_candidato.Motivo,
+        estado_denuncia.Estado,
         denuncia_candidato_candidato.Descripcion,
         denuncia_candidato_candidato.Fecha_Denuncia,
         denuncia_candidato_candidato.Comentario_ID,
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'Candidato a Candidato' AS Tipo_Denuncia
     FROM denuncia_candidato_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_candidato_candidato.Motivo = motivos_denuncia_candidato.ID
+    INNER JOIN estado_denuncia ON denuncia_candidato_candidato.Estado_Denuncia = estado_denuncia.ID
     INNER JOIN candidato AS candidato_denunciante ON denuncia_candidato_candidato.Denunciante_ID = candidato_denunciante.ID
     INNER JOIN candidato AS candidato_denunciado ON denuncia_candidato_candidato.Denunciado_ID = candidato_denunciado.ID
     LEFT JOIN comentarios ON denuncia_candidato_candidato.Comentario_ID = comentarios.ID
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         denuncia_candidato_empresa.Denunciante_ID,
         denuncia_candidato_empresa.Denunciado_ID,
         motivos_denuncia_empresa.Motivo,
+        estado_denuncia.Estado,
         denuncia_candidato_empresa.Descripcion,
         denuncia_candidato_empresa.Fecha_Denuncia,
         denuncia_candidato_empresa.Comentario_ID,
@@ -66,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'Candidato a Empresa' AS Tipo_Denuncia
     FROM denuncia_candidato_empresa
     INNER JOIN motivos_denuncia_empresa ON denuncia_candidato_empresa.Motivo = motivos_denuncia_empresa.ID
+    INNER JOIN estado_denuncia ON denuncia_candidato_empresa.Estado_Denuncia = estado_denuncia.ID
     INNER JOIN candidato AS candidato_denunciante ON denuncia_candidato_empresa.Denunciante_ID = candidato_denunciante.ID
     INNER JOIN empresa AS empresa_denunciado ON denuncia_candidato_empresa.Denunciado_ID = empresa_denunciado.ID
     LEFT JOIN comentarios ON denuncia_candidato_empresa.Comentario_ID = comentarios.ID
@@ -79,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         denuncia_empresa_candidato.Denunciante_ID,
         denuncia_empresa_candidato.Denunciado_ID,
         motivos_denuncia_candidato.Motivo,
+        estado_denuncia.Estado,
         denuncia_empresa_candidato.Descripcion,
         denuncia_empresa_candidato.Fecha_Denuncia,
         denuncia_empresa_candidato.Comentario_ID,
@@ -95,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'Empresa a Candidato' AS Tipo_Denuncia
     FROM denuncia_empresa_candidato
     INNER JOIN motivos_denuncia_candidato ON denuncia_empresa_candidato.Motivo = motivos_denuncia_candidato.ID
+    INNER JOIN estado_denuncia ON denuncia_empresa_candidato.Estado_Denuncia = estado_denuncia.ID
     INNER JOIN empresa AS empresa_denunciante ON denuncia_empresa_candidato.Denunciante_ID = empresa_denunciante.ID
     INNER JOIN candidato AS candidato_denunciado ON denuncia_empresa_candidato.Denunciado_ID = candidato_denunciado.ID
     LEFT JOIN comentarios ON denuncia_empresa_candidato.Comentario_ID = comentarios.ID
