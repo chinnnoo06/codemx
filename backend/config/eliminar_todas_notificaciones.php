@@ -17,14 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['idCandidato'])) {
-        echo json_encode(['error' => 'Falta el ID del candidato']);
-        http_response_code(400); 
-        exit();
+    if (isset($data['idCandidato'])) {
+        $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
+        $consulta = "DELETE FROM notificaciones WHERE Candidato_ID = $idCandidato";
+    } else {
+        $idEmpresa = mysqli_real_escape_string($conexion, $data['idEmpresa']);
+        $consulta = "DELETE FROM notificaciones WHERE Empresa_ID = $idEmpresa";
     }
-    $idCandidato = mysqli_real_escape_string($conexion, $data['idCandidato']);
-
-    $consulta = "DELETE FROM notificaciones WHERE Candidato_ID = $idCandidato";
 
     if (mysqli_query($conexion, $consulta)) {
         echo json_encode(['success' => true, 'message' => 'Notificaciones eliminadas.']);
