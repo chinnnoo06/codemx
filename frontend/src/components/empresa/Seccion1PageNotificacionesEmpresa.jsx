@@ -18,6 +18,8 @@ export const Seccion1PageNotificacionesEmpresa = ({ notificaciones, fetchData, t
         return <i className="fa-solid fa-face-smile icono-notificacion"></i>;
       case 'postulacion_nueva':
         return <i className="fa-solid fa-user-plus icono-notificacion"></i>;
+      case 'eliminacion_contenido':
+        return <i className="fa-solid fa-user-slash icono-notificacion"></i>; 
       default:
         return <i className="fa-solid fa-bell icono-notificacion"></i>;
     }
@@ -146,7 +148,7 @@ export const Seccion1PageNotificacionesEmpresa = ({ notificaciones, fetchData, t
                                 >
                                   {notificacion.Descripcion}
                               </span>
-                            ): notificacion.Tipo_Evento === 'postulacion_nueva' && (
+                            ): notificacion.Tipo_Evento === 'postulacion_nueva' ? (
                               <span
                                 className={`texto-descripcion-link ${notificacion.Leida !== '1' ? 'noti-noleida' : ''}`}
                                 onClick={() => {
@@ -161,6 +163,16 @@ export const Seccion1PageNotificacionesEmpresa = ({ notificaciones, fetchData, t
                               >
                                 {notificacion.Descripcion}
                             </span>
+                            ) : notificacion.Tipo_Evento === 'eliminacion_contenido' && (
+                              <span
+                                className={`texto-descripcion-link ${notificacion.Leida !== '1' ? 'noti-noleida' : ''}`}
+                                onClick={() => {
+                                  navigate('/usuario-empresa/inicio-empresa');
+                                }}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                {notificacion.Descripcion}
+                              </span>
                             )}
 
                         </div>

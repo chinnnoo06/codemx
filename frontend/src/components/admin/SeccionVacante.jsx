@@ -15,6 +15,8 @@ export const SeccionVacante = ({vacante, manejarOcultarSeccionVacante, actualiza
     const [query, setQuery] = useState('');
     const [isLoading, setIsLoading] = useState(true); 
     const [categorias, setCategorias] = useState({});
+    const [pasoReporte, setPasoReporte] = useState(1); // 1: Selección, 2: Descripción
+    const [descripcionReporte, setDescripcionReporte] = useState("");
 
     const navigate = useNavigate(); // Hook para redirigir a otra página
 
@@ -111,6 +113,8 @@ export const SeccionVacante = ({vacante, manejarOcultarSeccionVacante, actualiza
     const manejarShowModalConfirmacion = () => {
         setShowModalConfirmacion(true);
         setShowModalOpciones(false);
+        setPasoReporte(1);
+        setDescripcionReporte("");
     };
 
     const manejarCloseModalConfirmacion = () => {
@@ -129,7 +133,7 @@ export const SeccionVacante = ({vacante, manejarOcultarSeccionVacante, actualiza
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ idVacante: vacante.ID, idEmpresa: vacante.Empresa_ID, nombreEmpresa: vacante.Empresa_Nombre, nombreVacante: vacante.Titulo, emailEmpresa: vacante.Empresa_Email}),
+                body: JSON.stringify({ idVacante: vacante.ID, idEmpresa: vacante.Empresa_ID, nombreEmpresa: vacante.Empresa_Nombre, nombreVacante: vacante.Titulo, emailEmpresa: vacante.Empresa_Email, descripcionReporte}),
             });
     
             const result = await response.json();
@@ -308,25 +312,64 @@ export const SeccionVacante = ({vacante, manejarOcultarSeccionVacante, actualiza
 
                     {/*Modal Confirmacion*/}
                     {showModalConfirmacion && (
-                        <div className="modal-overlay-confirmacion" onClick={() => manejarCloseModalConfirmacion()}>
-                            <div className="modal-content-confirmacion" onClick={(e) => e.stopPropagation()}>
-                    
-                                <p>¿Seguro que quieres eliminar la vacante?</p>
+                        <div className="modal-overlay-reportar" onClick={() => manejarCloseModalConfirmacion()}>
+                            <div className="modal-content-reportar" onClick={(e) => e.stopPropagation()}>
 
-                                <div className="d-flex justify-content-between mt-3">
-                                <button
-                                    className="btn btn-tipodos btn-sm"
-                                    onClick={() => manejarCloseModalConfirmacion()}
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                onClick={() => eliminarVacante()}
-                                >
-                                        {isLoading ? 'Cargando...' : 'Confirmar'}
-                                </button>
-                                </div>
+                                {/* Pregunta inicial */}
+                                {pasoReporte === 1 && (
+                                    <>
+                                        <div className="modal-body-reportar">
+                                            
+                                            <textarea
+                                                className="form-control text-center"
+                                                rows="3"
+                                                placeholder="Añade un comentario"
+                                                value={descripcionReporte}
+                                                onChange={(e) => setDescripcionReporte(e.target.value)}
+                                            ></textarea>
+
+                                            <div className="divider"></div>
+
+                                            <button className="btn-opciones "  onClick={() => setPasoReporte(2)}>
+                                                Enviar Reporte                                      
+                                            </button>
+
+                                            <div className="divider"></div>
+
+                                            <button className="btn-opciones btn-cancelar" onClick={() => manejarCloseModalConfirmacion()}>
+                                                Volver
+                                            </button>
+                                        </div>
+                
+                                    </>
+                                )}
+
+                                {pasoReporte === 2 && (
+                                    <>
+                                        <div className="modal-header-reportar d-flex justify-content-between align-items-center">
+                                            <span className="modal-title-reportar">¿Seguro que quieres eliminar la vacante?</span>
+                                        </div>
+
+                                        <div className="divider"></div>
+                          
+                                        <button
+                                            className="btn-opciones "
+                                            onClick={() => eliminarVacante()}
+                                        >
+                                                {isLoading ? 'Cargando...' : 'Confirmar'}
+                                        </button>
+                                        <div className="divider"></div>
+                                        <button
+                                            className="btn-opciones btn-cancelar"
+                                            onClick={() => setPasoReporte(1)}
+                                        >
+                                            Volver
+                                        </button>
+                                
+                                    </>
+                                )}
+
+ 
                             </div>
                         </div>
                     )}

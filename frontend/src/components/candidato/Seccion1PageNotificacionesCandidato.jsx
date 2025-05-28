@@ -20,6 +20,8 @@ export const Seccion1PageNotificacionesCandidato = ({ notificaciones, fetchData,
         return <i className="fa-solid fa-image icono-notificacion"></i>; 
       case 'nueva_vacante':
         return <i className="fa-solid fa-briefcase icono-notificacion"></i>; 
+      case 'eliminacion_contenido':
+        return <i className="fa-solid fa-user-slash icono-notificacion"></i>; 
       default:
         return <i className="fa-solid fa-bell icono-notificacion"></i>;
     }
@@ -151,7 +153,7 @@ export const Seccion1PageNotificacionesCandidato = ({ notificaciones, fetchData,
                                 >
                                   {notificacion.Descripcion}
                               </span>
-                            ): notificacion.Tipo_Evento === 'nueva_vacante' && (
+                            ): notificacion.Tipo_Evento === 'nueva_vacante' ? (
                               <span
                                 className={`texto-descripcion-link ${notificacion.Leida !== '1' ? 'noti-noleida' : ''}`}
                                 onClick={() => {
@@ -162,6 +164,16 @@ export const Seccion1PageNotificacionesCandidato = ({ notificaciones, fetchData,
                                       idVacante: notificacion.Vacante_ID
                                     }
                                   });
+                                }}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                {notificacion.Descripcion}
+                            </span>
+                            ): notificacion.Tipo_Evento === 'eliminacion_contenido' && (
+                              <span
+                                className={`texto-descripcion-link ${notificacion.Leida !== '1' ? 'noti-noleida' : ''}`}
+                                onClick={() => {
+                                  navigate('/usuario-candidato/miperfil-candidato');
                                 }}
                                 style={{ cursor: 'pointer' }}
                               >

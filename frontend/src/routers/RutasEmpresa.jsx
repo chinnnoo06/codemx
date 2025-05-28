@@ -207,12 +207,40 @@ export const RutasEmpresa = () => {
       
                     </div>
                     <nav className="menu-links d-flex flex-column">
-                        <NavLink to="/usuario-empresa/inicio-empresa"  className={({ isActive }) => isActive ? "activado" : ""}  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
-                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
-                        <NavLink to="/usuario-empresa/chats-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Chats</NavLink>
-                        <NavLink to="/usuario-empresa/notificaciones-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Notificaciones</NavLink>
-                        <NavLink to="/usuario-empresa/informacion-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Información</NavLink>
-                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({ isActive }) => isActive ? "activado" : ""} onClick={() => setMenuVisible(false)}>Buscar</NavLink>
+                        <NavLink to="/usuario-empresa/inicio-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }  onClick={() => setMenuVisible(false)}>Inicio</NavLink>
+                        <NavLink to="/usuario-empresa/vacantes-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={() => setMenuVisible(false)}>Vacantes</NavLink>
+                        <NavLink
+                            to="/usuario-empresa/chats-empresa"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            Chats
+                             <span className="icono-notificaciones-wrapper position-relative">
+                                {tieneMensajesNoLeidos && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                        </NavLink>
+                        <NavLink
+                            to="/usuario-empresa/notificaciones-empresa"
+                            className={({ isActive }) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            Notificaciones
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                {tieneNotificacionesNoLeidas && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                        </NavLink>
+                        <NavLink to="/usuario-empresa/informacion-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={() => setMenuVisible(false)}>Información</NavLink>
+                        <NavLink to="/usuario-empresa/busqueda-empresa" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={() => setMenuVisible(false)}>Buscar</NavLink>
                     </nav>
                 </div>
 

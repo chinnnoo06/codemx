@@ -355,6 +355,10 @@
     color: #504e4efe;
 }
 
+.barrabusqueda{
+    padding: 12px;
+}
+
 
 @media (max-width: 767px) { 
     .datos-container-candidato {

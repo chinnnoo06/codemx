@@ -153,7 +153,6 @@ export const PageInicioCandidato = ({ candidato }) => {
     return <LoadingSpinner />; 
   }
   
-  console.log(publicaciones)
   return (
     <div className="contenedor-todo contenedor-seccion-notificaciones w-100">
       <div className="header d-flex flex-column w-100 py-4">

@@ -211,23 +211,6 @@
     border: 1px solid #0B1C26; 
 }
 
-.search-icon {
-    pointer-events: none; 
-    z-index: 10;
-    color: #6c757d;
-    font-size: 1rem; 
-}
-
-.position-absolute {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.input-busqueda{
-    padding-left: 2rem;
-}
-
 .close-button {
     position: absolute;
     top: 10px; 

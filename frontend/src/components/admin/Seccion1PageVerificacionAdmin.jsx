@@ -19,7 +19,6 @@ export const Seccion1PageVerificacionAdmin = ({ solicitudes, fectData }) => {
   const manejarCloseModalConfirmacion = () => {
     setShowModalConfirmacion(false);
     setEmpresaSeleccionada(null);
-    setAccionSeleccionada('');
   };
 
   // Mostrar la modal de éxito
@@ -38,7 +37,7 @@ export const Seccion1PageVerificacionAdmin = ({ solicitudes, fectData }) => {
     const { idEmpresa, empresaNombre, email } = empresaSeleccionada;
 
     try {
-      const response = await fetch("https://www.codemx.net/codemx/backend/login-crearcuenta/rfc_rachazado.php", {
+      const response = await fetch("https://www.codemx.net/codemx/backend/admin/verificar_empresa.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -52,7 +51,8 @@ export const Seccion1PageVerificacionAdmin = ({ solicitudes, fectData }) => {
 
       if (result.success) {
         fectData(); // Actualizar los datos después de la verificación
-        manejarShowModalExito(); // Mostrar modal de éxito
+        manejarShowModalExito(); // Mostrar modal de éxito}
+        console.log(accionSeleccionada)
       } else {
         console.error("Error al enviar", result.error);
         alert(`Error al enviar: ${result.error || "Error desconocido"}`);

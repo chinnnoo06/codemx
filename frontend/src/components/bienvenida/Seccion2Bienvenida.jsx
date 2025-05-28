@@ -27,6 +27,5 @@ export const Seccion2Bienvenida = () => {
         </div>
       </div>
     </section>
-
   )
 }

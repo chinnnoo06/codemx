@@ -19,7 +19,6 @@ export const PageLogin = () => {
         </div>
 
         <Seccion1PageLogin />
-
     </>
   )
 }

@@ -31,7 +31,7 @@ export const PageGestionUsuariosAdmin = () => {
       setEmpresas(responseData.empresas);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error al obtener los datos de chats:', error);
+      console.error('Error al obtener los datos:', error);
       setIsLoading(false);
     }
   }, []);

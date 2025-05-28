@@ -232,7 +232,7 @@ export const SeccionPublicacion = ({ empresa, publicacion, manejarOcultarSeccion
             {seccionActiva === "publicacion" && (
                 <>
                 <div className='boton d-flex align-items-center mb-4'>
-                    <button className="btn-volver-publicaciones d-flex align-items-center" onClick={() => manejarOcultarSeccion("perfil-publicaciones")}>
+                    <button className="btn-volver-publicaciones d-flex align-items-center" onClick={() => manejarOcultarSeccion()}>
                         <i className="fa-solid fa-arrow-left me-2"></i> Volver a publicaciones
                     </button>
                 </div>

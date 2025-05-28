@@ -233,13 +233,41 @@ export const RutasCandidato = () => {
                         )}
                     </div>
                     <nav className="menu-links d-flex flex-column">
-                        <NavLink to="/usuario-candidato/inicio-candidato" onClick={toggleMenu}>Inicio</NavLink>
-                        <NavLink to="/usuario-candidato/recomendaciones-candidato" onClick={toggleMenu}>Recomendaciones</NavLink>
-                        <NavLink to="/usuario-candidato/vacantes-candidato" onClick={toggleMenu}>Vacantes</NavLink>
-                        <NavLink to="/usuario-candidato/chats-candidato" onClick={toggleMenu}>Chats</NavLink>
-                        <NavLink to="/usuario-candidato/notificaciones-candidato" onClick={toggleMenu}>Notificaciones</NavLink>
-                        <NavLink to="/usuario-candidato/informacion-candidato" onClick={toggleMenu}>Información</NavLink>
-                        <NavLink to="/usuario-candidato/busqueda-candidato" onClick={toggleMenu}>Buscar</NavLink>
+                        <NavLink to="/usuario-candidato/inicio-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Inicio</NavLink>
+                        <NavLink to="/usuario-candidato/recomendaciones-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Recomendaciones</NavLink>
+                        <NavLink to="/usuario-candidato/vacantes-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Vacantes</NavLink>
+                        <NavLink
+                            to="/usuario-candidato/chats-candidato"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            Chats
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                {tieneMensajesNoLeidos && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                        </NavLink>
+                        <NavLink
+                            to="/usuario-candidato/notificaciones-candidato"
+                            className={({ isActive }) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            Notificaciones
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                {tieneNotificacionesNoLeidas && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                        </NavLink>
+                        <NavLink to="/usuario-candidato/informacion-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Información</NavLink>
+                        <NavLink to="/usuario-candidato/busqueda-candidato" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Buscar</NavLink>
                     </nav>
                 </div>
 

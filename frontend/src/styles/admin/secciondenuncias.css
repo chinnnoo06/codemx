@@ -1,0 +1,124 @@
+.contenedor-denuncias {
+    min-height: 80vh;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto; 
+}
+
+.denuncia-card {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.denuncia-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.placeholder-foto {
+    width: 50px;
+    height: 50px;
+    background: #f0f0f0;
+    color: #999;
+    font-size: 20px;
+}
+
+.contenido-denunciado {
+    border-left: 3px solid #0B1C26;
+    background-color: #f8f9fa;
+    margin-bottom: 15px;
+}
+
+.icono-no-denuncias {
+    font-size: 5rem;
+    color: #dee2e6;
+}
+
+.texto-no-denuncias {
+    font-size: 1.5rem;
+    color: #343a40;
+    font-weight: 300;
+}
+
+.subtitulo-denuncia {
+    font-weight: 600;
+}
+
+.img-denuncias {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.badge {
+    background-color: #0B1C26;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.descripcion-denuncia {
+    border-left: 3px solid #0B1C26;
+    background-color: #f8f9fa;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+
+@media (max-width: 1000px) {
+    .col-1{
+        width: 100%;
+        padding-bottom: 10px !important;
+    }
+}
+
+
+@media (max-width: 767px) {
+    .col-1{
+        width: 100%;
+        padding-bottom: 10px !important;
+    }
+    .badge, 
+    .fecha-denuncia{
+        font-size: 0.7rem;
+    }
+
+    .card-title{
+        font-size: 0.85rem !important;
+    }
+
+    .img-denuncias {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+   .con-foto{
+    margin-right: 10px !important;
+   }
+
+   .subtitulo-denuncia{
+    font-size: 0.8rem;
+   }
+
+   .parrafo-denuncia{
+    font-size: 0.75rem;
+   }
+
+   .contenido-usuario{
+     font-size: 0.7rem;
+   }
+
+   .btn-ir{
+    font-size: 0.7rem;
+   }
+   .alert-info{
+    font-size: 0.7rem;
+   }
+}

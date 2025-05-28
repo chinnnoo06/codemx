@@ -136,6 +136,39 @@
   box-shadow: none;
 }
 
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1050;
+
+  box-sizing: border-box;
+}
+
+.modal-content-custom {
+  max-width: 520px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 0.5rem;
+}
+
+.modal-content-custom .texto{
+    padding-right: 10px;
+}
+
+.modal-body-custom p {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.modal-backdrop-custom h4{
+  font-weight: 600;
+}
+
+
 @media (max-width: 767px) { 
   .contenedor_todo {
     padding: 1rem; 

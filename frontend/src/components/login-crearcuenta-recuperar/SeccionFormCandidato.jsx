@@ -15,6 +15,8 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   const [universidades, setUniversidades] = useState([]); 
   const [isLoading, setIsLoading] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [showModalTerminos, setShowModalTerminos] = useState(false);
+
 
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
@@ -108,57 +110,62 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
   };
 
   const avanzarPaso = async () => {
-    if (isLoading) return; 
-    setIsLoading(true); 
+    if (isLoading) return;
+    setIsLoading(true);
 
-    const isValid = await validarPaso(step); // Espera el resultado de la validación
+    const isValid = await validarPaso(step);
     if (!isValid) {
       setIsLoading(false);
-      return; 
+      return;
     }
-  
+
     if (step === 3) {
-      try {
-        const formDataToSend = new FormData();
-  
-        // Añadir cada campo del formulario a FormData
-        Object.keys(formData).forEach((key) => {
-          if (key === "fotografia" || key === "curriculum") {
-            formDataToSend.append(key, formData[key]); // Añadir archivos
-          } else if (key === "tecnologias") {
-            // Convertir tecnologías a formato JSON
-            formDataToSend.append(key, JSON.stringify(formData[key]));
-          } else {
-            formDataToSend.append(key, formData[key]);
-          }
-        });
-  
-        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaCandidato.php', {
-          method: 'POST',
-          body: formDataToSend,
-        });
-  
-        if (!response.ok) {
-          throw new Error('Error al enviar los datos al servidor');
-        }
-  
-        const result = await response.json();
-  
-        if (result.success) {
-          if (onRegistroCompleto) onRegistroCompleto(formData.email);
-        } else {
-          alert(result.error || 'Hubo un error al registrar');
-        }
-      } catch (error) {
-        alert('Hubo un error al enviar los datos.');
-      } finally {
-        setIsLoading(false); 
-      }
+      setShowModalTerminos(true);  // Mostrar modal y NO enviar aún
+      setIsLoading(false);
     } else {
-      setStep((prev) => prev + 1); // Avanzar al siguiente paso
+      setStep((prev) => prev + 1);
       setIsLoading(false);
     }
   };
+
+  const enviarFormulario = async () => {
+    setShowModalTerminos(false);
+    setIsLoading(true);
+    
+    try {
+      const formDataToSend = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        if (key === "fotografia" || key === "curriculum") {
+          formDataToSend.append(key, formData[key]);
+        } else if (key === "tecnologias") {
+          formDataToSend.append(key, JSON.stringify(formData[key]));
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaCandidato.php', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) throw new Error('Error al enviar los datos al servidor');
+
+      const result = await response.json();
+
+      if (result.success) {
+        if (onRegistroCompleto) onRegistroCompleto(formData.email);
+      } else {
+        alert(result.error || 'Hubo un error al registrar');
+      }
+    } catch (error) {
+      alert('Hubo un error al enviar los datos.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   const retrocederPaso = () => {
     setStep((prev) => Math.max(prev - 1, 1));
@@ -282,6 +289,50 @@ export const SeccionFormCandidato = ({ onRegistroCompleto }) => {
           {isLoading ? 'Enviando...' : step === 3 ? 'Enviar' : 'Siguiente'}
         </button>
       </div>
+
+     {showModalTerminos && (
+      <div className="modal-backdrop-custom d-flex align-items-center justify-content-center">
+        <div className="modal-content-custom p-3 rounded shadow bg-white">
+          <h4 className="mb-3 terminos-titulo">Términos y Condiciones de CODEMX</h4>
+          <div className="modal-body-custom mb-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <div className='texto'>
+              <p>
+                Bienvenido a CODEMX, la plataforma que conecta talento profesional con oportunidades laborales. Al aceptar estos términos, usted reconoce y autoriza que los datos personales y profesionales que proporcione serán utilizados para mostrar su perfil dentro de nuestra plataforma.
+              </p>
+              <p>
+                Entendemos que su privacidad es fundamental. Por ello, sus datos serán tratados con estricta confidencialidad y únicamente serán accesibles para las empresas registradas en CODEMX que busquen candidatos adecuados para sus vacantes.
+              </p>
+              <p>
+                Al aceptar, usted consiente que su información, incluyendo pero no limitada a nombre, experiencia laboral, habilidades y formación académica, pueda ser visualizada por dichas empresas para fines de evaluación y contacto profesional.
+              </p>
+              <p>
+                CODEMX se compromete a no compartir su información con terceros ajenos a la plataforma sin su consentimiento explícito, salvo obligación legal. Usted tiene derecho a solicitar la actualización, corrección o eliminación de sus datos en cualquier momento.
+              </p>
+              <p>
+                El uso de CODEMX implica la aceptación total de estos términos y condiciones. Si no está de acuerdo, le recomendamos no continuar con el registro en nuestra plataforma.
+              </p>
+            </div>
+
+          </div>
+          <div className="d-flex justify-content-end gap-2">
+            <button
+              onClick={() => setShowModalTerminos(false)}
+              className="btn btn-tipodos btn-sm"
+            >
+              Cerrar
+            </button>
+            <button
+              onClick={() => enviarFormulario()}
+              className="btn btn-tipouno btn-sm"
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+
     </div>
   );
 };

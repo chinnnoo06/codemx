@@ -85,8 +85,7 @@ export const PageGestionPublicacionesAdmin = () => {
   if (isLoading && page === 1) {
     return <LoadingSpinner />; 
   }
-  
-  console.log(publicaciones)
+
   return (
     <div className="contenedor-todo contenedor-seccion-post w-100">
       <div className="header d-flex flex-column w-100 py-4">

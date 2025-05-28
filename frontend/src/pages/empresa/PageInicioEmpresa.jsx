@@ -3,7 +3,7 @@ import { Seccion1PageInicio } from '../../components/empresa/Seccion1PageInicio'
 import { Seccion2PageInicio } from '../../components/empresa/Seccion2PageInicio'
 import { SeccionPublicacion } from '../../components/empresa/SeccionPublicacion';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const PageInicioEmpresa = ({empresa}) => {
     const [numPublicaciones, setNumPublicaciones] = useState(0);
@@ -13,7 +13,8 @@ export const PageInicioEmpresa = ({empresa}) => {
     const empresaActiva = empresa.id;
     const [isLoading, setIsLoading] = useState(true); 
     const location = useLocation();
-
+    const navigate = useNavigate();
+    
     // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
         try {
@@ -85,6 +86,9 @@ export const PageInicioEmpresa = ({empresa}) => {
             top: 0,
             behavior: "smooth" 
         });
+
+         // Limpiar el estado de navegación para que no siga con seccionActiva "publicacion"
+        navigate(location.pathname, { replace: true, state: {} });
     };
 
     if (isLoading) {

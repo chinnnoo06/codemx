@@ -256,7 +256,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
 
         {/* Modal Seguidos */}
         {showModalSeguidos && (
-            <div className="modal-overlay" onClick={() => manejarCloseModalForm()}>
+            <div className="modal-overlay" onClick={() => manejarCloseModalSeguidos()}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button btn" onClick={() => manejarCloseModalSeguidos()}>
                             <i className="fa-solid fa-x"></i>

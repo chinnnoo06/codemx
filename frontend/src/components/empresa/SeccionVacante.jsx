@@ -977,13 +977,13 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
                     {seccionActivaEditar == "seleccionar-tecnologias" && (
                         <>
                             <form className="form" data-step="3">
-                                    <SeccionTecnologiasRequeridasDominadas
-                                        tecnologias={tecnologias}
-                                        seleccionadas={tecnologiasRequeridasEditar}
-                                        onSeleccionChange={manejarCambioTecnologias}
-                                        tecnologiasVacante={1}
-                                        esperarConfirmacion={true} 
-                                        /> 
+                                <SeccionTecnologiasRequeridasDominadas
+                                    tecnologias={tecnologias}
+                                    seleccionadas={tecnologiasRequeridasEditar}
+                                    onSeleccionChange={manejarCambioTecnologias}
+                                    tecnologiasVacante={1}
+                                    esperarConfirmacion = {true} 
+                                    /> 
                             </form>
                         </>
                     )}

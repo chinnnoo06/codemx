@@ -7,7 +7,7 @@ import { SeccionVacante } from '../../components/admin/SeccionVacante';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 export const PagePerfilEmpresa = () => {
-    const location = useLocation();
+      const location = useLocation();
     const { idEmpresa } = location.state || {}; 
     const [empresa, setEmpresa] = useState(null);
     const [numPublicaciones, setNumPublicaciones] = useState(0);
@@ -19,7 +19,6 @@ export const PagePerfilEmpresa = () => {
     const [isLoading, setIsLoading] = useState(true); 
     const [mostrarVacantes, setMostrarVacantes] = useState(false);
 
-    // Función para obtener datos del backend
     const fetchData = useCallback(async () => {
         try {
             const responseDatos = await fetch('https://www.codemx.net/codemx/backend/empresa/obtener_perfil_de_empresa.php', {
@@ -64,8 +63,12 @@ export const PagePerfilEmpresa = () => {
             setEmpresa(empresaData);
             setPublicaciones(publicacionesData.publicaciones);
             setNumPublicaciones(publicacionesData.cantidad);
-            setVacantes(vacantesData.vacantes);
+            
+            // Filtrar vacantes cuyo Estatus sea "inactiva"
+            const vacantesInactivas = vacantesData.vacantes.filter(vacante => vacante.Estatus === "activa");
+            setVacantes(vacantesInactivas);  // Solo se pasan vacantes inactivas
             setIsLoading(false);
+            
         } catch (error) {
             console.error('Error al obtener el perfil de la empresa:', error);
             setIsLoading(false);
@@ -78,63 +81,81 @@ export const PagePerfilEmpresa = () => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
-  
+    
     const manejarMostrarSeccion = (publicacion) =>{
-      setPublicacionSeleccionada(publicacion);
-      setSeccionActiva("publicacion");
+        setPublicacionSeleccionada(publicacion);
+        setSeccionActiva("publicacion");
 
-      // Esperar a que React renderice la sección antes de hacer scroll
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-            const seccion = document.getElementById("seccion-publicacion");
-            if (seccion) {
-                const rect = seccion.getBoundingClientRect();
-                const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
-                window.scrollTo({
-                  top: scrollPosition,
-                  behavior: "smooth"
-                });
-              }
-          });
-      }, 100); 
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                const seccion = document.getElementById("seccion-publicacion");
+                if (seccion) {
+                    const rect = seccion.getBoundingClientRect();
+                    const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: "smooth"
+                    });
+                    }
+            });
+        }, 100); 
     }
 
+    useEffect(() => {
+        if (location.state?.seccionActiva === "publicacion" && location.state?.idPublicacion && publicaciones.length > 0) {
+            const publicacionEncontrada = publicaciones.find(publi => publi.ID === location.state.idPublicacion);
+            if (publicacionEncontrada) {
+                setPublicacionSeleccionada(publicacionEncontrada);
+                setSeccionActiva("publicacion");
+            }
+        }
+    
+        if (location.state?.seccionActiva === "detalles-vacante" && location.state?.idVacante && vacantes.length > 0) {
+            const vacanteEncontrada = vacantes.find(vac => vac.ID === location.state.idVacante);
+            if (vacanteEncontrada) {
+                setVacanteSeleccionada(vacanteEncontrada);
+                setSeccionActiva("detalles-vacante");
+            }
+        }
+    }, [location.state, publicaciones, vacantes]);
+    
     const manejarOcultarSeccion = () => {
         setSeccionActiva("perfil-publicaciones");
     };
 
     const manejarOcultarSeccionVacante = () => {
-      setSeccionActiva("perfil-publicaciones");
-      window.scrollTo({
-          top: 0,
-          behavior: "smooth" 
-      });
-      setMostrarVacantes(true);
+        setSeccionActiva("perfil-publicaciones");
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" 
+        });
+        setMostrarVacantes(true);
     };
-
-    const manejarMostrarSeccionVacante = (vacante) => {
+  
+      const manejarMostrarSeccionVacante = (vacante) => {
         setVacanteSeleccionada(vacante);
         setSeccionActiva("detalles-vacante");
-
-        
+    
         setTimeout(() => {
-          requestAnimationFrame(() => {
-              const seccion = document.getElementById("seccion-publicacion");
-              if (seccion) {
-                  const rect = seccion.getBoundingClientRect();
-                  const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
-                  window.scrollTo({
-                      top: scrollPosition,
-                      behavior: "smooth"
-                  });
-                  }
-          });
-      }, 100); 
-    };
+            requestAnimationFrame(() => {
+                const seccion = document.getElementById("seccion-publicacion");
+                if (seccion) {
+                    const rect = seccion.getBoundingClientRect();
+                    const scrollPosition = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                    window.scrollTo({
+                        top: scrollPosition,
+                        behavior: "smooth"
+                    });
+                    }
+            });
+        }, 100); 
+      };
+  
 
     if (isLoading) {
         return <LoadingSpinner></LoadingSpinner> 
     }
+
     
   return (
       <div className='contenedor-todo'>

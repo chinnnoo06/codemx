@@ -10,6 +10,7 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
   const [sectores, setSectores] = useState([]);
   const [isLoading, setIsLoading] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [showModalTerminos, setShowModalTerminos] = useState(false);
 
   // Estado global para los valores del formulario
   const [formData, setFormData] = useState({
@@ -75,51 +76,53 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
 
   const avanzarPaso = async () => {
     if (isLoading) return; 
-    setIsLoading(true); 
+    setIsLoading(true);
 
-    const isValid = await validarPaso(step); // Espera el resultado de la validación
+    const isValid = await validarPaso(step);
     if (!isValid) {
       setIsLoading(false);
-      return; 
+      return;
     }
 
-    if (step === 2) { // Último paso: enviar datos
-      try {
-        const formDataToSend = new FormData();
-  
-        // Añadir cada campo del formulario a FormData
-        Object.keys(formData).forEach((key) => {
-          formDataToSend.append(key, formData[key]);
-        });
-  
-        const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaEmpresa.php', {
-          method: 'POST',
-          body: formDataToSend,
-        });
-  
-        if (!response.ok) {
-          throw new Error('Error al enviar los datos al servidor');
-        }
-  
-        const result = await response.json();
-  
-        if (result.success) {
-          alert('Registro exitoso');
-          if (onRegistroCompleto) onRegistroCompleto(formData.email);
-        } else {
-          alert(result.error || 'Hubo un error al registrar');
-        }
-      } catch (error) {
-        alert('Hubo un error al enviar los datos.');
-      } finally {
-        setIsLoading(false); 
-      }
+    if (step === 2) {
+      setShowModalTerminos(true); // Mostrar modal para aceptar términos
+      setIsLoading(false);
     } else {
-      setStep((prev) => prev + 1); // Avanzar al siguiente paso
+      setStep((prev) => prev + 1);
       setIsLoading(false);
     }
   };
-  
+
+  const enviarFormulario = async () => {
+    setShowModalTerminos(false);
+    setIsLoading(true);
+
+    try {
+      const formDataToSend = new FormData();
+      Object.keys(formData).forEach((key) => {
+        formDataToSend.append(key, formData[key]);
+      });
+
+      const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/CrearCuentaEmpresa.php', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) throw new Error('Error al enviar los datos al servidor');
+
+      const result = await response.json();
+
+      if (result.success) {
+        if (onRegistroCompleto) onRegistroCompleto(formData.email);
+      } else {
+        alert(result.error || 'Hubo un error al registrar');
+      }
+    } catch (error) {
+      alert('Hubo un error al enviar los datos.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   const retrocederPaso = () => setStep((prev) => Math.max(prev - 1, 1));
 
@@ -239,6 +242,47 @@ export const SeccionFormEmpresa = ({ onRegistroCompleto }) => {
           {isLoading ? 'Enviando...' : step === 2 ? 'Enviar' : 'Siguiente'}
         </button>
       </div>
+
+      {showModalTerminos && (
+        <div className="modal-backdrop-custom d-flex align-items-center justify-content-center">
+          <div className="modal-content-custom p-3 rounded shadow bg-white">
+            <h4 className="mb-3 terminos-titulo">Términos y Condiciones para Empresas - CODEMX</h4>
+            <div className="modal-body-custom mb-4" style={{ maxHeight: '300px', overflowY: 'auto'}}>
+              <div className='texto'>
+                <p>
+                  En CODEMX valoramos la transparencia y la seguridad. Al aceptar estos términos, usted autoriza que la información proporcionada sobre su empresa, incluyendo nombre, descripción, sector, tamaño y datos de contacto, sea almacenada y usada para mostrar el perfil de su empresa en nuestra plataforma.
+                </p>
+                <p>
+                  Esta información estará disponible para candidatos potenciales y otras empresas registradas en CODEMX, facilitando la creación de oportunidades de negocio y reclutamiento profesional.
+                </p>
+                <p>
+                  Nos comprometemos a proteger sus datos conforme a la legislación vigente y no compartiremos información sensible con terceros sin su consentimiento, salvo requerimientos legales.
+                </p>
+                <p>
+                  Usted tiene derecho a acceder, rectificar o solicitar la eliminación de sus datos en cualquier momento a través de los canales habilitados en la plataforma.
+                </p>
+                <p>
+                  El uso de CODEMX implica la aceptación total de estos términos y condiciones. Si no está de acuerdo, le recomendamos no completar el registro.
+                </p>
+              </div>
+            </div>
+            <div className="d-flex justify-content-end gap-2">
+              <button
+                className="btn btn-tipodos btn-sm"
+                onClick={() => setShowModalTerminos(false)}
+              >
+                Cerrar
+              </button>
+              <button
+                className="btn btn-tipouno btn-sm"
+                onClick={enviarFormulario}
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
