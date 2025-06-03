@@ -111,7 +111,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             });
             const result = await response.json(); 
             if (result.success) {
-                window.location.href = 'https://www.codemx.net/codemx/frontend/build';
+                window.location.href = '/codemx/frontend/build';
             } else {
                 alert('Error al cerrar la sesión: ' + result.error);
             }
@@ -145,13 +145,10 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             alert('Error al enviar la solicitud:', error);
         }
     };
-
-
     
     const toggleMenu = () => {
         setMenuVisible(!menuVisible);
     };
-
 
   return (
     <div className="perfil-container-candidato">
@@ -291,9 +288,7 @@ export const Seccion1PageMiPerfil = ({ candidato }) => {
             </div>
         )}
 
-
     </div>
 
-    
   );
 };

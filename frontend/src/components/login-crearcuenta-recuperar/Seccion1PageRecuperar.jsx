@@ -36,8 +36,6 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
   };
 
   return (
-
-
       <div className="contenedor-form container py5">
         <form className="form" onSubmit={manejarEnvio}>
           <div className="mb-3">
@@ -63,8 +61,5 @@ export const Seccion1PageRecuperar = ({ onEmailSubmitted }) => {
           </div>
         </form>
     </div>
-
-
-
   );
 };

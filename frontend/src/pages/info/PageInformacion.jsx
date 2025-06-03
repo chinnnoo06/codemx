@@ -103,10 +103,7 @@ export const PageInformacion = () => {
                 distribucionVacantes={distribucionVacantes}
             />                
         </div>
-
-
-
-
+  
     </div>
   );
 };

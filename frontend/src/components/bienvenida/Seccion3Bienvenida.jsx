@@ -5,6 +5,35 @@ export const Seccion3Bienvenida = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [key, setKey] = useState(0); // Clave para reiniciar la animación
   const sectionRef = useRef(null);
+  const [usuarios, setUsuarios] = useState(0);
+  const [empresas, setEmpresas] = useState(0);
+  const [vacantes, setVacantes] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            // Realiza la solicitud al backend enviando el session_id desencriptado
+            const response = await fetch("https://www.codemx.net/codemx/backend/config/obtener_datos_bienvenida.php", {
+                method: "POST",
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Actualiza el estado con los datos recibidos
+                setUsuarios(result.numUsuarios);
+                setEmpresas(result.numEmpresas);
+                setVacantes(result.numVacantes);
+            } else if (result.error) {
+                console.log("Error al obtener estadísticas");
+            }
+        } catch (error) {
+            console.error("Error al obtener los datos del candidato:", error);
+        }
+    };
+
+    fetchData();
+    }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -38,19 +67,19 @@ export const Seccion3Bienvenida = () => {
         <div className="row">
           <div className="col-md-4">
             <h3 className="fw-bold display-5">
-              +<CountUp key={key} start={0} end={10000} duration={2} separator="," />
+              +<CountUp key={key} start={0} end={usuarios} duration={2} separator="," />
             </h3>
             <p>Usuarios Registrados</p>
           </div>
           <div className="col-md-4">
             <h3 className="fw-bold display-5">
-              +<CountUp key={key} start={0} end={500} duration={2} separator="," />
+              +<CountUp key={key} start={0} end={empresas} duration={2} separator="," />
             </h3>
             <p>Empresas Colaboradoras</p>
           </div>
           <div className="col-md-4">
             <h3 className="fw-bold display-5">
-              +<CountUp key={key} start={0} end={2000} duration={2} separator="," />
+              +<CountUp key={key} start={0} end={vacantes} duration={2} separator="," />
             </h3>
             <p>Ofertas de Trabajo</p>
           </div>

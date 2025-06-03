@@ -12,10 +12,12 @@ import { PageGestionPublicacionesAdmin } from '../pages/admin/PageGestionPublica
 import { PageGestionVacantesAdmin } from '../pages/admin/PageGestionVacantesAdmin';
 import { PageDenunciasAdmin } from '../pages/admin/PageDenunciasAdmin';
 
+
 export const RutasAdmin = () => {
     const [isLoading, setIsLoading] = useState(true); 
     const [menuVisible, setMenuVisible] = useState(false); 
     const [tieneSolicitudes, setTieneSolicitudes] = useState(false);
+    const [tienesDenuncias, setTieneDenuncias] = useState(false);
     const location = useLocation();
 
     // Establecer el scroll en la parte superior cada vez que la ubicación cambie
@@ -61,7 +63,6 @@ export const RutasAdmin = () => {
         fetchData();
     }, []);
 
-
     const toggleMenu = () => {
       setMenuVisible(!menuVisible);
     };
@@ -98,6 +99,74 @@ export const RutasAdmin = () => {
         return () => clearInterval(intervalo);
     }, [verificarSolicitudes]);
 
+    
+    const verificarDenuncias = useCallback(async () => {
+        try {
+            const Response = await fetch('https://www.codemx.net/codemx/backend/admin/obtener_denuncias.php', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(),
+            });
+
+            if (!Response.ok) {
+                const errorData = await Response.json();
+                throw new Error(errorData.error || 'Error desconocido');
+            }
+
+            const responseData = await Response.json();
+        
+            // Si el último mensaje lo mandó la empresa y no ha sido leído (Lectura = 0), lo consideramos no leído
+            const hayDenuncias = responseData.denuncias?.some(denuncia =>
+                denuncia.Estado === "En revisión" &&
+                denuncia.Estado === "En revisión"
+            );
+
+            const haySolicitudes = responseData.solicitudes?.length > 0;
+
+            setTieneDenuncias(hayDenuncias || haySolicitudes);
+        } catch (error) {
+            console.error('Error verificando denuncias:', error);
+        }
+    }, []);
+
+
+    useEffect(() => {
+        verificarDenuncias();
+        const intervalo = setInterval(verificarDenuncias, 2000);
+        return () => clearInterval(intervalo);
+    }, [verificarDenuncias]);
+
+    console.log(tienesDenuncias)
+
+    const manejarCerrarSesion = async () => {
+        const secretKey = process.env.REACT_APP_SECRET_KEY; // Clave secreta definida en tu archivo .env
+        const encryptedSessionId = localStorage.getItem("session_id"); // Obtén el session_id cifrado
+
+        if (!encryptedSessionId) {
+            console.error("No se encontró el session_id en el localStorage.");
+            return;
+        }
+
+        // Desencripta el session_id
+        const sessionId = CryptoJS.AES.decrypt(encryptedSessionId, secretKey).toString(CryptoJS.enc.Utf8);
+        try {
+            const response = await fetch("https://www.codemx.net/codemx/backend/config/cerrar_sesion.php", {
+                method: "POST",
+                body: JSON.stringify({ session_id: sessionId }), 
+            });
+            const result = await response.json(); 
+            if (result.success) {
+                window.location.href = '/codemx/frontend/build';
+            } else {
+                alert('Error al cerrar la sesión: ' + result.error);
+            }
+        } catch (error) {
+            alert('Error al comunicarse con el servidor: ' + error.message);
+        }
+    };
+
 
     if (isLoading) {
         return <LoadingSpinner></LoadingSpinner> 
@@ -114,11 +183,11 @@ export const RutasAdmin = () => {
                     <nav className="nav d-md-flex">
                         <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-image"></i>
-                            Gestión de Post
+                            Gestión Post
                         </NavLink>
                         <NavLink to="/usuario-administrador/gestionvacantes-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
                             <i className="fa-solid fa-briefcase"></i>
-                            Gestión de Vacantes
+                            Gestión Vacantes
                         </NavLink>
                         <NavLink
                             to="/usuario-administrador/verificacion-administrador"
@@ -136,13 +205,29 @@ export const RutasAdmin = () => {
                             </span>
                             Verificación 
                         </NavLink>
-                        <NavLink to="/usuario-administrador/gestiondenuncias-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" }>
-                            <i className="fa-solid fa-flag"></i>
-                            Gestión de Denuncias
+                        <NavLink
+                            to="/usuario-administrador/gestiondenuncias-administrador"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            <span className="icono-notificaciones-wrapper position-relative">
+                                 <i className="fa-solid fa-flag"></i>
+                                {tienesDenuncias && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                            Gestión Denuncias
                         </NavLink>
                         <NavLink to="/usuario-administrador/gestionusuarios-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex  gap-2 align-items-center" }>
                             <i className="fa-solid fa-users"></i>
-                            Gestión de Usuarios
+                            Gestión Usuarios
+                        </NavLink>
+                        <NavLink className="d-flex gap-2 align-items-center link-cerrar-sesion" onClick={manejarCerrarSesion}>
+                            <i className="fa-solid fa-right-from-bracket"></i>
+                            Salir
                         </NavLink>
                     </nav>
        
@@ -160,8 +245,8 @@ export const RutasAdmin = () => {
                         </button>
                     </div>
                     <nav className="menu-links d-flex flex-column">
-                        <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión de Post</NavLink>
-                        <NavLink to="/usuario-administrador/gestionvacantes-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión de Vacantes</NavLink>
+                        <NavLink to="/usuario-administrador/gestionpublicaciones-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión Post</NavLink>
+                        <NavLink to="/usuario-administrador/gestionvacantes-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión Vacantes</NavLink>
                          <NavLink
                             to="/usuario-administrador/verificacion-administrador"
                             className={({isActive}) =>
@@ -178,8 +263,27 @@ export const RutasAdmin = () => {
                                 )}
                             </span>
                         </NavLink>
-                        <NavLink to="/usuario-administrador/gestiondenuncias-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión Denuncias</NavLink>
+                        <NavLink
+                            to="/usuario-administrador/gestiondenuncias-administrador"
+                            className={({isActive}) =>
+                                isActive
+                                ? "activado d-flex gap-2 align-items-center"
+                                : "noactivado d-flex gap-2 align-items-center"
+                            }
+                        >
+                            Gestión Denuncias
+                            <span className="icono-notificaciones-wrapper position-relative">
+
+                                {tienesDenuncias && (
+                                <span className="punto-rojo-notificacion"></span>
+                                )}
+                            </span>
+                        </NavLink>
                         <NavLink to="/usuario-administrador/gestionusuarios-administrador" className={({isActive}) => isActive ? "activado d-flex gap-2 align-items-center" : "noactivado d-flex gap-2 align-items-center" } onClick={toggleMenu}>Gestión Usuarios</NavLink>
+                        <NavLink className="d-flex gap-2 align-items-center link-cerrar-sesion"     onClick={() => {
+                        toggleMenu();        // Cierra el menú responsive
+                        manejarCerrarSesion();  // Cierra sesión
+                        }}>Salir</NavLink>
                     </nav>
                 </div>
 
@@ -235,6 +339,11 @@ export const RutasAdmin = () => {
                                 <li>
                                     <NavLink to="/usuario-administrador/gestionusuarios-administrador" className="footer-link" >
                                         <i className="fa-solid fa-users"></i> &nbsp; Gestión de Usuarios
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink className="footer-link link-cerrar-sesion-footer" onClick={manejarCerrarSesion}  >
+                                        <i className="fa-solid fa-right-from-bracket"></i> &nbsp; Salir
                                     </NavLink>
                                 </li>
                             </ul>

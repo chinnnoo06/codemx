@@ -77,7 +77,7 @@ export const Seccion1PageInicio = ({empresa, numPublicaciones}) => {
             });
             const result = await response.json(); 
             if (result.success) {
-                window.location.href = 'https://www.codemx.net/codemx/frontend/build';
+                window.location.href = '/codemx/frontend/build';
             } else {
                 alert('Error al cerrar la sesión: ' + result.error);
             }

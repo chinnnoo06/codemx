@@ -114,8 +114,9 @@
     transition: all 0.3s ease;
 }
 
-.contenedor-header .link-cerrar-sesion:hover{
-   color: #dd0909
+.contenedor-header .link-cerrar-sesion:hover,
+.link-cerrar-sesion-footer:hover{
+   color: #dd0909 !important
 }
 
 .nav-responsive {
