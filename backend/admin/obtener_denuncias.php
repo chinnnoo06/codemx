@@ -15,6 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
+    $resetEstadoCuentaSql = "
+        UPDATE verificacion_usuarios
+        SET Estado_Cuenta = 0
+        WHERE Strikes >= 5
+    ";
+
+    if (!mysqli_query($conexion, $resetEstadoCuentaSql)) {
+        echo json_encode(['error' => 'Error al resetear Estado_Cuenta', 'details' => mysqli_error($conexion)]);
+        exit();
+    }
+
     // Consulta para denuncias de Candidato a Candidato
     $consultaDenunciaCandidatoCandidato = "
     SELECT 
