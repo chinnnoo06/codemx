@@ -126,9 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Calcular el Score (sin normalización aún)
         $scoreBruto = ($numSeguidores * 1.0) +
-                      ($totalLikes * 1.5) +
-                      ($totalComentarios * 1.2) - 
-                      ($totalDislikes * 1.3);
+                    ($totalLikes * 1.0) +
+                    ($totalComentarios * 1.0) -
+                    ($totalDislikes * 0.5);
+
 
         // Si no tiene publicaciones, el score será 0 para evitar división por 0
         $scoreBruto = $numPublicaciones > 0 ? $scoreBruto / $numPublicaciones : 0;
