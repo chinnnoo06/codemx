@@ -990,8 +990,7 @@ export const SeccionVacante = ({empresa, vacante, manejarOcultarSeccionVacante, 
              
                 </>
             )}
-            
-
+        
         </div>
       
     );

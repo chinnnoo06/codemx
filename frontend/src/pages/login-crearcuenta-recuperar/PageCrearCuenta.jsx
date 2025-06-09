@@ -16,9 +16,7 @@ export const PageCrearCuenta = () => {
   };
 
   // Función para reenviar el correo de verificación
-  const reenviarCorreo = async () => {
-    console.log('Email a enviar:', emailUsuario); // Verifica el correo antes de enviarlo
-  
+  const reenviarCorreo = async () => {  
     try {
       const response = await fetch('https://www.codemx.net/codemx/backend/login-crearcuenta/reenviar_correo.php', {
         method: 'POST',

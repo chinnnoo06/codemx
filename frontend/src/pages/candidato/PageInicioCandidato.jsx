@@ -152,6 +152,8 @@ export const PageInicioCandidato = ({ candidato }) => {
   if (isLoading && page === 1) {
     return <LoadingSpinner />; 
   }
+
+  console.log(empresas)
   
   return (
     <div className="contenedor-todo contenedor-seccion-notificaciones w-100">
